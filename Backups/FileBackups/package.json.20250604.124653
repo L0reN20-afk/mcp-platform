@@ -1,0 +1,33 @@
+{
+  "name": "mcp-platform",
+  "version": "1.0.0",
+  "description": "Modern MCP Platform with 3D backgrounds and advanced animations",
+  "private": true,
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "next lint"
+  },
+  "dependencies": {
+    "next": "14.0.3",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
+    "typescript": "^5.2.2",
+    "@types/node": "^20.8.0",
+    "@types/react": "^18.2.0",
+    "@types/react-dom": "^18.2.0",
+    "tailwindcss": "^3.3.5",
+    "autoprefixer": "^10.4.16",
+    "postcss": "^8.4.31",
+    "gsap": "^3.12.2",
+    "framer-motion": "^10.16.4",
+    "three": "^0.157.0",
+    "@types/three": "^0.157.0",
+    "lucide-react": "^0.290.0"
+  },
+  "devDependencies": {
+    "eslint": "^8.51.0",
+    "eslint-config-next": "14.0.3"
+  }
+}

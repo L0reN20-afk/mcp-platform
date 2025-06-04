@@ -1,0 +1,180 @@
+import * as THREE from 'three'
+import { gsap } from 'gsap'
+import { ParticleSystem } from './types'
+import { morphToShape } from './morphingEngine'
+
+// 📜 SCROLL TRIGGERS - Gestione dei trigger di scroll per morphing
+
+// Dynamic import for ScrollTrigger to avoid SSR issues
+let ScrollTrigger: any
+if (typeof window !== 'undefined') {
+  import('gsap/ScrollTrigger').then(({ ScrollTrigger: ST }) => {
+    ScrollTrigger = ST
+    gsap.registerPlugin(ScrollTrigger)
+  })
+}
+
+// 🎬 SETUP SCROLL TRIGGERS PRINCIPALI
+export function setupScrollTriggers(particleSystem: ParticleSystem, scene: THREE.Scene) {
+  if (typeof window === 'undefined') return
+  
+  const initScrollTriggers = () => {
+    if (!ScrollTrigger) {
+      setTimeout(initScrollTriggers, 100)
+      return
+    }
+    
+    console.log('🎬 Inizializzazione ScrollTriggers per morphing...')
+    
+    const sections = ['hero', 'features', 'packages', 'pricing', 'demo']
+    
+    sections.forEach((section, index) => {
+      ScrollTrigger.create({
+        trigger: `#${section}`,
+        start: "top center",
+        end: "bottom center",
+        onEnter: () => {
+          console.log(`🔄 Morphing to ${section}`)
+          morphToShape(particleSystem, section, scene)
+        },
+        onEnterBack: () => {
+          console.log(`🔄 Morphing back to ${section}`)
+          morphToShape(particleSystem, section, scene)
+        }
+      })
+    })
+  }
+  
+  initScrollTriggers()
+}
+
+// 🌊 PROGRESSIVE SEPARATION - NUOVO! Allontanamento progressivo prima dell'esplosione
+export function setupProgressiveSeparation(particleSystem: ParticleSystem) {
+  if (typeof window === 'undefined') return
+  
+  const initProgressiveTriggers = () => {
+    if (!ScrollTrigger) {
+      setTimeout(initProgressiveTriggers, 100)
+      return
+    }
+    
+    console.log('🌊 Inizializzazione Progressive Separation...')
+    
+    const sections = ['hero', 'features', 'packages', 'pricing', 'demo']
+    
+    sections.forEach((section, index) => {
+      const nextSection = sections[index + 1]
+      if (!nextSection) return // Skip last section
+      
+      ScrollTrigger.create({
+        trigger: `#${section}`,
+        start: "top center", 
+        end: "bottom center",
+        scrub: 1, // Smooth scrub animation
+        onUpdate: (self) => {
+          const progress = self.progress
+          
+          // 🎯 PROGRESSIVE SEPARATION: Dal 50% al 80% del scroll
+          if (progress >= 0.5 && progress <= 0.8) {
+            const separationProgress = (progress - 0.5) / 0.3 // Normalize to 0-1
+            applySeparationEffect(particleSystem, separationProgress)
+          }
+          // Reset se torniamo indietro
+          else if (progress < 0.5) {
+            resetSeparationEffect(particleSystem)
+          }
+        }
+      })
+    })
+  }
+  
+  initProgressiveTriggers()
+}
+
+// 🌪️ APPLICA EFFETTO SEPARAZIONE PROGRESSIVA
+function applySeparationEffect(particleSystem: ParticleSystem, progress: number) {
+  if (!particleSystem.points) return
+  
+  // Scala da 1.0 a 2.0 gradualmente
+  const targetScale = 1.0 + (progress * 1.0) // Max 2.0x
+  
+  // Applica la scala gradualmente
+  gsap.to(particleSystem.points.scale, {
+    x: targetScale,
+    y: targetScale,
+    z: targetScale,
+    duration: 0.1,
+    ease: "none" // Linear per seguire esattamente lo scroll
+  })
+  
+  // Leggera rotazione per "nervosismo"
+  const rotationOffset = progress * 0.1
+  gsap.to(particleSystem.points.rotation, {
+    x: particleSystem.points.rotation.x + rotationOffset * 0.02,
+    y: particleSystem.points.rotation.y + rotationOffset * 0.03,
+    duration: 0.1,
+    ease: "none"
+  })
+  
+  console.log(`🌊 Separazione: ${(progress * 100).toFixed(1)}% - Scala: ${targetScale.toFixed(2)}x`)
+}
+
+// 🔄 RESET EFFETTO SEPARAZIONE
+function resetSeparationEffect(particleSystem: ParticleSystem) {
+  if (!particleSystem.points) return
+  
+  // Ritorna alla scala normale
+  gsap.to(particleSystem.points.scale, {
+    x: 1.0,
+    y: 1.0,
+    z: 1.0,
+    duration: 0.3,
+    ease: "power2.out"
+  })
+  
+  console.log('🔄 Reset separazione - ritorno a scala normale')
+}
+
+// 🎮 SETUP PARALLAX EFFECTS per elementi aggiuntivi
+export function setupParallaxEffects() {
+  if (typeof window === 'undefined') return
+  
+  const initParallax = () => {
+    if (!ScrollTrigger) {
+      setTimeout(initParallax, 100)
+      return
+    }
+    
+    // Parallax per elementi background decorativi
+    gsap.utils.toArray('.parallax-element').forEach((element: any) => {
+      gsap.to(element, {
+        yPercent: -50,
+        ease: "none",
+        scrollTrigger: {
+          trigger: element,
+          start: "top bottom",
+          end: "bottom top",
+          scrub: true
+        }
+      })
+    })
+  }
+  
+  initParallax()
+}
+
+// 🔧 CLEANUP SCROLL TRIGGERS
+export function cleanupScrollTriggers() {
+  if (ScrollTrigger) {
+    ScrollTrigger.getAll().forEach((trigger: any) => trigger.kill())
+    console.log('🧹 ScrollTriggers puliti')
+  }
+}
+
+// 📊 DEBUG SCROLL TRIGGERS
+export function debugScrollTriggers() {
+  if (ScrollTrigger && process.env.NODE_ENV === 'development') {
+    ScrollTrigger.refresh()
+    console.log('🔍 ScrollTriggers refreshed per debug')
+  }
+}

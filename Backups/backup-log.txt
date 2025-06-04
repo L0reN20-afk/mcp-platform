@@ -1,0 +1,2515 @@
+
+=== MODIFICHE DEL 03/06/2025 ===
+*20:15 ReplaceVSCodeText su ParticleBackground.tsx [ParticleBackground.tsx.20250603.201526]: Modifica dell'effetto di morphing da implosione a esplosione: ora le particelle esplodono verso l'esterno (scala 2.5x), ruotano velocemente, si disperdono casualmente e poi si ricompongono lentamente nella nuova forma con un effetto elastico. Questo crea una transizione molto più spettacolare e fluida tra le sezioni, come richiesto dall'utente. [Dettagli: Sostituzione '  // Explosion effect - PIù DRAMMATICO E VISIBILE
+  gsap.to(particleSystem.points.scale, {
+    x: 0.05, // Era 0.1, ora più piccolo per effetto più drammatico
+    y: 0.05,
+    z: 0.05,
+    duration: 0.8, // Era 0.5, ora più lungo per essere più visibile
+    ease: "power2.inOut",
+    onComplete: () => {
+      // Update positions and colors
+      for (let i = 0; i < positions.length; i++) {
+        positions[i] = particleSystem.targetPositions[i]
+      }
+      for (let i = 0; i < colors.length; i++) {
+        colors[i] = particleSystem.colors[i]
+      }
+      
+      particleSystem.geometry.attributes.position.needsUpdate = true
+      particleSystem.geometry.attributes.color.needsUpdate = true
+      
+      // Implosion effect - PIù LUNGO E SPETTACOLARE
+      gsap.to(particleSystem.points.scale, {
+        x: 1,
+        y: 1,
+        z: 1,
+        duration: 1.2, // Era 0.8, ora più lungo per transizione più evidente
+        ease: "bounce.out"
+      })
+    }
+  })' → '  // 🚀 NUOVA ESPLOSIONE VERSO L'ESTERNO - Effetto molto più spettacolare!
+  
+  // Fase 1: ESPLOSIONE - Le particelle si disperdono verso l'esterno
+  gsap.to(particleSystem.points.scale, {
+    x: 2.5,  // ESPLOSIONE! Scale aumentata invece di ridotta
+    y: 2.5,
+    z: 2.5,
+    duration: 1.0, // Durata dell'esplosione
+    ease: "power2.out",
+  })
+  
+  // Fase 2: ROTAZIONE ACCELERATA durante l'esplosione
+  gsap.to(particleSystem.points.rotation, {
+    x: particleSystem.points.rotation.x + Math.PI * 2, // Giro completo aggiuntivo
+    y: particleSystem.points.rotation.y + Math.PI * 3, // Rotazione più veloce
+    duration: 1.8, // Rotazione per tutta la durata della transizione
+    ease: "power1.inOut"
+  })
+  
+  // Fase 3: DISPERSIONE CASUALE delle particelle (effetto caos)
+  const originalPositions = [...positions] // Salva posizioni originali
+  
+  // Aggiungi dispersione casuale
+  for (let i = 0; i < positions.length; i += 3) {
+    positions[i] += (Math.random() - 0.5) * 15     // X casuale
+    positions[i + 1] += (Math.random() - 0.5) * 15 // Y casuale  
+    positions[i + 2] += (Math.random() - 0.5) * 15 // Z casuale
+  }
+  particleSystem.geometry.attributes.position.needsUpdate = true
+  
+  // Fase 4: PAUSA e poi RICOMPOSIZIONE nella nuova forma
+  gsap.delayedCall(1.2, () => {
+    // Aggiorna target positions e colori per la nuova forma
+    for (let i = 0; i < positions.length; i++) {
+      positions[i] = particleSystem.targetPositions[i]
+    }
+    for (let i = 0; i < colors.length; i++) {
+      colors[i] = particleSystem.colors[i]
+    }
+    
+    particleSystem.geometry.attributes.position.needsUpdate = true
+    particleSystem.geometry.attributes.color.needsUpdate = true
+    
+    // Fase 5: RICOMPOSIZIONE FLUIDA - ritorno alla scala normale
+    gsap.to(particleSystem.points.scale, {
+      x: 1,
+      y: 1, 
+      z: 1,
+      duration: 1.5, // Ricomposizione più lenta e fluida
+      ease: "elastic.out(1, 0.3)" // Effetto elastico per la ricomposizione
+    })
+  })' (case-sensitive)]
+
+*20:18 ReplaceVSCodeText su ParticleBackground.tsx [ParticleBackground.tsx.20250603.201803]: Implementazione di numeri di particelle specifici per ogni forma geometrica: ogni forma ora ha il suo numero ottimale di particelle per una definizione corretta. Il sistema ora ricrea dinamicamente la geometria quando cambia forma, gestendo transizioni fluide tra diversi numeri di particelle. Questo garantisce che ogni forma 3D sia rappresentata con il numero ideale di punti per la sua geometria specifica. [Dettagli: Sostituzione '    // Camera position - FISSO come originale, più vicino per figure più grandi
+    camera.position.z = 45 // Era 50, ora 45 per vedere meglio
+
+    // Particle count (ORIGINALE: 2000, ora responsive)
+    const calculateOptimalParticleCount = () => {
+      const screenArea = window.innerWidth * window.innerHeight
+      const baseArea = 1920 * 1080
+      const ratio = screenArea / baseArea
+      return Math.max(1000, Math.min(3000, Math.floor(2000 * ratio)))
+    }
+
+    const particleCount = calculateOptimalParticleCount()' → '    // Camera position - FISSO come originale, più vicino per figure più grandi
+    camera.position.z = 45 // Era 50, ora 45 per vedere meglio
+
+    // 🎯 NUMERI OTTIMALI DI PARTICELLE PER OGNI FORMA
+    const getOptimalParticleCount = (shape: string) => {
+      const baseMultiplier = Math.min(window.devicePixelRatio || 1, 2)
+      
+      switch(shape) {
+        case 'hero': // Sfera - numeri che danno buona distribuzione Fibonacci
+          return Math.floor(1800 * baseMultiplier)
+        
+        case 'features': // Toro - numero che si divide bene in griglia 2D
+          const torusGrid = Math.floor(45 * baseMultiplier) // 45x45 = 2025
+          return torusGrid * torusGrid
+        
+        case 'packages': // Cubo - divisibile per 6 facce, griglia quadrata per faccia
+          const faceGrid = Math.floor(18 * baseMultiplier) // 18x18 per faccia
+          return faceGrid * faceGrid * 6 // 6 facce = 1944 particelle
+        
+        case 'pricing': // Blob morfante - numero flessibile ma abbondante per dettagli
+          return Math.floor(2200 * baseMultiplier)
+        
+        case 'demo': // Icosaedro - numero che rispetta la geometria del poliedro
+          return Math.floor(1600 * baseMultiplier)
+        
+        default:
+          return Math.floor(1800 * baseMultiplier)
+      }
+    }
+
+    // Inizia con la forma hero (sfera)
+    let currentParticleCount = getOptimalParticleCount('hero')' (case-sensitive)]
+
+*20:18 ReplaceVSCodeText su ParticleBackground.tsx [ParticleBackground.tsx.20250603.201815]: Aggiornamento dell'inizializzazione del sistema di particelle per usare il conteggio dinamico currentParticleCount invece del valore fisso. Questo prepara il sistema per gestire diversi numeri di particelle per ogni forma geometrica. [Dettagli: Sostituzione '    // Particle system setup (RITORNO AL POINTSMATERIAL ORIGINALE)
+    const geometry = new THREE.BufferGeometry()
+    const positions = new Float32Array(particleCount * 3)
+    const colors = new Float32Array(particleCount * 3)
+    const sizes = new Float32Array(particleCount)
+
+    // Initialize particles in sphere formation (DISTRIBUZIONE UNIFORME - MIGLIORAMENTO 2)
+    generateUniformSpherePositions(positions, particleCount) // DIMENSIONI FISSE
+    generateBlueColors(colors, particleCount)
+    generateOriginalSizes(sizes, particleCount) // DIMENSIONI ORIGINALI' → '    // Particle system setup (RITORNO AL POINTSMATERIAL ORIGINALE)
+    const geometry = new THREE.BufferGeometry()
+    const positions = new Float32Array(currentParticleCount * 3)
+    const colors = new Float32Array(currentParticleCount * 3)
+    const sizes = new Float32Array(currentParticleCount)
+
+    // Initialize particles in sphere formation (DISTRIBUZIONE UNIFORME - MIGLIORAMENTO 2)
+    generateUniformSpherePositions(positions, currentParticleCount) // DIMENSIONI FISSE
+    generateBlueColors(colors, currentParticleCount)
+    generateOriginalSizes(sizes, currentParticleCount) // DIMENSIONI ORIGINALI' (case-sensitive)]
+
+*20:18 ReplaceVSCodeText su ParticleBackground.tsx [ParticleBackground.tsx.20250603.201833]: Aggiornamento del sistema di particelle per includere il conteggio corrente e aggiunta di una funzione di ricreazione della geometria. Questo permette di gestire dinamicamente il cambio del numero di particelle quando si passa da una forma all'altra, mantenendo le performance ottimali per ogni forma geometrica specifica. [Dettagli: Sostituzione '    const particleSystem: ParticleSystem = {
+      geometry,
+      material,
+      points,
+      targetPositions: new Float32Array(particleCount * 3),
+      colors: new Float32Array(particleCount * 3),
+      currentShape: 'sphere',
+      startTime: Date.now()
+      // Niente più scale - dimensioni fisse!
+    }' → '    const particleSystem: ParticleSystem = {
+      geometry,
+      material,
+      points,
+      targetPositions: new Float32Array(currentParticleCount * 3),
+      colors: new Float32Array(currentParticleCount * 3),
+      currentShape: 'hero',
+      startTime: Date.now(),
+      currentParticleCount // Aggiungi il conteggio corrente
+      // Niente più scale - dimensioni fisse!
+    }
+
+    // 🔄 FUNZIONE PER RICREARE LA GEOMETRIA con nuovo numero di particelle
+    const recreateGeometry = (newCount: number) => {
+      if (newCount === particleSystem.currentParticleCount) return // Nessun cambio necessario
+      
+      console.log(`🔄 Ricreando geometria: ${particleSystem.currentParticleCount} → ${newCount} particelle`)
+      
+      // Salva lo stato corrente
+      const oldPoints = particleSystem.points
+      const oldGeometry = particleSystem.geometry
+      const oldMaterial = particleSystem.material
+      
+      // Crea nuova geometria
+      const newGeometry = new THREE.BufferGeometry()
+      const newPositions = new Float32Array(newCount * 3)
+      const newColors = new Float32Array(newCount * 3)
+      const newSizes = new Float32Array(newCount)
+      
+      // Aggiorna attributi
+      newGeometry.setAttribute('position', new THREE.BufferAttribute(newPositions, 3))
+      newGeometry.setAttribute('color', new THREE.BufferAttribute(newColors, 3))
+      newGeometry.setAttribute('size', new THREE.BufferAttribute(newSizes, 1))
+      
+      // Crea nuovo oggetto Points
+      const newPoints = new THREE.Points(newGeometry, oldMaterial)
+      newPoints.rotation.copy(oldPoints.rotation) // Mantieni rotazione
+      newPoints.scale.copy(oldPoints.scale) // Mantieni scala
+      
+      // Sostituisci nella scena
+      scene.remove(oldPoints)
+      scene.add(newPoints)
+      
+      // Aggiorna riferimenti
+      particleSystem.geometry = newGeometry
+      particleSystem.points = newPoints
+      particleSystem.targetPositions = new Float32Array(newCount * 3)
+      particleSystem.colors = new Float32Array(newCount * 3)
+      particleSystem.currentParticleCount = newCount
+      
+      // Cleanup vecchia geometria
+      oldGeometry.dispose()
+      
+      return newPositions
+    }' (case-sensitive)]
+
+*20:18 ReplaceVSCodeText su ParticleBackground.tsx [ParticleBackground.tsx.20250603.201840]: Aggiornamento dell'interfaccia ParticleSystem per includere il campo currentParticleCount che tiene traccia del numero attuale di particelle. Questo è necessario per gestire il sistema dinamico di conteggio particelle specifico per ogni forma geometrica. [Dettagli: Sostituzione 'interface ParticleSystem {
+  geometry: THREE.BufferGeometry
+  material: THREE.PointsMaterial
+  points: THREE.Points
+  targetPositions: Float32Array
+  colors: Float32Array
+  currentShape: string
+  startTime: number
+  // Rimossa scale - torniamo alle dimensioni fisse!
+}' → 'interface ParticleSystem {
+  geometry: THREE.BufferGeometry
+  material: THREE.PointsMaterial
+  points: THREE.Points
+  targetPositions: Float32Array
+  colors: Float32Array
+  currentShape: string
+  startTime: number
+  currentParticleCount: number // Nuovo campo per tracciare il numero di particelle
+  // Rimossa scale - torniamo alle dimensioni fisse!
+}' (case-sensitive)]
+
+*20:19 ReplaceVSCodeText su ParticleBackground.tsx [ParticleBackground.tsx.20250603.201931]: Aggiornamento completo della funzione morphToShape per gestire numeri di particelle specifici per ogni forma. Ora cada forma geometrica usa il suo numero ottimale di particelle, ricreando dinamicamente la geometria quando necessario. Questo garantisce che ogni forma 3D sia rappresentata con il numero ideale di punti per la sua geometria specifica, migliorando significativamente la qualità visiva e la precisione geometrica di tutte le forme. [Dettagli: Sostituzione '// Morphing function (ORIGINALE + dimensioni fisse aumentate)
+function morphToShape(particleSystem: ParticleSystem, shape: string, skipAnimation: boolean = false) {
+  if (particleSystem.currentShape === shape && !skipAnimation) return
+  
+  console.log(`✨ Morphing da ${particleSystem.currentShape} a ${shape}`)
+  
+  const positions = particleSystem.geometry.attributes.position.array as Float32Array
+  const colors = particleSystem.geometry.attributes.color.array as Float32Array
+  const count = positions.length / 3
+  
+  // Generate new target positions and colors (DIMENSIONI FISSE aumentate)
+  switch(shape) {
+    case 'hero':
+      generateUniformSpherePositions(particleSystem.targetPositions, count) // FISSO
+      generateBlueColors(particleSystem.colors, count)
+      break
+    case 'features':
+      generateUniformTorusPositions(particleSystem.targetPositions, count) // FISSO
+      generatePurpleColors(particleSystem.colors, count)
+      break
+    case 'packages':
+      generateUniformCubePositions(particleSystem.targetPositions, count) // FISSO
+      generateCyanColors(particleSystem.colors, count)
+      break
+    case 'pricing':
+      generateMorphingBlobPositions(particleSystem.targetPositions, count, 0) // FISSO
+      generateRainbowColors(particleSystem.colors, count)
+      particleSystem.startTime = Date.now()
+      break
+    case 'demo':
+      generateUniformIcosahedronPositions(particleSystem.targetPositions, count) // FISSO
+      generateOrangeColors(particleSystem.colors, count)
+      break
+  }
+  
+  if (skipAnimation) {
+    // Update immediato senza animazione (per resize)
+    for (let i = 0; i < positions.length; i++) {
+      positions[i] = particleSystem.targetPositions[i]
+    }
+    for (let i = 0; i < colors.length; i++) {
+      colors[i] = particleSystem.colors[i]
+    }
+    
+    particleSystem.geometry.attributes.position.needsUpdate = true
+    particleSystem.geometry.attributes.color.needsUpdate = true
+    particleSystem.currentShape = shape
+    return
+  }
+  
+  // 🚀 NUOVA ESPLOSIONE VERSO L'ESTERNO - Effetto molto più spettacolare!
+  
+  // Fase 1: ESPLOSIONE - Le particelle si disperdono verso l'esterno
+  gsap.to(particleSystem.points.scale, {
+    x: 2.5,  // ESPLOSIONE! Scale aumentata invece di ridotta
+    y: 2.5,
+    z: 2.5,
+    duration: 1.0, // Durata dell'esplosione
+    ease: "power2.out",
+  })
+  
+  // Fase 2: ROTAZIONE ACCELERATA durante l'esplosione
+  gsap.to(particleSystem.points.rotation, {
+    x: particleSystem.points.rotation.x + Math.PI * 2, // Giro completo aggiuntivo
+    y: particleSystem.points.rotation.y + Math.PI * 3, // Rotazione più veloce
+    duration: 1.8, // Rotazione per tutta la durata della transizione
+    ease: "power1.inOut"
+  })
+  
+  // Fase 3: DISPERSIONE CASUALE delle particelle (effetto caos)
+  const originalPositions = [...positions] // Salva posizioni originali
+  
+  // Aggiungi dispersione casuale
+  for (let i = 0; i < positions.length; i += 3) {
+    positions[i] += (Math.random() - 0.5) * 15     // X casuale
+    positions[i + 1] += (Math.random() - 0.5) * 15 // Y casuale  
+    positions[i + 2] += (Math.random() - 0.5) * 15 // Z casuale
+  }
+  particleSystem.geometry.attributes.position.needsUpdate = true
+  
+  // Fase 4: PAUSA e poi RICOMPOSIZIONE nella nuova forma
+  gsap.delayedCall(1.2, () => {
+    // Aggiorna target positions e colori per la nuova forma
+    for (let i = 0; i < positions.length; i++) {
+      positions[i] = particleSystem.targetPositions[i]
+    }
+    for (let i = 0; i < colors.length; i++) {
+      colors[i] = particleSystem.colors[i]
+    }
+    
+    particleSystem.geometry.attributes.position.needsUpdate = true
+    particleSystem.geometry.attributes.color.needsUpdate = true
+    
+    // Fase 5: RICOMPOSIZIONE FLUIDA - ritorno alla scala normale
+    gsap.to(particleSystem.points.scale, {
+      x: 1,
+      y: 1, 
+      z: 1,
+      duration: 1.5, // Ricomposizione più lenta e fluida
+      ease: "elastic.out(1, 0.3)" // Effetto elastico per la ricomposizione
+    })
+  })
+  
+  particleSystem.currentShape = shape
+}' → '// Morphing function (NUOVO SISTEMA CON CONTEGGIO PARTICELLE SPECIFICO)
+function morphToShape(particleSystem: ParticleSystem, shape: string, skipAnimation: boolean = false) {
+  if (particleSystem.currentShape === shape && !skipAnimation) return
+  
+  console.log(`✨ Morphing da ${particleSystem.currentShape} a ${shape}`)
+  
+  // 🎯 CALCOLA NUMERO OTTIMALE PER QUESTA FORMA
+  const getOptimalParticleCount = (targetShape: string) => {
+    const baseMultiplier = Math.min(window.devicePixelRatio || 1, 2)
+    
+    switch(targetShape) {
+      case 'hero': // Sfera - numeri che danno buona distribuzione Fibonacci
+        return Math.floor(1800 * baseMultiplier)
+      
+      case 'features': // Toro - numero che si divide bene in griglia 2D
+        const torusGrid = Math.floor(45 * baseMultiplier) // 45x45 = 2025
+        return torusGrid * torusGrid
+      
+      case 'packages': // Cubo - divisibile per 6 facce, griglia quadrata per faccia
+        const faceGrid = Math.floor(18 * baseMultiplier) // 18x18 per faccia
+        return faceGrid * faceGrid * 6 // 6 facce = 1944 particelle
+      
+      case 'pricing': // Blob morfante - numero flessibile ma abbondante per dettagli
+        return Math.floor(2200 * baseMultiplier)
+      
+      case 'demo': // Icosaedro - numero che rispetta la geometria del poliedro
+        return Math.floor(1600 * baseMultiplier)
+      
+      default:
+        return Math.floor(1800 * baseMultiplier)
+    }
+  }
+  
+  const optimalCount = getOptimalParticleCount(shape)
+  console.log(`🔢 Forma ${shape}: ${optimalCount} particelle ottimali`)
+  
+  // 🔄 RICREA GEOMETRIA SE SERVE UN NUMERO DIVERSO
+  let positions: Float32Array
+  let colors: Float32Array
+  
+  if (optimalCount !== particleSystem.currentParticleCount) {
+    console.log(`🔄 Ricreando geometria: ${particleSystem.currentParticleCount} → ${optimalCount}`)
+    
+    // Ricrea geometria con nuovo numero di particelle  
+    const oldPoints = particleSystem.points
+    const oldGeometry = particleSystem.geometry
+    
+    // Crea nuova geometria
+    const newGeometry = new THREE.BufferGeometry()
+    const newPositions = new Float32Array(optimalCount * 3)
+    const newColors = new Float32Array(optimalCount * 3)
+    const newSizes = new Float32Array(optimalCount)
+    
+    // Genera dimensioni per le nuove particelle
+    generateOriginalSizes(newSizes, optimalCount)
+    
+    // Aggiorna attributi
+    newGeometry.setAttribute('position', new THREE.BufferAttribute(newPositions, 3))
+    newGeometry.setAttribute('color', new THREE.BufferAttribute(newColors, 3))
+    newGeometry.setAttribute('size', new THREE.BufferAttribute(newSizes, 1))
+    
+    // Crea nuovo oggetto Points
+    const newPoints = new THREE.Points(newGeometry, particleSystem.material)
+    newPoints.rotation.copy(oldPoints.rotation) // Mantieni rotazione
+    newPoints.scale.copy(oldPoints.scale) // Mantieni scala
+    
+    // Sostituisci nella scena
+    if (sceneRef.current) {
+      sceneRef.current.remove(oldPoints)
+      sceneRef.current.add(newPoints)
+    }
+    
+    // Aggiorna riferimenti nel sistema
+    particleSystem.geometry = newGeometry
+    particleSystem.points = newPoints
+    particleSystem.targetPositions = new Float32Array(optimalCount * 3)
+    particleSystem.colors = new Float32Array(optimalCount * 3)
+    particleSystem.currentParticleCount = optimalCount
+    
+    // Cleanup vecchia geometria
+    oldGeometry.dispose()
+    
+    positions = newPositions
+    colors = newColors
+  } else {
+    // Usa geometria esistente
+    positions = particleSystem.geometry.attributes.position.array as Float32Array
+    colors = particleSystem.geometry.attributes.color.array as Float32Array
+  }
+
+  const count = particleSystem.currentParticleCount
+
+  // Generate new target positions and colors (CON NUMERI OTTIMALI)
+  switch(shape) {
+    case 'hero':
+      generateUniformSpherePositions(particleSystem.targetPositions, count)
+      generateBlueColors(particleSystem.colors, count)
+      break
+    case 'features':
+      generateUniformTorusPositions(particleSystem.targetPositions, count)
+      generatePurpleColors(particleSystem.colors, count)
+      break
+    case 'packages':
+      generateUniformCubePositions(particleSystem.targetPositions, count)
+      generateCyanColors(particleSystem.colors, count)
+      break
+    case 'pricing':
+      generateMorphingBlobPositions(particleSystem.targetPositions, count, 0)
+      generateRainbowColors(particleSystem.colors, count)
+      particleSystem.startTime = Date.now()
+      break
+    case 'demo':
+      generateUniformIcosahedronPositions(particleSystem.targetPositions, count)
+      generateOrangeColors(particleSystem.colors, count)
+      break
+  }
+  
+  if (skipAnimation) {
+    // Update immediato senza animazione (per resize)
+    for (let i = 0; i < positions.length; i++) {
+      positions[i] = particleSystem.targetPositions[i]
+    }
+    for (let i = 0; i < colors.length; i++) {
+      colors[i] = particleSystem.colors[i]
+    }
+    
+    particleSystem.geometry.attributes.position.needsUpdate = true
+    particleSystem.geometry.attributes.color.needsUpdate = true
+    particleSystem.currentShape = shape
+    return
+  }
+  
+  // 🚀 NUOVA ESPLOSIONE VERSO L'ESTERNO - Effetto molto più spettacolare!
+  
+  // Fase 1: ESPLOSIONE - Le particelle si disperdono verso l'esterno
+  gsap.to(particleSystem.points.scale, {
+    x: 2.5,  // ESPLOSIONE! Scale aumentata invece di ridotta
+    y: 2.5,
+    z: 2.5,
+    duration: 1.0, // Durata dell'esplosione
+    ease: "power2.out",
+  })
+  
+  // Fase 2: ROTAZIONE ACCELERATA durante l'esplosione
+  gsap.to(particleSystem.points.rotation, {
+    x: particleSystem.points.rotation.x + Math.PI * 2, // Giro completo aggiuntivo
+    y: particleSystem.points.rotation.y + Math.PI * 3, // Rotazione più veloce
+    duration: 1.8, // Rotazione per tutta la durata della transizione
+    ease: "power1.inOut"
+  })
+  
+  // Fase 3: DISPERSIONE CASUALE delle particelle (effetto caos)
+  const originalPositions = [...positions] // Salva posizioni originali
+  
+  // Aggiungi dispersione casuale
+  for (let i = 0; i < positions.length; i += 3) {
+    positions[i] += (Math.random() - 0.5) * 15     // X casuale
+    positions[i + 1] += (Math.random() - 0.5) * 15 // Y casuale  
+    positions[i + 2] += (Math.random() - 0.5) * 15 // Z casuale
+  }
+  particleSystem.geometry.attributes.position.needsUpdate = true
+  
+  // Fase 4: PAUSA e poi RICOMPOSIZIONE nella nuova forma
+  gsap.delayedCall(1.2, () => {
+    // Aggiorna target positions e colori per la nuova forma
+    for (let i = 0; i < positions.length; i++) {
+      positions[i] = particleSystem.targetPositions[i]
+    }
+    for (let i = 0; i < colors.length; i++) {
+      colors[i] = particleSystem.colors[i]
+    }
+    
+    particleSystem.geometry.attributes.position.needsUpdate = true
+    particleSystem.geometry.attributes.color.needsUpdate = true
+    
+    // Fase 5: RICOMPOSIZIONE FLUIDA - ritorno alla scala normale
+    gsap.to(particleSystem.points.scale, {
+      x: 1,
+      y: 1, 
+      z: 1,
+      duration: 1.5, // Ricomposizione più lenta e fluida
+      ease: "elastic.out(1, 0.3)" // Effetto elastico per la ricomposizione
+    })
+  })
+  
+  particleSystem.currentShape = shape
+}' (case-sensitive)]
+
+*20:19 ReplaceVSCodeText su ParticleBackground.tsx [ParticleBackground.tsx.20250603.201949]: Rimozione della funzione recreateGeometry duplicata e pulizia del codice. La logica di ricreazione della geometria è ora integrata direttamente nella funzione morphToShape per una migliore gestione del flusso di esecuzione. [Dettagli: Sostituzione '    const particleSystem: ParticleSystem = {
+      geometry,
+      material,
+      points,
+      targetPositions: new Float32Array(currentParticleCount * 3),
+      colors: new Float32Array(currentParticleCount * 3),
+      currentShape: 'hero',
+      startTime: Date.now(),
+      currentParticleCount // Aggiungi il conteggio corrente
+      // Niente più scale - dimensioni fisse!
+    }
+
+    // 🔄 FUNZIONE PER RICREARE LA GEOMETRIA con nuovo numero di particelle
+    const recreateGeometry = (newCount: number) => {
+      if (newCount === particleSystem.currentParticleCount) return // Nessun cambio necessario
+      
+      console.log(`🔄 Ricreando geometria: ${particleSystem.currentParticleCount} → ${newCount} particelle`)
+      
+      // Salva lo stato corrente
+      const oldPoints = particleSystem.points
+      const oldGeometry = particleSystem.geometry
+      const oldMaterial = particleSystem.material
+      
+      // Crea nuova geometria
+      const newGeometry = new THREE.BufferGeometry()
+      const newPositions = new Float32Array(newCount * 3)
+      const newColors = new Float32Array(newCount * 3)
+      const newSizes = new Float32Array(newCount)
+      
+      // Aggiorna attributi
+      newGeometry.setAttribute('position', new THREE.BufferAttribute(newPositions, 3))
+      newGeometry.setAttribute('color', new THREE.BufferAttribute(newColors, 3))
+      newGeometry.setAttribute('size', new THREE.BufferAttribute(newSizes, 1))
+      
+      // Crea nuovo oggetto Points
+      const newPoints = new THREE.Points(newGeometry, oldMaterial)
+      newPoints.rotation.copy(oldPoints.rotation) // Mantieni rotazione
+      newPoints.scale.copy(oldPoints.scale) // Mantieni scala
+      
+      // Sostituisci nella scena
+      scene.remove(oldPoints)
+      scene.add(newPoints)
+      
+      // Aggiorna riferimenti
+      particleSystem.geometry = newGeometry
+      particleSystem.points = newPoints
+      particleSystem.targetPositions = new Float32Array(newCount * 3)
+      particleSystem.colors = new Float32Array(newCount * 3)
+      particleSystem.currentParticleCount = newCount
+      
+      // Cleanup vecchia geometria
+      oldGeometry.dispose()
+      
+      return newPositions
+    }' → '    const particleSystem: ParticleSystem = {
+      geometry,
+      material,
+      points,
+      targetPositions: new Float32Array(currentParticleCount * 3),
+      colors: new Float32Array(currentParticleCount * 3),
+      currentShape: 'hero',
+      startTime: Date.now(),
+      currentParticleCount // Aggiungi il conteggio corrente
+      // Niente più scale - dimensioni fisse!
+    }' (case-sensitive)]
+
+*20:20 ReplaceVSCodeText su ParticleBackground.tsx [ParticleBackground.tsx.20250603.202015]: Ottimizzazione della funzione generateUniformCubePositions per gestire perfettamente il numero specifico di particelle divisibile per 6 facce. Ora la distribuzione è più precisa e uniforme, garantendo che ogni faccia del cubo abbia esattamente lo stesso numero di particelle disposte in una griglia regolare. [Dettagli: Sostituzione '// 📦 DISTRIBUZIONE UNIFORME PER CUBO (MIGLIORAMENTO 2)
+function generateUniformCubePositions(positions: Float32Array, count: number) {
+  // DIMENSIONE FISSA leggermente aumentata (era 28, ora 32)
+  const size = 32 // Era 28, ora 32
+  const particlesPerFace = Math.floor(count / 6)
+  const gridSize = Math.ceil(Math.sqrt(particlesPerFace))
+  let index = 0
+  
+  // 6 facce del cubo
+  const faces = [
+    { normal: [0, 0, 1], u: [1, 0, 0], v: [0, 1, 0] },   // Front
+    { normal: [0, 0, -1], u: [-1, 0, 0], v: [0, 1, 0] }, // Back
+    { normal: [1, 0, 0], u: [0, 0, -1], v: [0, 1, 0] },  // Right
+    { normal: [-1, 0, 0], u: [0, 0, 1], v: [0, 1, 0] },  // Left
+    { normal: [0, 1, 0], u: [1, 0, 0], v: [0, 0, -1] },  // Top
+    { normal: [0, -1, 0], u: [1, 0, 0], v: [0, 0, 1] }   // Bottom
+  ]
+  
+  faces.forEach(face => {
+    for (let i = 0; i < gridSize && index < count; i++) {
+      for (let j = 0; j < gridSize && index < count; j++) {
+        const u = (i / (gridSize - 1) - 0.5) * size
+        const v = (j / (gridSize - 1) - 0.5) * size
+        
+        const x = face.normal[0] * size/2 + face.u[0] * u + face.v[0] * v
+        const y = face.normal[1] * size/2 + face.u[1] * u + face.v[1] * v
+        const z = face.normal[2] * size/2 + face.u[2] * u + face.v[2] * v
+        
+        positions[index * 3] = x
+        positions[index * 3 + 1] = y
+        positions[index * 3 + 2] = z
+        index++
+      }
+    }
+  })
+}' → '// 📦 DISTRIBUZIONE UNIFORME PER CUBO (OTTIMIZZATA PER NUMERI SPECIFICI)
+function generateUniformCubePositions(positions: Float32Array, count: number) {
+  // DIMENSIONE FISSA leggermente aumentata (era 28, ora 32)
+  const size = 32 // Era 28, ora 32
+  
+  // Calcola il numero esatto di particelle per faccia
+  const particlesPerFace = Math.floor(count / 6)
+  const gridSize = Math.ceil(Math.sqrt(particlesPerFace))
+  let index = 0
+  
+  console.log(`📦 Cubo: ${count} particelle totali, ${particlesPerFace} per faccia, griglia ${gridSize}x${gridSize}`)
+  
+  // 6 facce del cubo con distribuzione perfetta
+  const faces = [
+    { normal: [0, 0, 1], u: [1, 0, 0], v: [0, 1, 0] },   // Front
+    { normal: [0, 0, -1], u: [-1, 0, 0], v: [0, 1, 0] }, // Back
+    { normal: [1, 0, 0], u: [0, 0, -1], v: [0, 1, 0] },  // Right
+    { normal: [-1, 0, 0], u: [0, 0, 1], v: [0, 1, 0] },  // Left
+    { normal: [0, 1, 0], u: [1, 0, 0], v: [0, 0, -1] },  // Top
+    { normal: [0, -1, 0], u: [1, 0, 0], v: [0, 0, 1] }   // Bottom
+  ]
+  
+  faces.forEach((face, faceIndex) => {
+    let particlesOnThisFace = 0
+    const targetParticlesForFace = faceIndex < 5 ? particlesPerFace : count - index // Ultima faccia prende il resto
+    
+    for (let i = 0; i < gridSize && particlesOnThisFace < targetParticlesForFace && index < count; i++) {
+      for (let j = 0; j < gridSize && particlesOnThisFace < targetParticlesForFace && index < count; j++) {
+        const u = (i / (gridSize - 1) - 0.5) * size
+        const v = (j / (gridSize - 1) - 0.5) * size
+        
+        const x = face.normal[0] * size/2 + face.u[0] * u + face.v[0] * v
+        const y = face.normal[1] * size/2 + face.u[1] * u + face.v[1] * v
+        const z = face.normal[2] * size/2 + face.u[2] * u + face.v[2] * v
+        
+        positions[index * 3] = x
+        positions[index * 3 + 1] = y
+        positions[index * 3 + 2] = z
+        index++
+        particlesOnThisFace++
+      }
+    }
+  })
+  
+  console.log(`📦 Cubo completato con ${index} particelle`)
+}' (case-sensitive)]
+
+*20:20 ReplaceVSCodeText su ParticleBackground.tsx [ParticleBackground.tsx.20250603.202033]: Ottimizzazione della funzione generateUniformTorusPositions per utilizzare perfettamente il numero calcolato di particelle in una griglia quadrata. Ora la distribuzione è matematicamente precisa e usa esattamente il numero di particelle calcolato per una griglia NxN perfetta, garantendo una rappresentazione ottimale della forma toroidale. [Dettagli: Sostituzione '// 🍩 DISTRIBUZIONE UNIFORME PER TORO (MIGLIORAMENTO 2)
+function generateUniformTorusPositions(positions: Float32Array, count: number) {
+  // DIMENSIONI FISSE corrette (erano 30/12, ora 28/10)
+  const majorRadius = 28 // Era 30, ora 28
+  const minorRadius = 10 // Era 12, ora 10
+  
+  // DENSITÀ AUMENTATA: più particelle per migliore definizione
+  const gridSize = Math.ceil(Math.sqrt(count) * 1.4) // Moltiplicato per 1.4 per più densità
+  let index = 0
+  
+  for (let i = 0; i < gridSize && index < count; i++) {
+    for (let j = 0; j < gridSize && index < count; j++) {
+      const u = (i / gridSize) * 2 * Math.PI
+      const v = (j / gridSize) * 2 * Math.PI
+      
+      const x = (majorRadius + minorRadius * Math.cos(v)) * Math.cos(u)
+      const y = (majorRadius + minorRadius * Math.cos(v)) * Math.sin(u)
+      const z = minorRadius * Math.sin(v)
+      
+      positions[index * 3] = x
+      positions[index * 3 + 1] = y
+      positions[index * 3 + 2] = z
+      index++
+    }
+  }
+}' → '// 🍩 DISTRIBUZIONE UNIFORME PER TORO (OTTIMIZZATA PER GRIGLIA QUADRATA)
+function generateUniformTorusPositions(positions: Float32Array, count: number) {
+  // DIMENSIONI FISSE corrette (erano 30/12, ora 28/10)
+  const majorRadius = 28 // Era 30, ora 28
+  const minorRadius = 10 // Era 12, ora 10
+  
+  // Calcola la griglia quadrata esatta dal numero di particelle
+  const gridSize = Math.floor(Math.sqrt(count))
+  const actualCount = gridSize * gridSize // Numero esatto che useremo
+  let index = 0
+  
+  console.log(`🍩 Toro: ${count} particelle richieste, griglia ${gridSize}x${gridSize} = ${actualCount} particelle`)
+  
+  for (let i = 0; i < gridSize && index < count; i++) {
+    for (let j = 0; j < gridSize && index < count; j++) {
+      // Parametri u e v distribuiti uniformemente
+      const u = (i / gridSize) * 2 * Math.PI // 0 to 2π per il raggio maggiore
+      const v = (j / gridSize) * 2 * Math.PI // 0 to 2π per il raggio minore
+      
+      // Equazioni parametriche del toro
+      const x = (majorRadius + minorRadius * Math.cos(v)) * Math.cos(u)
+      const y = (majorRadius + minorRadius * Math.cos(v)) * Math.sin(u)
+      const z = minorRadius * Math.sin(v)
+      
+      positions[index * 3] = x
+      positions[index * 3 + 1] = y
+      positions[index * 3 + 2] = z
+      index++
+    }
+  }
+  
+  console.log(`🍩 Toro completato con ${index} particelle`)
+}' (case-sensitive)]
+
+*20:20 ReplaceVSCodeText su ParticleBackground.tsx [ParticleBackground.tsx.20250603.202045]: Aggiornamento del loop di animazione per utilizzare il nuovo sistema di conteggio particelle dinamico. Ora il morphing continuo del blob nella sezione pricing usa il numero corretto di particelle specifico per quella forma, garantendo coerenza visiva e performance ottimali. [Dettagli: Sostituzione '        // 🌊 MORPHING CONTINUO per la figura dinamica nella sezione PRICING (ORIGINALE)
+        if (particleSystem.currentShape === 'pricing') {
+          const currentTime = Date.now() - particleSystem.startTime
+          const positions = particleSystem.geometry.attributes.position.array as Float32Array
+          const count = positions.length / 3
+          
+          generateMorphingBlobPositions(positions, count, currentTime) // DIMENSIONI FISSE
+          particleSystem.geometry.attributes.position.needsUpdate = true
+        }' → '        // 🌊 MORPHING CONTINUO per la figura dinamica nella sezione PRICING
+        if (particleSystem.currentShape === 'pricing') {
+          const currentTime = Date.now() - particleSystem.startTime
+          const positions = particleSystem.geometry.attributes.position.array as Float32Array
+          const count = particleSystem.currentParticleCount // Usa il conteggio corretto
+          
+          generateMorphingBlobPositions(positions, count, currentTime) // CON NUMERO OTTIMALE
+          particleSystem.geometry.attributes.position.needsUpdate = true
+        }' (case-sensitive)]
+
+*20:21 ReplaceVSCodeText su ParticleBackground.tsx [ParticleBackground.tsx.20250603.202102]: Aggiornamento della funzione handleResize per gestire correttamente il nuovo sistema di conteggio particelle specifico per forma. Ora quando la finestra viene ridimensionata, il sistema ricalcola il numero ottimale di particelle per la forma corrente e aggiorna la geometria se necessario, mantenendo sempre la qualità visiva ottimale. [Dettagli: Sostituzione '    // 📱 HANDLE RESIZE SEMPLIFICATO - solo basics, niente ricalcoli complessi
+    const handleResize = () => {
+      if (!camera || !renderer || !particleSystem) return
+      
+      camera.aspect = window.innerWidth / window.innerHeight
+      camera.updateProjectionMatrix()
+      renderer.setSize(window.innerWidth, window.innerHeight)
+      
+      // CORREZIONE: Mantieni dimensioni particelle fisse per devicePixelRatio
+      const pixelRatio = Math.min(window.devicePixelRatio || 1, 2)
+      const adjustedSize = 0.4 * pixelRatio
+      particleSystem.material.size = adjustedSize
+      
+      console.log(`📱 Resize: pixelRatio ${pixelRatio}`)
+    }' → '    // 📱 HANDLE RESIZE CON AGGIORNAMENTO CONTEGGIO PARTICELLE
+    const handleResize = () => {
+      if (!camera || !renderer || !particleSystem) return
+      
+      camera.aspect = window.innerWidth / window.innerHeight
+      camera.updateProjectionMatrix()
+      renderer.setSize(window.innerWidth, window.innerHeight)
+      
+      // CORREZIONE: Mantieni dimensioni particelle fisse per devicePixelRatio
+      const pixelRatio = Math.min(window.devicePixelRatio || 1, 2)
+      const adjustedSize = 0.4 * pixelRatio
+      particleSystem.material.size = adjustedSize
+      
+      // 🎯 RICALCOLA NUMERO OTTIMALE PER LA FORMA CORRENTE
+      const getOptimalParticleCount = (shape: string) => {
+        const baseMultiplier = Math.min(window.devicePixelRatio || 1, 2)
+        
+        switch(shape) {
+          case 'hero': return Math.floor(1800 * baseMultiplier)
+          case 'features': 
+            const torusGrid = Math.floor(45 * baseMultiplier)
+            return torusGrid * torusGrid
+          case 'packages': 
+            const faceGrid = Math.floor(18 * baseMultiplier)
+            return faceGrid * faceGrid * 6
+          case 'pricing': return Math.floor(2200 * baseMultiplier)
+          case 'demo': return Math.floor(1600 * baseMultiplier)
+          default: return Math.floor(1800 * baseMultiplier)
+        }
+      }
+      
+      const newOptimalCount = getOptimalParticleCount(particleSystem.currentShape)
+      
+      // Se il numero ottimale è cambiato, ricrea la forma con il nuovo conteggio
+      if (newOptimalCount !== particleSystem.currentParticleCount) {
+        console.log(`📱 Resize: Aggiornamento particelle ${particleSystem.currentParticleCount} → ${newOptimalCount}`)
+        morphToShape(particleSystem, particleSystem.currentShape, true) // skipAnimation = true
+      }
+      
+      console.log(`📱 Resize: pixelRatio ${pixelRatio}, particelle: ${particleSystem.currentParticleCount}`)
+    }' (case-sensitive)]
+
+*20:23 ReplaceVSCodeText su ParticleBackground.tsx [ParticleBackground.tsx.20250603.202332]: Correzione dell'errore sceneRef non definito: aggiornamento della firma della funzione morphToShape per accettare la scena come parametro e aggiornamento di tutte le chiamate alla funzione per passare il riferimento alla scena. Questo risolve l'errore di runtime dove sceneRef non era accessibile nella funzione. [Dettagli: Sostituzione '// Morphing function (NUOVO SISTEMA CON CONTEGGIO PARTICELLE SPECIFICO)
+function morphToShape(particleSystem: ParticleSystem, shape: string, skipAnimation: boolean = false) {
+  if (particleSystem.currentShape === shape && !skipAnimation) return
+  
+  console.log(`✨ Morphing da ${particleSystem.currentShape} a ${shape}`)
+  
+  // 🎯 CALCOLA NUMERO OTTIMALE PER QUESTA FORMA
+  const getOptimalParticleCount = (targetShape: string) => {
+    const baseMultiplier = Math.min(window.devicePixelRatio || 1, 2)
+    
+    switch(targetShape) {
+      case 'hero': // Sfera - numeri che danno buona distribuzione Fibonacci
+        return Math.floor(1800 * baseMultiplier)
+      
+      case 'features': // Toro - numero che si divide bene in griglia 2D
+        const torusGrid = Math.floor(45 * baseMultiplier) // 45x45 = 2025
+        return torusGrid * torusGrid
+      
+      case 'packages': // Cubo - divisibile per 6 facce, griglia quadrata per faccia
+        const faceGrid = Math.floor(18 * baseMultiplier) // 18x18 per faccia
+        return faceGrid * faceGrid * 6 // 6 facce = 1944 particelle
+      
+      case 'pricing': // Blob morfante - numero flessibile ma abbondante per dettagli
+        return Math.floor(2200 * baseMultiplier)
+      
+      case 'demo': // Icosaedro - numero che rispetta la geometria del poliedro
+        return Math.floor(1600 * baseMultiplier)
+      
+      default:
+        return Math.floor(1800 * baseMultiplier)
+    }
+  }
+  
+  const optimalCount = getOptimalParticleCount(shape)
+  console.log(`🔢 Forma ${shape}: ${optimalCount} particelle ottimali`)
+  
+  // 🔄 RICREA GEOMETRIA SE SERVE UN NUMERO DIVERSO
+  let positions: Float32Array
+  let colors: Float32Array
+  
+  if (optimalCount !== particleSystem.currentParticleCount) {
+    console.log(`🔄 Ricreando geometria: ${particleSystem.currentParticleCount} → ${optimalCount}`)
+    
+    // Ricrea geometria con nuovo numero di particelle  
+    const oldPoints = particleSystem.points
+    const oldGeometry = particleSystem.geometry
+    
+    // Crea nuova geometria
+    const newGeometry = new THREE.BufferGeometry()
+    const newPositions = new Float32Array(optimalCount * 3)
+    const newColors = new Float32Array(optimalCount * 3)
+    const newSizes = new Float32Array(optimalCount)
+    
+    // Genera dimensioni per le nuove particelle
+    generateOriginalSizes(newSizes, optimalCount)
+    
+    // Aggiorna attributi
+    newGeometry.setAttribute('position', new THREE.BufferAttribute(newPositions, 3))
+    newGeometry.setAttribute('color', new THREE.BufferAttribute(newColors, 3))
+    newGeometry.setAttribute('size', new THREE.BufferAttribute(newSizes, 1))
+    
+    // Crea nuovo oggetto Points
+    const newPoints = new THREE.Points(newGeometry, particleSystem.material)
+    newPoints.rotation.copy(oldPoints.rotation) // Mantieni rotazione
+    newPoints.scale.copy(oldPoints.scale) // Mantieni scala
+    
+    // Sostituisci nella scena
+    if (sceneRef.current) {
+      sceneRef.current.remove(oldPoints)
+      sceneRef.current.add(newPoints)
+    }
+    
+    // Aggiorna riferimenti nel sistema
+    particleSystem.geometry = newGeometry
+    particleSystem.points = newPoints
+    particleSystem.targetPositions = new Float32Array(optimalCount * 3)
+    particleSystem.colors = new Float32Array(optimalCount * 3)
+    particleSystem.currentParticleCount = optimalCount
+    
+    // Cleanup vecchia geometria
+    oldGeometry.dispose()
+    
+    positions = newPositions
+    colors = newColors
+  } else {
+    // Usa geometria esistente
+    positions = particleSystem.geometry.attributes.position.array as Float32Array
+    colors = particleSystem.geometry.attributes.color.array as Float32Array
+  }
+
+  const count = particleSystem.currentParticleCount
+
+  // Generate new target positions and colors (CON NUMERI OTTIMALI)
+  switch(shape) {
+    case 'hero':
+      generateUniformSpherePositions(particleSystem.targetPositions, count)
+      generateBlueColors(particleSystem.colors, count)
+      break
+    case 'features':
+      generateUniformTorusPositions(particleSystem.targetPositions, count)
+      generatePurpleColors(particleSystem.colors, count)
+      break
+    case 'packages':
+      generateUniformCubePositions(particleSystem.targetPositions, count)
+      generateCyanColors(particleSystem.colors, count)
+      break
+    case 'pricing':
+      generateMorphingBlobPositions(particleSystem.targetPositions, count, 0)
+      generateRainbowColors(particleSystem.colors, count)
+      particleSystem.startTime = Date.now()
+      break
+    case 'demo':
+      generateUniformIcosahedronPositions(particleSystem.targetPositions, count)
+      generateOrangeColors(particleSystem.colors, count)
+      break
+  }
+  
+  if (skipAnimation) {
+    // Update immediato senza animazione (per resize)
+    for (let i = 0; i < positions.length; i++) {
+      positions[i] = particleSystem.targetPositions[i]
+    }
+    for (let i = 0; i < colors.length; i++) {
+      colors[i] = particleSystem.colors[i]
+    }
+    
+    particleSystem.geometry.attributes.position.needsUpdate = true
+    particleSystem.geometry.attributes.color.needsUpdate = true
+    particleSystem.currentShape = shape
+    return
+  }
+  
+  // 🚀 NUOVA ESPLOSIONE VERSO L'ESTERNO - Effetto molto più spettacolare!
+  
+  // Fase 1: ESPLOSIONE - Le particelle si disperdono verso l'esterno
+  gsap.to(particleSystem.points.scale, {
+    x: 2.5,  // ESPLOSIONE! Scale aumentata invece di ridotta
+    y: 2.5,
+    z: 2.5,
+    duration: 1.0, // Durata dell'esplosione
+    ease: "power2.out",
+  })
+  
+  // Fase 2: ROTAZIONE ACCELERATA durante l'esplosione
+  gsap.to(particleSystem.points.rotation, {
+    x: particleSystem.points.rotation.x + Math.PI * 2, // Giro completo aggiuntivo
+    y: particleSystem.points.rotation.y + Math.PI * 3, // Rotazione più veloce
+    duration: 1.8, // Rotazione per tutta la durata della transizione
+    ease: "power1.inOut"
+  })
+  
+  // Fase 3: DISPERSIONE CASUALE delle particelle (effetto caos)
+  const originalPositions = [...positions] // Salva posizioni originali
+  
+  // Aggiungi dispersione casuale
+  for (let i = 0; i < positions.length; i += 3) {
+    positions[i] += (Math.random() - 0.5) * 15     // X casuale
+    positions[i + 1] += (Math.random() - 0.5) * 15 // Y casuale  
+    positions[i + 2] += (Math.random() - 0.5) * 15 // Z casuale
+  }
+  particleSystem.geometry.attributes.position.needsUpdate = true
+  
+  // Fase 4: PAUSA e poi RICOMPOSIZIONE nella nuova forma
+  gsap.delayedCall(1.2, () => {
+    // Aggiorna target positions e colori per la nuova forma
+    for (let i = 0; i < positions.length; i++) {
+      positions[i] = particleSystem.targetPositions[i]
+    }
+    for (let i = 0; i < colors.length; i++) {
+      colors[i] = particleSystem.colors[i]
+    }
+    
+    particleSystem.geometry.attributes.position.needsUpdate = true
+    particleSystem.geometry.attributes.color.needsUpdate = true
+    
+    // Fase 5: RICOMPOSIZIONE FLUIDA - ritorno alla scala normale
+    gsap.to(particleSystem.points.scale, {
+      x: 1,
+      y: 1, 
+      z: 1,
+      duration: 1.5, // Ricomposizione più lenta e fluida
+      ease: "elastic.out(1, 0.3)" // Effetto elastico per la ricomposizione
+    })
+  })
+  
+  particleSystem.currentShape = shape
+}' → '// Morphing function (NUOVO SISTEMA CON CONTEGGIO PARTICELLE SPECIFICO)
+function morphToShape(particleSystem: ParticleSystem, shape: string, scene: THREE.Scene, skipAnimation: boolean = false) {
+  if (particleSystem.currentShape === shape && !skipAnimation) return
+  
+  console.log(`✨ Morphing da ${particleSystem.currentShape} a ${shape}`)
+  
+  // 🎯 CALCOLA NUMERO OTTIMALE PER QUESTA FORMA
+  const getOptimalParticleCount = (targetShape: string) => {
+    const baseMultiplier = Math.min(window.devicePixelRatio || 1, 2)
+    
+    switch(targetShape) {
+      case 'hero': // Sfera - numeri che danno buona distribuzione Fibonacci
+        return Math.floor(1800 * baseMultiplier)
+      
+      case 'features': // Toro - numero che si divide bene in griglia 2D
+        const torusGrid = Math.floor(45 * baseMultiplier) // 45x45 = 2025
+        return torusGrid * torusGrid
+      
+      case 'packages': // Cubo - divisibile per 6 facce, griglia quadrata per faccia
+        const faceGrid = Math.floor(18 * baseMultiplier) // 18x18 per faccia
+        return faceGrid * faceGrid * 6 // 6 facce = 1944 particelle
+      
+      case 'pricing': // Blob morfante - numero flessibile ma abbondante per dettagli
+        return Math.floor(2200 * baseMultiplier)
+      
+      case 'demo': // Icosaedro - numero che rispetta la geometria del poliedro
+        return Math.floor(1600 * baseMultiplier)
+      
+      default:
+        return Math.floor(1800 * baseMultiplier)
+    }
+  }
+  
+  const optimalCount = getOptimalParticleCount(shape)
+  console.log(`🔢 Forma ${shape}: ${optimalCount} particelle ottimali`)
+  
+  // 🔄 RICREA GEOMETRIA SE SERVE UN NUMERO DIVERSO
+  let positions: Float32Array
+  let colors: Float32Array
+  
+  if (optimalCount !== particleSystem.currentParticleCount) {
+    console.log(`🔄 Ricreando geometria: ${particleSystem.currentParticleCount} → ${optimalCount}`)
+    
+    // Ricrea geometria con nuovo numero di particelle  
+    const oldPoints = particleSystem.points
+    const oldGeometry = particleSystem.geometry
+    
+    // Crea nuova geometria
+    const newGeometry = new THREE.BufferGeometry()
+    const newPositions = new Float32Array(optimalCount * 3)
+    const newColors = new Float32Array(optimalCount * 3)
+    const newSizes = new Float32Array(optimalCount)
+    
+    // Genera dimensioni per le nuove particelle
+    generateOriginalSizes(newSizes, optimalCount)
+    
+    // Aggiorna attributi
+    newGeometry.setAttribute('position', new THREE.BufferAttribute(newPositions, 3))
+    newGeometry.setAttribute('color', new THREE.BufferAttribute(newColors, 3))
+    newGeometry.setAttribute('size', new THREE.BufferAttribute(newSizes, 1))
+    
+    // Crea nuovo oggetto Points
+    const newPoints = new THREE.Points(newGeometry, particleSystem.material)
+    newPoints.rotation.copy(oldPoints.rotation) // Mantieni rotazione
+    newPoints.scale.copy(oldPoints.scale) // Mantieni scala
+    
+    // Sostituisci nella scena (CORREZIONE: usa il parametro scene)
+    scene.remove(oldPoints)
+    scene.add(newPoints)
+    
+    // Aggiorna riferimenti nel sistema
+    particleSystem.geometry = newGeometry
+    particleSystem.points = newPoints
+    particleSystem.targetPositions = new Float32Array(optimalCount * 3)
+    particleSystem.colors = new Float32Array(optimalCount * 3)
+    particleSystem.currentParticleCount = optimalCount
+    
+    // Cleanup vecchia geometria
+    oldGeometry.dispose()
+    
+    positions = newPositions
+    colors = newColors
+  } else {
+    // Usa geometria esistente
+    positions = particleSystem.geometry.attributes.position.array as Float32Array
+    colors = particleSystem.geometry.attributes.color.array as Float32Array
+  }
+
+  const count = particleSystem.currentParticleCount
+
+  // Generate new target positions and colors (CON NUMERI OTTIMALI)
+  switch(shape) {
+    case 'hero':
+      generateUniformSpherePositions(particleSystem.targetPositions, count)
+      generateBlueColors(particleSystem.colors, count)
+      break
+    case 'features':
+      generateUniformTorusPositions(particleSystem.targetPositions, count)
+      generatePurpleColors(particleSystem.colors, count)
+      break
+    case 'packages':
+      generateUniformCubePositions(particleSystem.targetPositions, count)
+      generateCyanColors(particleSystem.colors, count)
+      break
+    case 'pricing':
+      generateMorphingBlobPositions(particleSystem.targetPositions, count, 0)
+      generateRainbowColors(particleSystem.colors, count)
+      particleSystem.startTime = Date.now()
+      break
+    case 'demo':
+      generateUniformIcosahedronPositions(particleSystem.targetPositions, count)
+      generateOrangeColors(particleSystem.colors, count)
+      break
+  }
+  
+  if (skipAnimation) {
+    // Update immediato senza animazione (per resize)
+    for (let i = 0; i < positions.length; i++) {
+      positions[i] = particleSystem.targetPositions[i]
+    }
+    for (let i = 0; i < colors.length; i++) {
+      colors[i] = particleSystem.colors[i]
+    }
+    
+    particleSystem.geometry.attributes.position.needsUpdate = true
+    particleSystem.geometry.attributes.color.needsUpdate = true
+    particleSystem.currentShape = shape
+    return
+  }
+  
+  // 🚀 NUOVA ESPLOSIONE VERSO L'ESTERNO - Effetto molto più spettacolare!
+  
+  // Fase 1: ESPLOSIONE - Le particelle si disperdono verso l'esterno
+  gsap.to(particleSystem.points.scale, {
+    x: 2.5,  // ESPLOSIONE! Scale aumentata invece di ridotta
+    y: 2.5,
+    z: 2.5,
+    duration: 1.0, // Durata dell'esplosione
+    ease: "power2.out",
+  })
+  
+  // Fase 2: ROTAZIONE ACCELERATA durante l'esplosione
+  gsap.to(particleSystem.points.rotation, {
+    x: particleSystem.points.rotation.x + Math.PI * 2, // Giro completo aggiuntivo
+    y: particleSystem.points.rotation.y + Math.PI * 3, // Rotazione più veloce
+    duration: 1.8, // Rotazione per tutta la durata della transizione
+    ease: "power1.inOut"
+  })
+  
+  // Fase 3: DISPERSIONE CASUALE delle particelle (effetto caos)
+  const originalPositions = [...positions] // Salva posizioni originali
+  
+  // Aggiungi dispersione casuale
+  for (let i = 0; i < positions.length; i += 3) {
+    positions[i] += (Math.random() - 0.5) * 15     // X casuale
+    positions[i + 1] += (Math.random() - 0.5) * 15 // Y casuale  
+    positions[i + 2] += (Math.random() - 0.5) * 15 // Z casuale
+  }
+  particleSystem.geometry.attributes.position.needsUpdate = true
+  
+  // Fase 4: PAUSA e poi RICOMPOSIZIONE nella nuova forma
+  gsap.delayedCall(1.2, () => {
+    // Aggiorna target positions e colori per la nuova forma
+    for (let i = 0; i < positions.length; i++) {
+      positions[i] = particleSystem.targetPositions[i]
+    }
+    for (let i = 0; i < colors.length; i++) {
+      colors[i] = particleSystem.colors[i]
+    }
+    
+    particleSystem.geometry.attributes.position.needsUpdate = true
+    particleSystem.geometry.attributes.color.needsUpdate = true
+    
+    // Fase 5: RICOMPOSIZIONE FLUIDA - ritorno alla scala normale
+    gsap.to(particleSystem.points.scale, {
+      x: 1,
+      y: 1, 
+      z: 1,
+      duration: 1.5, // Ricomposizione più lenta e fluida
+      ease: "elastic.out(1, 0.3)" // Effetto elastico per la ricomposizione
+    })
+  })
+  
+  particleSystem.currentShape = shape
+}' (case-sensitive)]
+
+*20:23 ReplaceVSCodeText su ParticleBackground.tsx [ParticleBackground.tsx.20250603.202346]: Aggiornamento delle chiamate alla funzione morphToShape in setupScrollTriggers per passare il parametro scene richiesto. Questo risolve l'errore dove la funzione morphToShape richiedeva la scena come parametro ma non la riceveva nelle chiamate dai ScrollTrigger. [Dettagli: Sostituzione '// Scroll triggers setup (IDENTICO ALL'ORIGINALE)
+function setupScrollTriggers(particleSystem: ParticleSystem) {
+  if (typeof window === 'undefined') return
+  
+  const initScrollTriggers = () => {
+    if (!ScrollTrigger) {
+      setTimeout(initScrollTriggers, 100)
+      return
+    }
+    
+    console.log('🎬 Inizializzazione ScrollTriggers per morphing...')
+    
+    const sections = ['hero', 'features', 'packages', 'pricing', 'demo']
+    
+    sections.forEach((section, index) => {
+      ScrollTrigger.create({
+        trigger: `#${section}`,
+        start: "top center",
+        end: "bottom center",
+        onEnter: () => {
+          console.log(`🔄 Morphing to ${section}`)
+          morphToShape(particleSystem, section)
+        },
+        onEnterBack: () => {
+          console.log(`🔄 Morphing back to ${section}`)
+          morphToShape(particleSystem, section)
+        }
+      })
+    })
+  }
+  
+  initScrollTriggers()
+}' → '// Scroll triggers setup (AGGIORNATO per passare scene)
+function setupScrollTriggers(particleSystem: ParticleSystem, scene: THREE.Scene) {
+  if (typeof window === 'undefined') return
+  
+  const initScrollTriggers = () => {
+    if (!ScrollTrigger) {
+      setTimeout(initScrollTriggers, 100)
+      return
+    }
+    
+    console.log('🎬 Inizializzazione ScrollTriggers per morphing...')
+    
+    const sections = ['hero', 'features', 'packages', 'pricing', 'demo']
+    
+    sections.forEach((section, index) => {
+      ScrollTrigger.create({
+        trigger: `#${section}`,
+        start: "top center",
+        end: "bottom center",
+        onEnter: () => {
+          console.log(`🔄 Morphing to ${section}`)
+          morphToShape(particleSystem, section, scene)
+        },
+        onEnterBack: () => {
+          console.log(`🔄 Morphing back to ${section}`)
+          morphToShape(particleSystem, section, scene)
+        }
+      })
+    })
+  }
+  
+  initScrollTriggers()
+}' (case-sensitive)]
+
+*20:24 ReplaceVSCodeText su ParticleBackground.tsx [ParticleBackground.tsx.20250603.202408]: Aggiornamento della chiamata setupScrollTriggers nel useEffect principale per passare il parametro scene richiesto. Questo completa la correzione dell'errore sceneRef aggiornando la chiamata alla funzione setupScrollTriggers. [Dettagli: Sostituzione '    // Scroll-triggered morphing (ORIGINALE)
+    setupScrollTriggers(particleSystem)' → '    // Scroll-triggered morphing (AGGIORNATO per passare scene)
+    setupScrollTriggers(particleSystem, scene)' (case-sensitive)]
+
+*20:24 ReplaceVSCodeText su ParticleBackground.tsx [ParticleBackground.tsx.20250603.202416]: Aggiornamento della chiamata morphToShape nella funzione handleResize per passare il parametro scene richiesto. Questo completa tutte le correzioni necessarie per risolvere l'errore sceneRef non definito in tutte le chiamate alla funzione morphToShape. [Dettagli: Sostituzione '      // Se il numero ottimale è cambiato, ricrea la forma con il nuovo conteggio
+      if (newOptimalCount !== particleSystem.currentParticleCount) {
+        console.log(`📱 Resize: Aggiornamento particelle ${particleSystem.currentParticleCount} → ${newOptimalCount}`)
+        morphToShape(particleSystem, particleSystem.currentShape, true) // skipAnimation = true
+      }' → '      // Se il numero ottimale è cambiato, ricrea la forma con il nuovo conteggio
+      if (newOptimalCount !== particleSystem.currentParticleCount) {
+        console.log(`📱 Resize: Aggiornamento particelle ${particleSystem.currentParticleCount} → ${newOptimalCount}`)
+        morphToShape(particleSystem, particleSystem.currentShape, scene, true) // skipAnimation = true, passa scene
+      }' (case-sensitive)]
+
+*20:26 ReplaceVSCodeText su ParticleBackground.tsx [ParticleBackground.tsx.20250603.202656]: Miglioramento drammatico dell'effetto esplosione per renderlo molto più visibile e spettacolare. Aumentata la scala dell'esplosione da 2.5x a 4.0x, aumentate le durate delle fasi, aggiunta dispersione più ampia e drammatica, migliorata la rotazione con multiple direzioni, e aggiunto un effetto di 'shake' alle particelle durante l'esplosione per massimizzare l'impatto visivo. [Dettagli: Sostituzione '  // 🚀 NUOVA ESPLOSIONE VERSO L'ESTERNO - Effetto molto più spettacolare!
+  
+  // Fase 1: ESPLOSIONE - Le particelle si disperdono verso l'esterno
+  gsap.to(particleSystem.points.scale, {
+    x: 2.5,  // ESPLOSIONE! Scale aumentata invece di ridotta
+    y: 2.5,
+    z: 2.5,
+    duration: 1.0, // Durata dell'esplosione
+    ease: "power2.out",
+  })
+  
+  // Fase 2: ROTAZIONE ACCELERATA durante l'esplosione
+  gsap.to(particleSystem.points.rotation, {
+    x: particleSystem.points.rotation.x + Math.PI * 2, // Giro completo aggiuntivo
+    y: particleSystem.points.rotation.y + Math.PI * 3, // Rotazione più veloce
+    duration: 1.8, // Rotazione per tutta la durata della transizione
+    ease: "power1.inOut"
+  })
+  
+  // Fase 3: DISPERSIONE CASUALE delle particelle (effetto caos)
+  const originalPositions = [...positions] // Salva posizioni originali
+  
+  // Aggiungi dispersione casuale
+  for (let i = 0; i < positions.length; i += 3) {
+    positions[i] += (Math.random() - 0.5) * 15     // X casuale
+    positions[i + 1] += (Math.random() - 0.5) * 15 // Y casuale  
+    positions[i + 2] += (Math.random() - 0.5) * 15 // Z casuale
+  }
+  particleSystem.geometry.attributes.position.needsUpdate = true
+  
+  // Fase 4: PAUSA e poi RICOMPOSIZIONE nella nuova forma
+  gsap.delayedCall(1.2, () => {
+    // Aggiorna target positions e colori per la nuova forma
+    for (let i = 0; i < positions.length; i++) {
+      positions[i] = particleSystem.targetPositions[i]
+    }
+    for (let i = 0; i < colors.length; i++) {
+      colors[i] = particleSystem.colors[i]
+    }
+    
+    particleSystem.geometry.attributes.position.needsUpdate = true
+    particleSystem.geometry.attributes.color.needsUpdate = true
+    
+    // Fase 5: RICOMPOSIZIONE FLUIDA - ritorno alla scala normale
+    gsap.to(particleSystem.points.scale, {
+      x: 1,
+      y: 1, 
+      z: 1,
+      duration: 1.5, // Ricomposizione più lenta e fluida
+      ease: "elastic.out(1, 0.3)" // Effetto elastico per la ricomposizione
+    })
+  })
+  
+  particleSystem.currentShape = shape' → '  // 🚀🚀🚀 ESPLOSIONE MEGA-SPETTACOLARE! - Effetto DRAMMATICAMENTE AUMENTATO!
+  
+  console.log(`💥 INIZIANDO ESPLOSIONE SPETTACOLARE per ${shape}!`)
+  
+  // Fase 1: MEGA-ESPLOSIONE - Le particelle ESPLODONO violentemente verso l'esterno
+  gsap.to(particleSystem.points.scale, {
+    x: 4.0,  // MEGA-ESPLOSIONE! Da 2.5 a 4.0 per effetto DRAMMATICO
+    y: 4.0,
+    z: 4.0,
+    duration: 1.5, // Durata aumentata da 1.0 a 1.5 per essere più visibile
+    ease: "power3.out", // Easing più drammatico
+    onStart: () => console.log('🚀 ESPLOSIONE INIZIATA!'),
+    onComplete: () => console.log('💥 ESPLOSIONE COMPLETATA!')
+  })
+  
+  // Fase 2: ROTAZIONE ULTRA-ACCELERATA durante l'esplosione
+  gsap.to(particleSystem.points.rotation, {
+    x: particleSystem.points.rotation.x + Math.PI * 4, // 4 giri completi! (era 2)
+    y: particleSystem.points.rotation.y + Math.PI * 5, // 5 giri! (era 3)
+    z: particleSystem.points.rotation.z + Math.PI * 2, // Aggiungiamo anche rotazione Z!
+    duration: 2.5, // Durata aumentata da 1.8 a 2.5 per rotazione più visibile
+    ease: "power2.inOut"
+  })
+  
+  // Fase 2.5: EFFETTO SHAKE/VIBRAZIONE durante l'esplosione (NUOVO!)
+  gsap.to(particleSystem.points.position, {
+    x: "+=0.5",
+    y: "+=0.3", 
+    z: "+=0.4",
+    duration: 0.1,
+    repeat: 15, // 15 ripetizioni per effetto shake
+    yoyo: true,
+    ease: "power2.inOut"
+  })
+  
+  // Fase 3: DISPERSIONE CASUALE MEGA-AMPLIFICATA (effetto caos ESTREMO)
+  const originalPositions = [...positions] // Salva posizioni originali
+  
+  // Aggiungi dispersione casuale MOLTO PIÙ AMPIA
+  for (let i = 0; i < positions.length; i += 3) {
+    const explosionStrength = 30 // Era 15, ora 30 per dispersione DOPPIA
+    positions[i] += (Math.random() - 0.5) * explosionStrength     // X casuale AMPLIFICATO
+    positions[i + 1] += (Math.random() - 0.5) * explosionStrength // Y casuale AMPLIFICATO  
+    positions[i + 2] += (Math.random() - 0.5) * explosionStrength // Z casuale AMPLIFICATO
+  }
+  particleSystem.geometry.attributes.position.needsUpdate = true
+  
+  console.log('🌪️ DISPERSIONE CAOTICA APPLICATA!')
+  
+  // Fase 4: PAUSA DRAMMATICA e poi RICOMPOSIZIONE nella nuova forma
+  gsap.delayedCall(1.8, () => { // Pausa aumentata da 1.2 a 1.8 secondi
+    console.log(`🎨 INIZIANDO RICOMPOSIZIONE in ${shape}...`)
+    
+    // Aggiorna target positions e colori per la nuova forma
+    for (let i = 0; i < positions.length; i++) {
+      positions[i] = particleSystem.targetPositions[i]
+    }
+    for (let i = 0; i < colors.length; i++) {
+      colors[i] = particleSystem.colors[i]
+    }
+    
+    particleSystem.geometry.attributes.position.needsUpdate = true
+    particleSystem.geometry.attributes.color.needsUpdate = true
+    
+    // Fase 5: RICOMPOSIZIONE ULTRA-FLUIDA - ritorno alla scala normale
+    gsap.to(particleSystem.points.scale, {
+      x: 1,
+      y: 1, 
+      z: 1,
+      duration: 2.0, // Durata aumentata da 1.5 a 2.0 per transizione più visibile
+      ease: "elastic.out(1, 0.5)", // Elasticità aumentata per effetto più pronunciato
+      onComplete: () => {
+        console.log(`✅ RICOMPOSIZIONE COMPLETATA! Ora in forma: ${shape}`)
+        // Reset posizione dopo shake
+        gsap.set(particleSystem.points.position, { x: 0, y: 0, z: 0 })
+      }
+    })
+  })
+  
+  particleSystem.currentShape = shape' (case-sensitive)]
+
+*20:28 ReplaceVSCodeText su ParticleBackground.tsx [ParticleBackground.tsx.20250603.202825]: Correzione del problema dei colori durante l'esplosione: ora i colori originali vengono mantenuti durante tutta l'esplosione e vengono cambiati gradualmente solo durante la fase di ricomposizione. Aggiunta anche una temporanea aumentata luminosità durante l'esplosione per mantenerle ben visibili. I colori ora transizionano dolcemente verso i nuovi colori solo quando le particelle iniziano a ricomporsi nella nuova forma. [Dettagli: Sostituzione '  // 🚀🚀🚀 ESPLOSIONE MEGA-SPETTACOLARE! - Effetto DRAMMATICAMENTE AUMENTATO!
+  
+  console.log(`💥 INIZIANDO ESPLOSIONE SPETTACOLARE per ${shape}!`)
+  
+  // Fase 1: MEGA-ESPLOSIONE - Le particelle ESPLODONO violentemente verso l'esterno
+  gsap.to(particleSystem.points.scale, {
+    x: 4.0,  // MEGA-ESPLOSIONE! Da 2.5 a 4.0 per effetto DRAMMATICO
+    y: 4.0,
+    z: 4.0,
+    duration: 1.5, // Durata aumentata da 1.0 a 1.5 per essere più visibile
+    ease: "power3.out", // Easing più drammatico
+    onStart: () => console.log('🚀 ESPLOSIONE INIZIATA!'),
+    onComplete: () => console.log('💥 ESPLOSIONE COMPLETATA!')
+  })
+  
+  // Fase 2: ROTAZIONE ULTRA-ACCELERATA durante l'esplosione
+  gsap.to(particleSystem.points.rotation, {
+    x: particleSystem.points.rotation.x + Math.PI * 4, // 4 giri completi! (era 2)
+    y: particleSystem.points.rotation.y + Math.PI * 5, // 5 giri! (era 3)
+    z: particleSystem.points.rotation.z + Math.PI * 2, // Aggiungiamo anche rotazione Z!
+    duration: 2.5, // Durata aumentata da 1.8 a 2.5 per rotazione più visibile
+    ease: "power2.inOut"
+  })
+  
+  // Fase 2.5: EFFETTO SHAKE/VIBRAZIONE durante l'esplosione (NUOVO!)
+  gsap.to(particleSystem.points.position, {
+    x: "+=0.5",
+    y: "+=0.3", 
+    z: "+=0.4",
+    duration: 0.1,
+    repeat: 15, // 15 ripetizioni per effetto shake
+    yoyo: true,
+    ease: "power2.inOut"
+  })
+  
+  // Fase 3: DISPERSIONE CASUALE MEGA-AMPLIFICATA (effetto caos ESTREMO)
+  const originalPositions = [...positions] // Salva posizioni originali
+  
+  // Aggiungi dispersione casuale MOLTO PIÙ AMPIA
+  for (let i = 0; i < positions.length; i += 3) {
+    const explosionStrength = 30 // Era 15, ora 30 per dispersione DOPPIA
+    positions[i] += (Math.random() - 0.5) * explosionStrength     // X casuale AMPLIFICATO
+    positions[i + 1] += (Math.random() - 0.5) * explosionStrength // Y casuale AMPLIFICATO  
+    positions[i + 2] += (Math.random() - 0.5) * explosionStrength // Z casuale AMPLIFICATO
+  }
+  particleSystem.geometry.attributes.position.needsUpdate = true
+  
+  console.log('🌪️ DISPERSIONE CAOTICA APPLICATA!')
+  
+  // Fase 4: PAUSA DRAMMATICA e poi RICOMPOSIZIONE nella nuova forma
+  gsap.delayedCall(1.8, () => { // Pausa aumentata da 1.2 a 1.8 secondi
+    console.log(`🎨 INIZIANDO RICOMPOSIZIONE in ${shape}...`)
+    
+    // Aggiorna target positions e colori per la nuova forma
+    for (let i = 0; i < positions.length; i++) {
+      positions[i] = particleSystem.targetPositions[i]
+    }
+    for (let i = 0; i < colors.length; i++) {
+      colors[i] = particleSystem.colors[i]
+    }
+    
+    particleSystem.geometry.attributes.position.needsUpdate = true
+    particleSystem.geometry.attributes.color.needsUpdate = true
+    
+    // Fase 5: RICOMPOSIZIONE ULTRA-FLUIDA - ritorno alla scala normale
+    gsap.to(particleSystem.points.scale, {
+      x: 1,
+      y: 1, 
+      z: 1,
+      duration: 2.0, // Durata aumentata da 1.5 a 2.0 per transizione più visibile
+      ease: "elastic.out(1, 0.5)", // Elasticità aumentata per effetto più pronunciato
+      onComplete: () => {
+        console.log(`✅ RICOMPOSIZIONE COMPLETATA! Ora in forma: ${shape}`)
+        // Reset posizione dopo shake
+        gsap.set(particleSystem.points.position, { x: 0, y: 0, z: 0 })
+      }
+    })
+  })
+  
+  particleSystem.currentShape = shape' → '  // 🚀🚀🚀 ESPLOSIONE MEGA-SPETTACOLARE! - Effetto DRAMMATICAMENTE AUMENTATO!
+  
+  console.log(`💥 INIZIANDO ESPLOSIONE SPETTACOLARE per ${shape}!`)
+  
+  // 🎨 SALVA I COLORI ORIGINALI per mantenerli durante l'esplosione
+  const originalColors = new Float32Array(colors)
+  
+  // 💡 AUMENTA TEMPORANEAMENTE LA LUMINOSITÀ durante l'esplosione
+  gsap.to(particleSystem.material, {
+    opacity: 1.0, // Aumenta opacità da 0.9 a 1.0 durante esplosione
+    duration: 1.5,
+    ease: "power2.out"
+  })
+  
+  // Fase 1: MEGA-ESPLOSIONE - Le particelle ESPLODONO violentemente verso l'esterno
+  gsap.to(particleSystem.points.scale, {
+    x: 4.0,  // MEGA-ESPLOSIONE! Da 2.5 a 4.0 per effetto DRAMMATICO
+    y: 4.0,
+    z: 4.0,
+    duration: 1.5, // Durata aumentata da 1.0 a 1.5 per essere più visibile
+    ease: "power3.out", // Easing più drammatico
+    onStart: () => console.log('🚀 ESPLOSIONE INIZIATA!'),
+    onComplete: () => console.log('💥 ESPLOSIONE COMPLETATA!')
+  })
+  
+  // Fase 2: ROTAZIONE ULTRA-ACCELERATA durante l'esplosione
+  gsap.to(particleSystem.points.rotation, {
+    x: particleSystem.points.rotation.x + Math.PI * 4, // 4 giri completi! (era 2)
+    y: particleSystem.points.rotation.y + Math.PI * 5, // 5 giri! (era 3)
+    z: particleSystem.points.rotation.z + Math.PI * 2, // Aggiungiamo anche rotazione Z!
+    duration: 2.5, // Durata aumentata da 1.8 a 2.5 per rotazione più visibile
+    ease: "power2.inOut"
+  })
+  
+  // Fase 2.5: EFFETTO SHAKE/VIBRAZIONE durante l'esplosione (NUOVO!)
+  gsap.to(particleSystem.points.position, {
+    x: "+=0.5",
+    y: "+=0.3", 
+    z: "+=0.4",
+    duration: 0.1,
+    repeat: 15, // 15 ripetizioni per effetto shake
+    yoyo: true,
+    ease: "power2.inOut"
+  })
+  
+  // Fase 3: DISPERSIONE CASUALE MEGA-AMPLIFICATA (effetto caos ESTREMO)
+  const originalPositions = [...positions] // Salva posizioni originali
+  
+  // Aggiungi dispersione casuale MOLTO PIÙ AMPIA
+  for (let i = 0; i < positions.length; i += 3) {
+    const explosionStrength = 30 // Era 15, ora 30 per dispersione DOPPIA
+    positions[i] += (Math.random() - 0.5) * explosionStrength     // X casuale AMPLIFICATO
+    positions[i + 1] += (Math.random() - 0.5) * explosionStrength // Y casuale AMPLIFICATO  
+    positions[i + 2] += (Math.random() - 0.5) * explosionStrength // Z casuale AMPLIFICATO
+  }
+  particleSystem.geometry.attributes.position.needsUpdate = true
+  
+  console.log('🌪️ DISPERSIONE CAOTICA APPLICATA!')
+  
+  // Fase 4: PAUSA DRAMMATICA e poi RICOMPOSIZIONE nella nuova forma
+  gsap.delayedCall(1.8, () => { // Pausa aumentata da 1.2 a 1.8 secondi
+    console.log(`🎨 INIZIANDO RICOMPOSIZIONE in ${shape}...`)
+    
+    // 📍 AGGIORNA SOLO LE POSIZIONI (non i colori ancora!)
+    for (let i = 0; i < positions.length; i++) {
+      positions[i] = particleSystem.targetPositions[i]
+    }
+    particleSystem.geometry.attributes.position.needsUpdate = true
+    
+    // Fase 5: RICOMPOSIZIONE ULTRA-FLUIDA - ritorno alla scala normale
+    gsap.to(particleSystem.points.scale, {
+      x: 1,
+      y: 1, 
+      z: 1,
+      duration: 2.0, // Durata aumentata da 1.5 a 2.0 per transizione più visibile
+      ease: "elastic.out(1, 0.5)", // Elasticità aumentata per effetto più pronunciato
+      onComplete: () => {
+        console.log(`✅ RICOMPOSIZIONE COMPLETATA! Ora in forma: ${shape}`)
+        // Reset posizione dopo shake
+        gsap.set(particleSystem.points.position, { x: 0, y: 0, z: 0 })
+      }
+    })
+    
+    // 🎨 TRANSIZIONE GRADUALE DEI COLORI durante la ricomposizione (NON durante l'esplosione!)
+    gsap.to({}, {
+      duration: 2.0, // Stessa durata della ricomposizione
+      ease: "power2.inOut",
+      onUpdate: function() {
+        const progress = this.progress()
+        // Interpola gradualmente dai colori originali ai nuovi colori
+        for (let i = 0; i < colors.length; i++) {
+          colors[i] = originalColors[i] + (particleSystem.colors[i] - originalColors[i]) * progress
+        }
+        particleSystem.geometry.attributes.color.needsUpdate = true
+      },
+      onComplete: () => {
+        // Assicurati che i colori finali siano corretti
+        for (let i = 0; i < colors.length; i++) {
+          colors[i] = particleSystem.colors[i]
+        }
+        particleSystem.geometry.attributes.color.needsUpdate = true
+        console.log(`🌈 TRANSIZIONE COLORI COMPLETATA per ${shape}!`)
+      }
+    })
+    
+    // 💡 RITORNA OPACITÀ NORMALE
+    gsap.to(particleSystem.material, {
+      opacity: 0.9, // Ritorna all'opacità normale
+      duration: 2.0,
+      ease: "power2.inOut"
+    })
+  })
+  
+  particleSystem.currentShape = shape' (case-sensitive)]
+
+*20:30 ReplaceVSCodeText su ParticleBackground.tsx [ParticleBackground.tsx.20250603.203008]: Correzione critica del problema dei colori neri durante l'esplosione: quando si ricrea la geometria con un numero diverso di particelle, ora i nuovi colori vengono inizializzati con i colori correnti della forma attuale invece di rimanere vuoti (neri). Questo risolve definitivamente il problema dei colori neri durante le transizioni quando cambia il numero di particelle tra le forme. [Dettagli: Sostituzione '  if (optimalCount !== particleSystem.currentParticleCount) {
+    console.log(`🔄 Ricreando geometria: ${particleSystem.currentParticleCount} → ${optimalCount}`)
+    
+    // Ricrea geometria con nuovo numero di particelle  
+    const oldPoints = particleSystem.points
+    const oldGeometry = particleSystem.geometry
+    
+    // Crea nuova geometria
+    const newGeometry = new THREE.BufferGeometry()
+    const newPositions = new Float32Array(optimalCount * 3)
+    const newColors = new Float32Array(optimalCount * 3)
+    const newSizes = new Float32Array(optimalCount)
+    
+    // Genera dimensioni per le nuove particelle
+    generateOriginalSizes(newSizes, optimalCount)
+    
+    // Aggiorna attributi
+    newGeometry.setAttribute('position', new THREE.BufferAttribute(newPositions, 3))
+    newGeometry.setAttribute('color', new THREE.BufferAttribute(newColors, 3))
+    newGeometry.setAttribute('size', new THREE.BufferAttribute(newSizes, 1))
+    
+    // Crea nuovo oggetto Points
+    const newPoints = new THREE.Points(newGeometry, particleSystem.material)
+    newPoints.rotation.copy(oldPoints.rotation) // Mantieni rotazione
+    newPoints.scale.copy(oldPoints.scale) // Mantieni scala
+    
+    // Sostituisci nella scena (CORREZIONE: usa il parametro scene)
+    scene.remove(oldPoints)
+    scene.add(newPoints)
+    
+    // Aggiorna riferimenti nel sistema
+    particleSystem.geometry = newGeometry
+    particleSystem.points = newPoints
+    particleSystem.targetPositions = new Float32Array(optimalCount * 3)
+    particleSystem.colors = new Float32Array(optimalCount * 3)
+    particleSystem.currentParticleCount = optimalCount
+    
+    // Cleanup vecchia geometria
+    oldGeometry.dispose()
+    
+    positions = newPositions
+    colors = newColors
+  } else {
+    // Usa geometria esistente
+    positions = particleSystem.geometry.attributes.position.array as Float32Array
+    colors = particleSystem.geometry.attributes.color.array as Float32Array
+  }' → '  if (optimalCount !== particleSystem.currentParticleCount) {
+    console.log(`🔄 Ricreando geometria: ${particleSystem.currentParticleCount} → ${optimalCount}`)
+    
+    // 🎨 SALVA I COLORI CORRENTI prima di ricreare la geometria
+    const currentColors = particleSystem.geometry.attributes.color.array as Float32Array
+    
+    // Ricrea geometria con nuovo numero di particelle  
+    const oldPoints = particleSystem.points
+    const oldGeometry = particleSystem.geometry
+    
+    // Crea nuova geometria
+    const newGeometry = new THREE.BufferGeometry()
+    const newPositions = new Float32Array(optimalCount * 3)
+    const newColors = new Float32Array(optimalCount * 3)
+    const newSizes = new Float32Array(optimalCount)
+    
+    // 🎨 INIZIALIZZA I NUOVI COLORI con i colori correnti (non lasciarli neri!)
+    // Prendi la forma corrente e genera i suoi colori
+    switch(particleSystem.currentShape) {
+      case 'hero':
+        generateBlueColors(newColors, optimalCount)
+        break
+      case 'features':
+        generatePurpleColors(newColors, optimalCount)
+        break
+      case 'packages':
+        generateCyanColors(newColors, optimalCount)
+        break
+      case 'pricing':
+        generateRainbowColors(newColors, optimalCount)
+        break
+      case 'demo':
+        generateOrangeColors(newColors, optimalCount)
+        break
+      default:
+        generateBlueColors(newColors, optimalCount)
+    }
+    
+    console.log(`🎨 Colori inizializzati per forma corrente: ${particleSystem.currentShape}`)
+    
+    // Genera dimensioni e posizioni per le nuove particelle
+    generateOriginalSizes(newSizes, optimalCount)
+    
+    // Inizializza posizioni con la forma corrente
+    switch(particleSystem.currentShape) {
+      case 'hero':
+        generateUniformSpherePositions(newPositions, optimalCount)
+        break
+      case 'features':
+        generateUniformTorusPositions(newPositions, optimalCount)
+        break
+      case 'packages':
+        generateUniformCubePositions(newPositions, optimalCount)
+        break
+      case 'pricing':
+        generateMorphingBlobPositions(newPositions, optimalCount, 0)
+        break
+      case 'demo':
+        generateUniformIcosahedronPositions(newPositions, optimalCount)
+        break
+      default:
+        generateUniformSpherePositions(newPositions, optimalCount)
+    }
+    
+    // Aggiorna attributi con colori CORRETTI
+    newGeometry.setAttribute('position', new THREE.BufferAttribute(newPositions, 3))
+    newGeometry.setAttribute('color', new THREE.BufferAttribute(newColors, 3))
+    newGeometry.setAttribute('size', new THREE.BufferAttribute(newSizes, 1))
+    
+    // Crea nuovo oggetto Points
+    const newPoints = new THREE.Points(newGeometry, particleSystem.material)
+    newPoints.rotation.copy(oldPoints.rotation) // Mantieni rotazione
+    newPoints.scale.copy(oldPoints.scale) // Mantieni scala
+    
+    // Sostituisci nella scena (CORREZIONE: usa il parametro scene)
+    scene.remove(oldPoints)
+    scene.add(newPoints)
+    
+    // Aggiorna riferimenti nel sistema
+    particleSystem.geometry = newGeometry
+    particleSystem.points = newPoints
+    particleSystem.targetPositions = new Float32Array(optimalCount * 3)
+    particleSystem.colors = new Float32Array(optimalCount * 3)
+    particleSystem.currentParticleCount = optimalCount
+    
+    // Cleanup vecchia geometria
+    oldGeometry.dispose()
+    
+    positions = newPositions
+    colors = newColors
+    
+    console.log(`✅ Geometria ricreata con ${optimalCount} particelle e colori corretti!`)
+  } else {
+    // Usa geometria esistente
+    positions = particleSystem.geometry.attributes.position.array as Float32Array
+    colors = particleSystem.geometry.attributes.color.array as Float32Array
+  }' (case-sensitive)]
+
+*20:32 ReplaceVSCodeText su ParticleBackground.tsx [ParticleBackground.tsx.20250603.203220]: Ottimizzazione dei timing dell'esplosione per renderla 1.5 secondi più corta e meno frenetica: ridotta durata esplosione (1.5s→1.2s), rotazione più controllata (2.5s→2.0s, meno giri), shake meno violento (15→8 ripetizioni), pausa più breve (1.8s→1.1s). Durata totale ridotta da ~6.3s a ~4.8s con movimenti più fluidi e controllati. [Dettagli: Sostituzione '  // 🚀🚀🚀 ESPLOSIONE MEGA-SPETTACOLARE! - Effetto DRAMMATICAMENTE AUMENTATO!
+  
+  console.log(`💥 INIZIANDO ESPLOSIONE SPETTACOLARE per ${shape}!`)
+  
+  // 🎨 SALVA I COLORI ORIGINALI per mantenerli durante l'esplosione
+  const originalColors = new Float32Array(colors)
+  
+  // 💡 AUMENTA TEMPORANEAMENTE LA LUMINOSITÀ durante l'esplosione
+  gsap.to(particleSystem.material, {
+    opacity: 1.0, // Aumenta opacità da 0.9 a 1.0 durante esplosione
+    duration: 1.5,
+    ease: "power2.out"
+  })
+  
+  // Fase 1: MEGA-ESPLOSIONE - Le particelle ESPLODONO violentemente verso l'esterno
+  gsap.to(particleSystem.points.scale, {
+    x: 4.0,  // MEGA-ESPLOSIONE! Da 2.5 a 4.0 per effetto DRAMMATICO
+    y: 4.0,
+    z: 4.0,
+    duration: 1.5, // Durata aumentata da 1.0 a 1.5 per essere più visibile
+    ease: "power3.out", // Easing più drammatico
+    onStart: () => console.log('🚀 ESPLOSIONE INIZIATA!'),
+    onComplete: () => console.log('💥 ESPLOSIONE COMPLETATA!')
+  })
+  
+  // Fase 2: ROTAZIONE ULTRA-ACCELERATA durante l'esplosione
+  gsap.to(particleSystem.points.rotation, {
+    x: particleSystem.points.rotation.x + Math.PI * 4, // 4 giri completi! (era 2)
+    y: particleSystem.points.rotation.y + Math.PI * 5, // 5 giri! (era 3)
+    z: particleSystem.points.rotation.z + Math.PI * 2, // Aggiungiamo anche rotazione Z!
+    duration: 2.5, // Durata aumentata da 1.8 a 2.5 per rotazione più visibile
+    ease: "power2.inOut"
+  })
+  
+  // Fase 2.5: EFFETTO SHAKE/VIBRAZIONE durante l'esplosione (NUOVO!)
+  gsap.to(particleSystem.points.position, {
+    x: "+=0.5",
+    y: "+=0.3", 
+    z: "+=0.4",
+    duration: 0.1,
+    repeat: 15, // 15 ripetizioni per effetto shake
+    yoyo: true,
+    ease: "power2.inOut"
+  })
+  
+  // Fase 3: DISPERSIONE CASUALE MEGA-AMPLIFICATA (effetto caos ESTREMO)
+  const originalPositions = [...positions] // Salva posizioni originali
+  
+  // Aggiungi dispersione casuale MOLTO PIÙ AMPIA
+  for (let i = 0; i < positions.length; i += 3) {
+    const explosionStrength = 30 // Era 15, ora 30 per dispersione DOPPIA
+    positions[i] += (Math.random() - 0.5) * explosionStrength     // X casuale AMPLIFICATO
+    positions[i + 1] += (Math.random() - 0.5) * explosionStrength // Y casuale AMPLIFICATO  
+    positions[i + 2] += (Math.random() - 0.5) * explosionStrength // Z casuale AMPLIFICATO
+  }
+  particleSystem.geometry.attributes.position.needsUpdate = true
+  
+  console.log('🌪️ DISPERSIONE CAOTICA APPLICATA!')
+  
+  // Fase 4: PAUSA DRAMMATICA e poi RICOMPOSIZIONE nella nuova forma
+  gsap.delayedCall(1.8, () => { // Pausa aumentata da 1.2 a 1.8 secondi
+    console.log(`🎨 INIZIANDO RICOMPOSIZIONE in ${shape}...`)
+    
+    // 📍 AGGIORNA SOLO LE POSIZIONI (non i colori ancora!)
+    for (let i = 0; i < positions.length; i++) {
+      positions[i] = particleSystem.targetPositions[i]
+    }
+    particleSystem.geometry.attributes.position.needsUpdate = true
+    
+    // Fase 5: RICOMPOSIZIONE ULTRA-FLUIDA - ritorno alla scala normale
+    gsap.to(particleSystem.points.scale, {
+      x: 1,
+      y: 1, 
+      z: 1,
+      duration: 2.0, // Durata aumentata da 1.5 a 2.0 per transizione più visibile
+      ease: "elastic.out(1, 0.5)", // Elasticità aumentata per effetto più pronunciato
+      onComplete: () => {
+        console.log(`✅ RICOMPOSIZIONE COMPLETATA! Ora in forma: ${shape}`)
+        // Reset posizione dopo shake
+        gsap.set(particleSystem.points.position, { x: 0, y: 0, z: 0 })
+      }
+    })
+    
+    // 🎨 TRANSIZIONE GRADUALE DEI COLORI durante la ricomposizione (NON durante l'esplosione!)
+    gsap.to({}, {
+      duration: 2.0, // Stessa durata della ricomposizione
+      ease: "power2.inOut",
+      onUpdate: function() {
+        const progress = this.progress()
+        // Interpola gradualmente dai colori originali ai nuovi colori
+        for (let i = 0; i < colors.length; i++) {
+          colors[i] = originalColors[i] + (particleSystem.colors[i] - originalColors[i]) * progress
+        }
+        particleSystem.geometry.attributes.color.needsUpdate = true
+      },
+      onComplete: () => {
+        // Assicurati che i colori finali siano corretti
+        for (let i = 0; i < colors.length; i++) {
+          colors[i] = particleSystem.colors[i]
+        }
+        particleSystem.geometry.attributes.color.needsUpdate = true
+        console.log(`🌈 TRANSIZIONE COLORI COMPLETATA per ${shape}!`)
+      }
+    })
+    
+    // 💡 RITORNA OPACITÀ NORMALE
+    gsap.to(particleSystem.material, {
+      opacity: 0.9, // Ritorna all'opacità normale
+      duration: 2.0,
+      ease: "power2.inOut"
+    })
+  })
+  
+  particleSystem.currentShape = shape' → '  // 🚀🚀🚀 ESPLOSIONE SPETTACOLARE OTTIMIZZATA! - Più breve e controllata
+  
+  console.log(`💥 INIZIANDO ESPLOSIONE OTTIMIZZATA per ${shape}!`)
+  
+  // 🎨 SALVA I COLORI ORIGINALI per mantenerli durante l'esplosione
+  const originalColors = new Float32Array(colors)
+  
+  // 💡 AUMENTA TEMPORANEAMENTE LA LUMINOSITÀ durante l'esplosione
+  gsap.to(particleSystem.material, {
+    opacity: 1.0, // Aumenta opacità da 0.9 a 1.0 durante esplosione
+    duration: 1.2, // Ridotto da 1.5s a 1.2s
+    ease: "power2.out"
+  })
+  
+  // Fase 1: ESPLOSIONE CONTROLLATA - Le particelle esplodono verso l'esterno
+  gsap.to(particleSystem.points.scale, {
+    x: 4.0,  // Mantieni scala drammatica
+    y: 4.0,
+    z: 4.0,
+    duration: 1.2, // Ridotto da 1.5s a 1.2s (-0.3s)
+    ease: "power3.out",
+    onStart: () => console.log('🚀 ESPLOSIONE INIZIATA!'),
+    onComplete: () => console.log('💥 ESPLOSIONE COMPLETATA!')
+  })
+  
+  // Fase 2: ROTAZIONE CONTROLLATA durante l'esplosione (MENO VELOCE)
+  gsap.to(particleSystem.points.rotation, {
+    x: particleSystem.points.rotation.x + Math.PI * 2, // Ridotto da 4 a 2 giri
+    y: particleSystem.points.rotation.y + Math.PI * 3, // Ridotto da 5 a 3 giri  
+    z: particleSystem.points.rotation.z + Math.PI * 1, // Ridotto da 2 a 1 giro
+    duration: 2.0, // Ridotto da 2.5s a 2.0s (-0.5s)
+    ease: "power2.inOut" // Rotazione più fluida
+  })
+  
+  // Fase 2.5: SHAKE CONTROLLATO durante l'esplosione (MENO FRENETICO)
+  gsap.to(particleSystem.points.position, {
+    x: "+=0.3", // Ridotto da 0.5 a 0.3
+    y: "+=0.2", // Ridotto da 0.3 a 0.2
+    z: "+=0.25", // Ridotto da 0.4 a 0.25
+    duration: 0.15, // Leggermente più lento
+    repeat: 8, // Ridotto da 15 a 8 ripetizioni (meno frenetico)
+    yoyo: true,
+    ease: "power2.inOut"
+  })
+  
+  // Fase 3: DISPERSIONE CASUALE CONTROLLATA
+  const originalPositions = [...positions] // Salva posizioni originali
+  
+  // Aggiungi dispersione casuale più controllata
+  for (let i = 0; i < positions.length; i += 3) {
+    const explosionStrength = 25 // Ridotto da 30 a 25 per dispersione meno estrema
+    positions[i] += (Math.random() - 0.5) * explosionStrength     
+    positions[i + 1] += (Math.random() - 0.5) * explosionStrength   
+    positions[i + 2] += (Math.random() - 0.5) * explosionStrength 
+  }
+  particleSystem.geometry.attributes.position.needsUpdate = true
+  
+  console.log('🌪️ DISPERSIONE CONTROLLATA APPLICATA!')
+  
+  // Fase 4: PAUSA OTTIMIZZATA e poi RICOMPOSIZIONE nella nuova forma
+  gsap.delayedCall(1.1, () => { // Ridotto da 1.8s a 1.1s (-0.7s)
+    console.log(`🎨 INIZIANDO RICOMPOSIZIONE in ${shape}...`)
+    
+    // 📍 AGGIORNA SOLO LE POSIZIONI (non i colori ancora!)
+    for (let i = 0; i < positions.length; i++) {
+      positions[i] = particleSystem.targetPositions[i]
+    }
+    particleSystem.geometry.attributes.position.needsUpdate = true
+    
+    // Fase 5: RICOMPOSIZIONE FLUIDA - ritorno alla scala normale (MANTENUTA)
+    gsap.to(particleSystem.points.scale, {
+      x: 1,
+      y: 1, 
+      z: 1,
+      duration: 2.0, // Mantieni 2.0s per ricomposizione fluida
+      ease: "elastic.out(1, 0.4)", // Leggermente meno elastico (da 0.5 a 0.4)
+      onComplete: () => {
+        console.log(`✅ RICOMPOSIZIONE COMPLETATA! Ora in forma: ${shape}`)
+        // Reset posizione dopo shake
+        gsap.set(particleSystem.points.position, { x: 0, y: 0, z: 0 })
+      }
+    })
+    
+    // 🎨 TRANSIZIONE GRADUALE DEI COLORI durante la ricomposizione
+    gsap.to({}, {
+      duration: 2.0, // Mantieni stessa durata della ricomposizione
+      ease: "power2.inOut",
+      onUpdate: function() {
+        const progress = this.progress()
+        // Interpola gradualmente dai colori originali ai nuovi colori
+        for (let i = 0; i < colors.length; i++) {
+          colors[i] = originalColors[i] + (particleSystem.colors[i] - originalColors[i]) * progress
+        }
+        particleSystem.geometry.attributes.color.needsUpdate = true
+      },
+      onComplete: () => {
+        // Assicurati che i colori finali siano corretti
+        for (let i = 0; i < colors.length; i++) {
+          colors[i] = particleSystem.colors[i]
+        }
+        particleSystem.geometry.attributes.color.needsUpdate = true
+        console.log(`🌈 TRANSIZIONE COLORI COMPLETATA per ${shape}!`)
+      }
+    })
+    
+    // 💡 RITORNA OPACITÀ NORMALE
+    gsap.to(particleSystem.material, {
+      opacity: 0.9, // Ritorna all'opacità normale
+      duration: 2.0,
+      ease: "power2.inOut"
+    })
+  })
+  
+  particleSystem.currentShape = shape' (case-sensitive)]
+
+*20:34 ReplaceVSCodeText su ParticleBackground.tsx [ParticleBackground.tsx.20250603.203405]: Ulteriore riduzione dei timing dell'esplosione di 0.8 secondi: durata esplosione ridotta a 0.9s, rotazione a 1.5s, pausa a 0.6s. Durata totale ora è di circa 4.0 secondi invece di 4.8s. L'effetto rimane spettacolare ma molto più veloce e snappy. [Dettagli: Sostituzione '  // 🚀🚀🚀 ESPLOSIONE SPETTACOLARE OTTIMIZZATA! - Più breve e controllata
+  
+  console.log(`💥 INIZIANDO ESPLOSIONE OTTIMIZZATA per ${shape}!`)
+  
+  // 🎨 SALVA I COLORI ORIGINALI per mantenerli durante l'esplosione
+  const originalColors = new Float32Array(colors)
+  
+  // 💡 AUMENTA TEMPORANEAMENTE LA LUMINOSITÀ durante l'esplosione
+  gsap.to(particleSystem.material, {
+    opacity: 1.0, // Aumenta opacità da 0.9 a 1.0 durante esplosione
+    duration: 1.2, // Ridotto da 1.5s a 1.2s
+    ease: "power2.out"
+  })
+  
+  // Fase 1: ESPLOSIONE CONTROLLATA - Le particelle esplodono verso l'esterno
+  gsap.to(particleSystem.points.scale, {
+    x: 4.0,  // Mantieni scala drammatica
+    y: 4.0,
+    z: 4.0,
+    duration: 1.2, // Ridotto da 1.5s a 1.2s (-0.3s)
+    ease: "power3.out",
+    onStart: () => console.log('🚀 ESPLOSIONE INIZIATA!'),
+    onComplete: () => console.log('💥 ESPLOSIONE COMPLETATA!')
+  })
+  
+  // Fase 2: ROTAZIONE CONTROLLATA durante l'esplosione (MENO VELOCE)
+  gsap.to(particleSystem.points.rotation, {
+    x: particleSystem.points.rotation.x + Math.PI * 2, // Ridotto da 4 a 2 giri
+    y: particleSystem.points.rotation.y + Math.PI * 3, // Ridotto da 5 a 3 giri  
+    z: particleSystem.points.rotation.z + Math.PI * 1, // Ridotto da 2 a 1 giro
+    duration: 2.0, // Ridotto da 2.5s a 2.0s (-0.5s)
+    ease: "power2.inOut" // Rotazione più fluida
+  })
+  
+  // Fase 2.5: SHAKE CONTROLLATO durante l'esplosione (MENO FRENETICO)
+  gsap.to(particleSystem.points.position, {
+    x: "+=0.3", // Ridotto da 0.5 a 0.3
+    y: "+=0.2", // Ridotto da 0.3 a 0.2
+    z: "+=0.25", // Ridotto da 0.4 a 0.25
+    duration: 0.15, // Leggermente più lento
+    repeat: 8, // Ridotto da 15 a 8 ripetizioni (meno frenetico)
+    yoyo: true,
+    ease: "power2.inOut"
+  })
+  
+  // Fase 3: DISPERSIONE CASUALE CONTROLLATA
+  const originalPositions = [...positions] // Salva posizioni originali
+  
+  // Aggiungi dispersione casuale più controllata
+  for (let i = 0; i < positions.length; i += 3) {
+    const explosionStrength = 25 // Ridotto da 30 a 25 per dispersione meno estrema
+    positions[i] += (Math.random() - 0.5) * explosionStrength     
+    positions[i + 1] += (Math.random() - 0.5) * explosionStrength   
+    positions[i + 2] += (Math.random() - 0.5) * explosionStrength 
+  }
+  particleSystem.geometry.attributes.position.needsUpdate = true
+  
+  console.log('🌪️ DISPERSIONE CONTROLLATA APPLICATA!')
+  
+  // Fase 4: PAUSA OTTIMIZZATA e poi RICOMPOSIZIONE nella nuova forma
+  gsap.delayedCall(1.1, () => { // Ridotto da 1.8s a 1.1s (-0.7s)
+    console.log(`🎨 INIZIANDO RICOMPOSIZIONE in ${shape}...`)
+    
+    // 📍 AGGIORNA SOLO LE POSIZIONI (non i colori ancora!)
+    for (let i = 0; i < positions.length; i++) {
+      positions[i] = particleSystem.targetPositions[i]
+    }
+    particleSystem.geometry.attributes.position.needsUpdate = true
+    
+    // Fase 5: RICOMPOSIZIONE FLUIDA - ritorno alla scala normale (MANTENUTA)
+    gsap.to(particleSystem.points.scale, {
+      x: 1,
+      y: 1, 
+      z: 1,
+      duration: 2.0, // Mantieni 2.0s per ricomposizione fluida
+      ease: "elastic.out(1, 0.4)", // Leggermente meno elastico (da 0.5 a 0.4)
+      onComplete: () => {
+        console.log(`✅ RICOMPOSIZIONE COMPLETATA! Ora in forma: ${shape}`)
+        // Reset posizione dopo shake
+        gsap.set(particleSystem.points.position, { x: 0, y: 0, z: 0 })
+      }
+    })
+    
+    // 🎨 TRANSIZIONE GRADUALE DEI COLORI durante la ricomposizione
+    gsap.to({}, {
+      duration: 2.0, // Mantieni stessa durata della ricomposizione
+      ease: "power2.inOut",
+      onUpdate: function() {
+        const progress = this.progress()
+        // Interpola gradualmente dai colori originali ai nuovi colori
+        for (let i = 0; i < colors.length; i++) {
+          colors[i] = originalColors[i] + (particleSystem.colors[i] - originalColors[i]) * progress
+        }
+        particleSystem.geometry.attributes.color.needsUpdate = true
+      },
+      onComplete: () => {
+        // Assicurati che i colori finali siano corretti
+        for (let i = 0; i < colors.length; i++) {
+          colors[i] = particleSystem.colors[i]
+        }
+        particleSystem.geometry.attributes.color.needsUpdate = true
+        console.log(`🌈 TRANSIZIONE COLORI COMPLETATA per ${shape}!`)
+      }
+    })
+    
+    // 💡 RITORNA OPACITÀ NORMALE
+    gsap.to(particleSystem.material, {
+      opacity: 0.9, // Ritorna all'opacità normale
+      duration: 2.0,
+      ease: "power2.inOut"
+    })
+  })
+  
+  particleSystem.currentShape = shape' → '  // 🚀🚀🚀 ESPLOSIONE RAPIDA E CONTROLLATA! - Durata ottimizzata a 4.0s
+  
+  console.log(`💥 INIZIANDO ESPLOSIONE RAPIDA per ${shape}!`)
+  
+  // 🎨 SALVA I COLORI ORIGINALI per mantenerli durante l'esplosione
+  const originalColors = new Float32Array(colors)
+  
+  // 💡 AUMENTA TEMPORANEAMENTE LA LUMINOSITÀ durante l'esplosione
+  gsap.to(particleSystem.material, {
+    opacity: 1.0, // Aumenta opacità da 0.9 a 1.0 durante esplosione
+    duration: 0.9, // Ridotto da 1.2s a 0.9s (-0.3s)
+    ease: "power2.out"
+  })
+  
+  // Fase 1: ESPLOSIONE RAPIDA - Le particelle esplodono verso l'esterno
+  gsap.to(particleSystem.points.scale, {
+    x: 4.0,  // Mantieni scala drammatica
+    y: 4.0,
+    z: 4.0,
+    duration: 0.9, // Ridotto da 1.2s a 0.9s (-0.3s)
+    ease: "power3.out",
+    onStart: () => console.log('🚀 ESPLOSIONE INIZIATA!'),
+    onComplete: () => console.log('💥 ESPLOSIONE COMPLETATA!')
+  })
+  
+  // Fase 2: ROTAZIONE CONTROLLATA durante l'esplosione
+  gsap.to(particleSystem.points.rotation, {
+    x: particleSystem.points.rotation.x + Math.PI * 2, // Mantieni 2 giri
+    y: particleSystem.points.rotation.y + Math.PI * 3, // Mantieni 3 giri  
+    z: particleSystem.points.rotation.z + Math.PI * 1, // Mantieni 1 giro
+    duration: 1.5, // Ridotto da 2.0s a 1.5s (-0.5s)
+    ease: "power2.inOut"
+  })
+  
+  // Fase 2.5: SHAKE VELOCE durante l'esplosione
+  gsap.to(particleSystem.points.position, {
+    x: "+=0.3", 
+    y: "+=0.2", 
+    z: "+=0.25",
+    duration: 0.1, // Mantieni velocità shake
+    repeat: 6, // Ridotto da 8 a 6 ripetizioni
+    yoyo: true,
+    ease: "power2.inOut"
+  })
+  
+  // Fase 3: DISPERSIONE CASUALE CONTROLLATA
+  const originalPositions = [...positions] // Salva posizioni originali
+  
+  // Aggiungi dispersione casuale controllata
+  for (let i = 0; i < positions.length; i += 3) {
+    const explosionStrength = 25 // Mantieni 25 per dispersione controllata
+    positions[i] += (Math.random() - 0.5) * explosionStrength     
+    positions[i + 1] += (Math.random() - 0.5) * explosionStrength   
+    positions[i + 2] += (Math.random() - 0.5) * explosionStrength 
+  }
+  particleSystem.geometry.attributes.position.needsUpdate = true
+  
+  console.log('🌪️ DISPERSIONE RAPIDA APPLICATA!')
+  
+  // Fase 4: PAUSA BREVE e poi RICOMPOSIZIONE nella nuova forma
+  gsap.delayedCall(0.6, () => { // Ridotto da 1.1s a 0.6s (-0.5s) 
+    console.log(`🎨 INIZIANDO RICOMPOSIZIONE in ${shape}...`)
+    
+    // 📍 AGGIORNA SOLO LE POSIZIONI (non i colori ancora!)
+    for (let i = 0; i < positions.length; i++) {
+      positions[i] = particleSystem.targetPositions[i]
+    }
+    particleSystem.geometry.attributes.position.needsUpdate = true
+    
+    // Fase 5: RICOMPOSIZIONE FLUIDA - ritorno alla scala normale
+    gsap.to(particleSystem.points.scale, {
+      x: 1,
+      y: 1, 
+      z: 1,
+      duration: 1.8, // Ridotto da 2.0s a 1.8s (-0.2s) ma mantieni fluidità
+      ease: "elastic.out(1, 0.4)",
+      onComplete: () => {
+        console.log(`✅ RICOMPOSIZIONE COMPLETATA! Ora in forma: ${shape}`)
+        // Reset posizione dopo shake
+        gsap.set(particleSystem.points.position, { x: 0, y: 0, z: 0 })
+      }
+    })
+    
+    // 🎨 TRANSIZIONE GRADUALE DEI COLORI durante la ricomposizione
+    gsap.to({}, {
+      duration: 1.8, // Ridotto da 2.0s a 1.8s per sincronizzare
+      ease: "power2.inOut",
+      onUpdate: function() {
+        const progress = this.progress()
+        // Interpola gradualmente dai colori originali ai nuovi colori
+        for (let i = 0; i < colors.length; i++) {
+          colors[i] = originalColors[i] + (particleSystem.colors[i] - originalColors[i]) * progress
+        }
+        particleSystem.geometry.attributes.color.needsUpdate = true
+      },
+      onComplete: () => {
+        // Assicurati che i colori finali siano corretti
+        for (let i = 0; i < colors.length; i++) {
+          colors[i] = particleSystem.colors[i]
+        }
+        particleSystem.geometry.attributes.color.needsUpdate = true
+        console.log(`🌈 TRANSIZIONE COLORI COMPLETATA per ${shape}!`)
+      }
+    })
+    
+    // 💡 RITORNA OPACITÀ NORMALE
+    gsap.to(particleSystem.material, {
+      opacity: 0.9, // Ritorna all'opacità normale
+      duration: 1.8, // Sincronizzato con ricomposizione
+      ease: "power2.inOut"
+    })
+  })
+  
+  particleSystem.currentShape = shape' (case-sensitive)]
+
+*20:34 ReplaceVSCodeText su globals.css [globals.css.20250603.203433]: Aggiunta di CSS per nascondere completamente le barre di scorrimento su tutti i browser mantenendo la funzionalità di scroll. Include stili per WebKit (Chrome, Safari, Edge) e Firefox per nascondere visivamente le scrollbar senza perdere la capacità di scorrimento della pagina. [Dettagli: Sostituzione 'html,
+body {
+  max-width: 100vw;
+  overflow-x: hidden;
+}' → 'html,
+body {
+  max-width: 100vw;
+  overflow-x: hidden;
+}
+
+/* NASCONDE COMPLETAMENTE TUTTE LE BARRE DI SCORRIMENTO */
+/* Nasconde scrollbar su WebKit browsers (Chrome, Safari, Edge) */
+::-webkit-scrollbar {
+  width: 0px;
+  height: 0px;
+  background: transparent;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: transparent;
+}
+
+::-webkit-scrollbar-corner {
+  background: transparent;
+}
+
+/* Nasconde scrollbar su Firefox */
+html {
+  scrollbar-width: none; /* Firefox */
+  -ms-overflow-style: none; /* Internet Explorer 10+ */
+}
+
+/* Fallback per browser più vecchi */
+body {
+  -ms-overflow-style: none; /* IE and Edge */
+  scrollbar-width: none; /* Firefox */
+}' (case-sensitive)]
+
+*20:34 ReplaceVSCodeText su layout.tsx [layout.tsx.20250603.203440]: Rimozione della classe overflow-x-hidden dal body nel layout dato che ora la gestione delle scrollbar è completamente gestita tramite CSS globale. Questo evita duplicazioni e conflitti nelle regole CSS. [Dettagli: Sostituzione '      <body className={`${inter.className} text-white overflow-x-hidden`}>' → '      <body className={`${inter.className} text-white`}>' (case-sensitive)]
+
+*20:35 ReplaceVSCodeText su layout.tsx [layout.tsx.20250603.203516]: Correzione della sintassi del tag body nel layout.tsx per includere correttamente il children e la chiusura del tag. [Dettagli: Sostituzione '      <body className={`${inter.className} text-white`}>' → '      <body className={`${inter.className} text-white`}>
+        {children}
+      </body>' (case-sensitive)]
+
+*20:36 ReplaceVSCodeText su layout.tsx [layout.tsx.20250603.203613]: Correzione dell'errore di sintassi nel layout.tsx: rimozione della duplicazione di {children} e </body> che stava causando l'errore di compilazione. Ora la struttura JSX è corretta con html, body e children in ordine corretto. [Dettagli: Sostituzione 'export default function RootLayout({
+  children,
+}: {
+  children: React.ReactNode
+}) {
+  return (
+    <html lang="it" className="scroll-smooth">
+      <body className={`${inter.className} text-white`}>
+        {children}
+      </body>
+        {children}
+      </body>
+    </html>
+  )
+}' → 'export default function RootLayout({
+  children,
+}: {
+  children: React.ReactNode
+}) {
+  return (
+    <html lang="it" className="scroll-smooth">
+      <body className={`${inter.className} text-white`}>
+        {children}
+      </body>
+    </html>
+  )
+}' (case-sensitive)]
+
+*20:37 ReplaceVSCodeText su HeroSection.tsx [HeroSection.tsx.20250603.203729]: Rimozione di tutti gli elementi decorativi fluttuanti (floating elements) dalla HeroSection che creavano figure strane come cerchi semi-trasparenti posizionati assolutamente sullo schermo. Questi elementi non aggiungevano valore e potevano distrarre dalla visualizzazione delle particelle 3D principali. [Dettagli: Sostituzione '          {/* Floating elements for visual interest */}
+          <div className="absolute top-1/4 left-1/4 w-4 h-4 bg-primary-500/30 rounded-full floating-element"></div>
+          <div className="absolute top-1/3 right-1/4 w-6 h-6 bg-accent-500/30 rounded-full floating-element"></div>
+          <div className="absolute bottom-1/3 left-1/6 w-3 h-3 bg-secondary-500/30 rounded-full floating-element"></div>
+          <div className="absolute bottom-1/4 right-1/6 w-5 h-5 bg-success-500/30 rounded-full floating-element"></div>
+
+          {/* Background pattern overlay */}
+          <div className="absolute inset-0 opacity-5">
+            <div className="absolute inset-0" style={{
+              backgroundImage: `radial-gradient(circle at 1px 1px, white 1px, transparent 0)`,
+              backgroundSize: '50px 50px'
+            }}></div>
+          </div>
+        </div>
+      </div>
+    </section>
+  )
+}' → '          {/* Background pattern overlay */}
+          <div className="absolute inset-0 opacity-5">
+            <div className="absolute inset-0" style={{
+              backgroundImage: `radial-gradient(circle at 1px 1px, white 1px, transparent 0)`,
+              backgroundSize: '50px 50px'
+            }}></div>
+          </div>
+        </div>
+      </div>
+    </section>
+  )
+}' (case-sensitive)]
+
+*20:37 ReplaceVSCodeText su HeroSection.tsx: Rimozione degli elementi decorativi fluttuanti dalla HeroSection che creavano cerchi semi-trasparenti fastidiosi sullo schermo. [Dettagli: Sostituzione '          {/* Floating elements for visual interest */}
+          <div className="absolute top-1/4 left-1/4 w-4 h-4 bg-primary-500/30 rounded-full floating-element"></div>
+          <div className="absolute top-1/3 right-1/4 w-6 h-6 bg-accent-500/30 rounded-full floating-element"></div>
+          <div className="absolute bottom-1/3 left-1/6 w-3 h-3 bg-secondary-500/30 rounded-full floating-element"></div>
+          <div className="absolute bottom-1/4 right-1/6 w-5 h-5 bg-success-500/30 rounded-full floating-element"></div>
+
+' → '' (case-sensitive)]
+
+*20:37 ReplaceVSCodeText su HeroSection.tsx: Rimozione del primo elemento decorativo floating dalla HeroSection. [Dettagli: Sostituzione '          <div className="absolute top-1/4 left-1/4 w-4 h-4 bg-primary-500/30 rounded-full floating-element"></div>' → '' (case-sensitive)]
+
+*20:37 ReplaceVSCodeText su HeroSection.tsx [HeroSection.tsx.20250603.203748]: Rimozione del secondo elemento decorativo floating dalla HeroSection. [Dettagli: Sostituzione '          <div className="absolute top-1/3 right-1/4 w-6 h-6 bg-accent-500/30 rounded-full floating-element"></div>' → '' (case-sensitive)]
+
+*20:37 ReplaceVSCodeText su HeroSection.tsx [HeroSection.tsx.20250603.203753]: Rimozione del terzo elemento decorativo floating dalla HeroSection. [Dettagli: Sostituzione '          <div className="absolute bottom-1/3 left-1/6 w-3 h-3 bg-secondary-500/30 rounded-full floating-element"></div>' → '' (case-sensitive)]
+
+*20:37 ReplaceVSCodeText su HeroSection.tsx [HeroSection.tsx.20250603.203758]: Rimozione del quarto e ultimo elemento decorativo floating dalla HeroSection. [Dettagli: Sostituzione '          <div className="absolute bottom-1/4 right-1/6 w-5 h-5 bg-success-500/30 rounded-full floating-element"></div>' → '' (case-sensitive)]
+
+*20:38 ReplaceVSCodeText su HeroSection.tsx [HeroSection.tsx.20250603.203802]: Rimozione del commento relativo ai floating elements rimossi dalla HeroSection. [Dettagli: Sostituzione '          {/* Floating elements for visual interest */}' → '' (case-sensitive)]
+
+*20:38 ReplaceVSCodeText su animations.ts [animations.ts.20250603.203851]: Rimozione delle animazioni per i floating-element dal file animations.ts dato che questi elementi sono stati rimossi dal DOM. Questo pulisce completamente il codice da tutti i riferimenti agli elementi decorativi floating che causavano figure strane sullo schermo. [Dettagli: Sostituzione '  // Floating elements
+  gsap.utils.toArray('.floating-element').forEach((element: any, index: number) => {
+    gsap.to(element, {
+      y: "random(-20, 20)",
+      rotation: "random(-5, 5)",
+      duration: "random(3, 6)",
+      ease: "sine.inOut",
+      repeat: -1,
+      yoyo: true,
+      delay: index * 0.2
+    })
+  })
+
+  // Scroll progress indicator
+  gsap.to('.scroll-progress', {
+    scaleX: 1,
+    ease: "none",
+    scrollTrigger: {
+      trigger: "body",
+      start: "top top",
+      end: "bottom bottom",
+      scrub: true
+    }
+  })' → '  // Scroll progress indicator
+  gsap.to('.scroll-progress', {
+    scaleX: 1,
+    ease: "none",
+    scrollTrigger: {
+      trigger: "body",
+      start: "top top",
+      end: "bottom bottom",
+      scrub: true
+    }
+  })' (case-sensitive)]
+
+*20:57 ReplaceVSCodeText su ParticleBackground.tsx [ParticleBackground.tsx.20250603.205715]: Aggiornato il commento e il numero di particelle per la sezione demo da icosaedro a DNA doppia elica, aumentando il numero ottimale di particelle da 1600 a 1800 per una migliore distribuzione delle due spirali. [Dettagli: Sostituzione '        case 'demo': // Icosaedro - numero che rispetta la geometria del poliedro
+          return Math.floor(1600 * baseMultiplier)' → '        case 'demo': // 🧬 DNA Doppia Elica - numero ottimale per due spirali
+          return Math.floor(1800 * baseMultiplier)' (case-sensitive)]
+
+*20:57 ReplaceVSCodeText su ParticleBackground.tsx [ParticleBackground.tsx.20250603.205735]: Sostituita la funzione generateUniformIcosahedronPositions con la nuova funzione generateDoubleHelixPositions che crea una struttura a doppia elica DNA con due spirali intrecciate che ruotano in direzioni opposte, includendo animazione dinamica nel tempo. [Dettagli: Sostituzione '// 🔸 ICOSAEDRO con distribuzione uniforme (MIGLIORAMENTO 2)
+function generateUniformIcosahedronPositions(positions: Float32Array, count: number) {
+  const radius = 26 // FISSO - era 22-28, ora 26 fisso
+  
+  for (let i = 0; i < count; i++) {
+    // Base sferica uniforme
+    const y = 1 - (i / (count - 1)) * 2
+    const radiusAtY = Math.sqrt(1 - y * y)
+    const theta = 2 * Math.PI * i / 1.618033988749
+    
+    let x = Math.cos(theta) * radiusAtY
+    let z = Math.sin(theta) * radiusAtY
+    
+    // Deformazione icosaedrica (IDENTICA ALL'ORIGINALE)
+    const triangleFreq = 3
+    const deformation = 0.2 + Math.random() * 0.3 // ORIGINALE
+    
+    const icosaScale = 1 + deformation * (
+      Math.sin(triangleFreq * Math.atan2(y, x)) * 
+      Math.cos(triangleFreq * Math.atan2(z, Math.sqrt(x*x + y*y))) +
+      Math.sin(triangleFreq * Math.atan2(z, x)) * 
+      Math.cos(triangleFreq * Math.atan2(y, Math.sqrt(x*x + z*z)))
+    )
+    
+    positions[i * 3] = x * radius * icosaScale
+    positions[i * 3 + 1] = y * radius * icosaScale
+    positions[i * 3 + 2] = z * radius * icosaScale
+  }
+}' → '// 🧬 NUOVA! DNA DOPPIA ELICA con movimento dinamico ✨
+function generateDoubleHelixPositions(positions: Float32Array, count: number, time: number = 0) {
+  const radius = 12        // Raggio delle eliche
+  const height = 50        // Altezza totale della doppia elica  
+  const turns = 4          // Numero di giri completi
+  const helixSeparation = 4 // Distanza tra le due eliche
+  
+  // 🕰️ ROTAZIONE DINAMICA per animazione fluida
+  const timeScale = time * 0.001 // Velocità rotazione
+  const rotationOffset = timeScale * Math.PI // Rotazione nel tempo
+  
+  console.log(`🧬 DNA: Generando ${count} particelle in doppia elica (${turns} giri)`)
+  
+  for (let i = 0; i < count; i++) {
+    // Distribuisci le particelle su entrambe le eliche
+    const progress = i / count // 0 to 1
+    const t = progress * turns * 2 * Math.PI // Parametro per spirale
+    
+    // Altezza lungo l'asse Y
+    const y = (progress - 0.5) * height // Da -height/2 a +height/2
+    
+    // Alterna tra elica 1 e elica 2
+    const isFirstHelix = i % 2 === 0
+    
+    if (isFirstHelix) {
+      // 🧬 PRIMA ELICA (senso orario + rotazione dinamica)
+      const x = radius * Math.cos(t + rotationOffset)
+      const z = radius * Math.sin(t + rotationOffset) + helixSeparation/2
+      
+      positions[i * 3] = x
+      positions[i * 3 + 1] = y
+      positions[i * 3 + 2] = z
+    } else {
+      // 🧬 SECONDA ELICA (senso antiorario + rotazione dinamica + offset π)
+      const x = radius * Math.cos(-t - rotationOffset + Math.PI)
+      const z = radius * Math.sin(-t - rotationOffset + Math.PI) - helixSeparation/2
+      
+      positions[i * 3] = x
+      positions[i * 3 + 1] = y
+      positions[i * 3 + 2] = z
+    }
+  }
+}' (case-sensitive)]
+
+*20:57 ReplaceVSCodeText su ParticleBackground.tsx [ParticleBackground.tsx.20250603.205748]: Aggiunta la nuova funzione generateDNAColors che crea colori specifici per la doppia elica DNA, alternando tra verde bio-tech per la prima elica e blu tech per la seconda elica, creando un effetto visivo distintivo per le due spirali. [Dettagli: Sostituzione 'function generateOrangeColors(colors: Float32Array, count: number) {' → '// 🧬 NUOVA! Colori DNA (verde-blu bio-tech)
+function generateDNAColors(colors: Float32Array, count: number) {
+  for (let i = 0; i < count; i++) {
+    // Alterna tra due colori per le due eliche
+    const isFirstHelix = i % 2 === 0
+    
+    if (isFirstHelix) {
+      // Prima elica: Verde bio
+      colors[i * 3] = 0.1 + Math.random() * 0.2     // R (poco rosso)
+      colors[i * 3 + 1] = 0.8 + Math.random() * 0.2 // G (molto verde)
+      colors[i * 3 + 2] = 0.3 + Math.random() * 0.2 // B (medio blu)
+    } else {
+      // Seconda elica: Blu tech
+      colors[i * 3] = 0.1 + Math.random() * 0.2     // R (poco rosso)
+      colors[i * 3 + 1] = 0.4 + Math.random() * 0.3 // G (medio verde)
+      colors[i * 3 + 2] = 0.9 + Math.random() * 0.1 // B (molto blu)
+    }
+  }
+}
+
+function generateOrangeColors(colors: Float32Array, count: number) {' (case-sensitive)]
+
+*20:58 ReplaceVSCodeText su ParticleBackground.tsx [ParticleBackground.tsx.20250603.205800]: Aggiunta l'animazione continua per la doppia elica DNA nella sezione demo. Quando il sistema è nella forma 'demo', le particelle si animano continuamente seguendo i parametri della doppia elica con rotazione dinamica nel tempo, creando un effetto di spirali che ruotano in modo fluido. [Dettagli: Sostituzione '        // 🌊 MORPHING CONTINUO per la figura dinamica nella sezione PRICING
+        if (particleSystem.currentShape === 'pricing') {
+          const currentTime = Date.now() - particleSystem.startTime
+          const positions = particleSystem.geometry.attributes.position.array as Float32Array
+          const count = particleSystem.currentParticleCount // Usa il conteggio corretto
+          
+          generateMorphingBlobPositions(positions, count, currentTime) // CON NUMERO OTTIMALE
+          particleSystem.geometry.attributes.position.needsUpdate = true
+        }' → '        // 🌊 MORPHING CONTINUO per la figura dinamica nella sezione PRICING
+        if (particleSystem.currentShape === 'pricing') {
+          const currentTime = Date.now() - particleSystem.startTime
+          const positions = particleSystem.geometry.attributes.position.array as Float32Array
+          const count = particleSystem.currentParticleCount // Usa il conteggio corretto
+          
+          generateMorphingBlobPositions(positions, count, currentTime) // CON NUMERO OTTIMALE
+          particleSystem.geometry.attributes.position.needsUpdate = true
+        }
+        
+        // 🧬 ANIMAZIONE CONTINUA per DNA Doppia Elica nella sezione DEMO
+        if (particleSystem.currentShape === 'demo') {
+          const currentTime = Date.now() - particleSystem.startTime
+          const positions = particleSystem.geometry.attributes.position.array as Float32Array
+          const count = particleSystem.currentParticleCount
+          
+          generateDoubleHelixPositions(positions, count, currentTime) // NUOVA FUNZIONE!
+          particleSystem.geometry.attributes.position.needsUpdate = true
+        }' (case-sensitive)]
+
+*20:58 ReplaceVSCodeText su ParticleBackground.tsx [ParticleBackground.tsx.20250603.205807]: Ridotte significativamente le deformazioni del blob morfante nella sezione pricing. I valori di deformazione sono stati ridotti da (0.4, 0.2, 0.1) a (0.2, 0.1, 0.05), rendendo il movimento molto più sottile e delicato come richiesto, mantenendo comunque un effetto dinamico visibile. [Dettagli: Sostituzione '    // Combina tutte le onde (IDENTICO ALL'ORIGINALE)
+    const morphScale = 1 + 0.4 * wave1 + 0.2 * wave2 + 0.1 * wave3' → '    // 🎯 DEFORMAZIONI MOLTO PIÙ SOTTILI (era 0.4, 0.2, 0.1 ora 0.2, 0.1, 0.05)
+    const morphScale = 1 + 0.2 * wave1 + 0.1 * wave2 + 0.05 * wave3' (case-sensitive)]
+
+*20:58 ReplaceVSCodeText su ParticleBackground.tsx [ParticleBackground.tsx.20250603.205814]: Aggiornata la funzione morphToShape per supportare la nuova forma DNA doppia elica. Sostituiti tutti i riferimenti all'icosaedro con la doppia elica DNA, inclusa la chiamata alla funzione generateDoubleHelixPositions e generateDNAColors, con inizializzazione del timer per l'animazione continua. [Dettagli: Sostituzione '      case 'demo': // Icosaedro - numero che rispetta la geometria del poliedro
+        return Math.floor(1600 * baseMultiplier)' → '      case 'demo': // 🧬 DNA Doppia Elica - numero ottimale per distribuzione
+        return Math.floor(1800 * baseMultiplier)' (case-sensitive)]
+
+*20:58 ReplaceVSCodeText su ParticleBackground.tsx [ParticleBackground.tsx.20250603.205820]: Aggiornata l'inizializzazione della forma corrente durante la ricreazione della geometria per includere il supporto della doppia elica DNA al posto dell'icosaedro, chiamando generateDoubleHelixPositions e generateDNAColors quando la forma corrente è 'demo'. [Dettagli: Sostituzione '      case 'demo':
+        generateOrangeColors(newColors, optimalCount)
+        break' → '      case 'demo':
+        generateDNAColors(newColors, optimalCount)
+        break' (case-sensitive)]
+
+*20:58 ModifyVSCodeFileContent su ParticleBackground.tsx [ParticleBackground.tsx.20250603.205826]: Implementate due modifiche importanti al sistema particelle 3D:
+
+1. RIDOTTE LE DEFORMAZIONI DEL BLOB MORFANTE: Le deformazioni sinusoidali del blob nella sezione "pricing" sono state ridotte da valori intensi (0.4, 0.2, 0.1) a valori molto più sottili (0.2, 0.1, 0.05), rendendo il movimento più delicato e meno evidente come richiesto.
+
+2. SOSTITUITO ICOSAEDRO CON DOPPIA ELICA DNA: Creata una nuova funzione generateDoubleHelixPositions() che genera una struttura a doppia elica DNA per la sezione "demo". La doppia elica include:
+   - Due spirali intrecciate che ruotano in direzioni opposte
+   - Animazione continua con rotazione dinamica nel tempo
+   - Nuova funzione generateDNAColors() con colori bio-tech (verde-blu alternati)
+   - Parametri ottimizzati: 4 giri completi, raggio 12, altezza 50
+   - Particelle alternate tra le due eliche per effetto intrecciato perfetto
+
+Il sistema mantiene tutte le ottimizzazioni esistenti per performance e responsive design. [Dettagli: Sovrascrittura completa del contenuto (34013 caratteri)]
+
+*20:58 ReplaceVSCodeText su ParticleBackground.tsx [ParticleBackground.tsx.20250603.205827]: Aggiornata l'inizializzazione delle posizioni per la forma corrente durante la ricreazione della geometria, sostituendo generateUniformIcosahedronPositions con generateDoubleHelixPositions per supportare la nuova doppia elica DNA. [Dettagli: Sostituzione '      case 'demo':
+        generateUniformIcosahedronPositions(newPositions, optimalCount)
+        break' → '      case 'demo':
+        generateDoubleHelixPositions(newPositions, optimalCount, 0)
+        break' (case-sensitive)]
+
+*20:58 ReplaceVSCodeText su ParticleBackground.tsx: Sostituita la chiamata alla funzione generateUniformIcosahedronPositions con generateDoubleHelixPositions per supportare la nuova doppia elica DNA nel caso demo durante la ricreazione delle posizioni delle particelle. [Dettagli: Sostituzione '        generateUniformIcosahedronPositions(newPositions, optimalCount)' → '        generateDoubleHelixPositions(newPositions, optimalCount, 0)' (case-sensitive)]
+
+*20:58 ReplaceVSCodeText su ParticleBackground.tsx: Aggiornato il case 'demo' nella funzione morphToShape per utilizzare la nuova doppia elica DNA al posto dell'icosaedro, chiamando generateDoubleHelixPositions e generateDNAColors con l'inizializzazione del timer per l'animazione continua. [Dettagli: Sostituzione '    case 'demo':
+      generateUniformIcosahedronPositions(particleSystem.targetPositions, count)
+      generateOrangeColors(particleSystem.colors, count)
+      break' → '    case 'demo':
+      generateDoubleHelixPositions(particleSystem.targetPositions, count, 0)
+      generateDNAColors(particleSystem.colors, count) // 🧬 NUOVI COLORI DNA!
+      particleSystem.startTime = Date.now()
+      break' (case-sensitive)]
+
