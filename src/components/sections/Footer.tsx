@@ -267,7 +267,7 @@ export default function Footer() {
                         <span className="group-hover:translate-x-1 transition-transform duration-300">
                           {link.name}
                         </span>
-                        {link.external && (
+                        {'external' in link && link.external && (
                           <ExternalLink className="w-3 h-3 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
                         )}
                       </a>
