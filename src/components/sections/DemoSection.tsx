@@ -527,7 +527,7 @@ fs.watch('./src', (event) => {
               Pronto a trasformare il tuo workflow?
             </h3>
             <p className="text-gray-400 mb-8 text-lg">
-              Scarica il trial 48h gratuito e scopri quanto può essere potente l'automazione MCP
+              Scarica il trial 48h gratuito e scopri quanto può essere potente l&apos;automazione MCP
             </p>
             
             <div className="flex flex-col sm:flex-row gap-4 justify-center">

@@ -106,7 +106,7 @@ export default function CTASection() {
           >
             Non Perdere{' '}
             <span className="bg-gradient-to-r from-warning-400 via-primary-400 to-accent-400 bg-clip-text text-transparent">
-              l'Opportunità
+              l&apos;Opportunità
             </span>
           </motion.h2>
 

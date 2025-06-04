@@ -402,7 +402,7 @@ export default function PricingSection() {
                       <Star key={i} className="w-5 h-5 text-yellow-400 fill-current" />
                     ))}
                   </div>
-                  <p className="text-gray-300 mb-4 italic">"{testimonial.comment}"</p>
+                  <p className="text-gray-300 mb-4 italic">&quot;{testimonial.comment}&quot;</p>
                   <div>
                     <div className="font-semibold text-white">{testimonial.name}</div>
                     <div className="text-sm text-gray-400">{testimonial.role}</div>
