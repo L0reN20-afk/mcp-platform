@@ -66,7 +66,7 @@ export function setupScrollTriggers(particleSystem: ParticleSystem, scene: THREE
         
         // 🌊 PROGRESSIVE SEPARATION + MORPHING UNIFICATI
         ...(nextSection && {
-          onUpdate: (self) => {
+          onUpdate: (self: any) => {
             const progress = self.progress
             
             // Debug progress solo ogni 10%
@@ -98,7 +98,7 @@ export function setupScrollTriggers(particleSystem: ParticleSystem, scene: THREE
         
         // 🎯 GESTIONE SEZIONI SENZA NEXT (ultima sezione)
         ...(!nextSection && {
-          onUpdate: (self) => {
+          onUpdate: (self: any) => {
             const progress = self.progress
             
             // Solo progressive separation per l'ultima sezione, nessun morphing
@@ -178,7 +178,7 @@ export function setupParallaxEffects() {
           start: "top bottom",
           end: "bottom top",
           scrub: true,
-          onUpdate: (self) => {
+          onUpdate: (self: any) => {
             if (index === 0) { // Log solo per il primo elemento
               console.log(`🎮 Parallax progress: ${(self.progress * 100).toFixed(0)}%`)
             }
