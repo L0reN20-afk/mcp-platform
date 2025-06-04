@@ -27,7 +27,8 @@
     "lucide-react": "^0.290.0",
     "@supabase/supabase-js": "^2.39.0",
     "crypto-js": "^4.2.0",
-    "@types/crypto-js": "^4.2.1"
+    "@types/crypto-js": "^4.2.1",
+    "recharts": "^2.8.0"
   },
   "devDependencies": {
     "eslint": "^8.51.0",
