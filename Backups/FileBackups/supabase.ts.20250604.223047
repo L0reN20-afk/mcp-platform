@@ -300,6 +300,37 @@ export class DatabaseService {
 
     return false
   }
+}
+
+// Utility function to get client IP
+export function getClientIP(request: Request): string {
+  const forwardedFor = request.headers.get('x-forwarded-for')
+  const realIP = request.headers.get('x-real-ip')
+  
+  if (forwardedFor) {
+    return forwardedFor.split(',')[0].trim()
+  }
+  
+  if (realIP) {
+    return realIP
+  }
+  
+  return 'unknown'
+}
+
+// Utility function to get country from IP (basic implementation)
+export async function getCountryFromIP(ip: string): Promise<string> {
+  try {
+    // Using a free IP geolocation service
+    const response = await fetch(`http://ip-api.com/json/${ip}`)
+    const data = await response.json()
+    return data.country || 'Unknown'
+  } catch (error) {
+    console.error('Error getting country from IP:', error)
+    return 'Unknown'
+  }
+}
+
 
   // OAuth Email Management
   static async updateDeviceEmail(
@@ -368,34 +399,3 @@ export class DatabaseService {
       }
     }
   }
-}
-
-
-// Utility function to get client IP
-export function getClientIP(request: Request): string {
-  const forwardedFor = request.headers.get('x-forwarded-for')
-  const realIP = request.headers.get('x-real-ip')
-  
-  if (forwardedFor) {
-    return forwardedFor.split(',')[0].trim()
-  }
-  
-  if (realIP) {
-    return realIP
-  }
-  
-  return 'unknown'
-}
-
-// Utility function to get country from IP (basic implementation)
-export async function getCountryFromIP(ip: string): Promise<string> {
-  try {
-    // Using a free IP geolocation service
-    const response = await fetch(`http://ip-api.com/json/${ip}`)
-    const data = await response.json()
-    return data.country || 'Unknown'
-  } catch (error) {
-    console.error('Error getting country from IP:', error)
-    return 'Unknown'
-  }
-}

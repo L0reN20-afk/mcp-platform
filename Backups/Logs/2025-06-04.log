@@ -2174,3 +2174,521 @@ import { useTrialDownload, trackEvent } from '@/lib/hooks/useApi'' (case-sensiti
 
 *21:31 ModifyVSCodeFileContent su route.ts [route.ts.20250604.213108]: Aggiunta del metodo POST mancante all'endpoint /api/device/register per permettere la registrazione di nuovi device. Il Kill Switch stava fallendo perché cercava di fare una POST request ma l'endpoint aveva solo il metodo GET implementato. Il nuovo metodo POST crea un nuovo trial di 48 ore usando il DatabaseService e restituisce le informazioni necessarie al Kill Switch per funzionare correttamente. [Dettagli: Sovrascrittura completa del contenuto (4128 caratteri)]
 
+*22:11 ModifyVSCodeFileContent su route.ts [route.ts.20250604.221132]: Modifica dell'API backend per supportare autenticazione OAuth semplice con Google, Microsoft e Apple. Rimuove la complessità del sistema SSO Vercel e implementa un flusso di autenticazione standard con email verificate tramite OAuth. Mantiene tutta la logica di business esistente (trial 48h, device fingerprinting, monitoring) ma semplifica drasticamente l'esperienza utente con login convenzionali. [Dettagli: Sovrascrittura completa del contenuto (6011 caratteri)]
+
+*22:11 AppendToVSCodeFile su supabase.ts [supabase.ts.20250604.221145]: Aggiunta del metodo updateDeviceEmail al DatabaseService per supportare l'aggiornamento dell'email utente quando un device già registrato effettua login con OAuth. Questo permette di associare un'email verificata tramite OAuth providers (Google, Microsoft, Apple) a un device già esistente, mantenendo la continuità del trial ma migliorando il tracking dell'utente. [Dettagli: Aggiunta di 1849 caratteri alla fine del file]
+
+*22:12 ReplaceVSCodeText su database.ts [database.ts.20250604.221222]: Aggiornamento dei tipi TypeScript per supportare l'autenticazione OAuth. Aggiunti campi auth_provider e email_updated_at al tipo DeviceTrial, nuovi event types per OAuth, e aggiornamento delle interfacce di request/response per includere i dati OAuth. Aggiunge anche i tipi per le statistiche OAuth e i nuovi provider supportati (Google, Microsoft, Apple). [Dettagli: Sostituzione '// Database Types for MCP Platform
+// Definisce le interfacce TypeScript per tutte le tabelle del database Supabase
+
+export interface DeviceTrial {
+  id: string
+  device_fingerprint: string
+  email?: string
+  download_ip?: string
+  country?: string
+  first_download: string // ISO timestamp
+  trial_expires: string // ISO timestamp
+  status: 'active' | 'expired' | 'banned'
+  created_at: string // ISO timestamp
+}
+
+export interface DeviceEvent {
+  id: string
+  device_fingerprint: string
+  event_type: 'launch' | 'offline_check' | 'server_ping' | 'registration' | 'trial_check'
+  timestamp: string // ISO timestamp
+  details?: Record<string, any>
+}
+
+export interface NewsletterSubscriber {
+  id: string
+  email: string
+  subscribed_at: string // ISO timestamp
+  status: 'active' | 'unsubscribed'
+}
+
+export interface AdminAlert {
+  id: string
+  alert_type: 
+    | 'multiple_devices_same_ip' 
+    | 'clock_manipulation' 
+    | 'vm_detected'
+    | 'trial_expired'
+    | 'suspicious_behavior'
+  device_fingerprint?: string
+  details: Record<string, any>
+  severity: 'low' | 'medium' | 'high'
+  resolved: boolean
+  created_at: string // ISO timestamp
+}
+
+// API Request/Response Types
+export interface TrialDownloadRequest {
+  email?: string
+  user_agent?: string
+  referrer?: string
+}
+
+export interface TrialDownloadResponse {
+  success: boolean
+  download_url?: string
+  trial_id?: string
+  message?: string
+  error?: string
+}
+
+export interface DeviceRegisterRequest {
+  device_fingerprint: string
+  email?: string
+  user_agent?: string
+  system_info?: {
+    os: string
+    cpu: string
+    ram: string
+    [key: string]: any
+  }
+}
+
+export interface DeviceRegisterResponse {
+  success: boolean
+  trial_expires?: string
+  trial_remaining_hours?: number
+  is_new_device?: boolean
+  message?: string
+  error?: string
+}
+
+export interface TrialCheckRequest {
+  device_fingerprint: string
+}
+
+export interface TrialCheckResponse {
+  success: boolean
+  trial_valid: boolean
+  trial_expires?: string
+  trial_remaining_hours?: number
+  status?: 'active' | 'expired' | 'banned'
+  message?: string
+  error?: string
+}
+
+export interface AdminStatsResponse {
+  total_devices: number
+  active_trials: number
+  expired_trials: number
+  banned_devices: number
+  newsletter_subscribers: number
+  downloads_today: number
+  downloads_this_week: number
+  downloads_this_month: number
+  top_countries: Array<{
+    country: string
+    count: number
+  }>
+  recent_activity: DeviceEvent[]
+  alerts_unresolved: number
+}
+
+export interface DeviceInfo {
+  device_fingerprint: string
+  email?: string
+  country?: string
+  first_download: string
+  trial_expires: string
+  status: string
+  last_seen?: string
+  total_launches: number
+  ip_address?: string
+}
+
+// Utility Types
+export type DatabaseTables = 
+  | 'device_trials'
+  | 'device_events' 
+  | 'newsletter_subscribers'
+  | 'admin_alerts'
+
+export type TrialStatus = 'active' | 'expired' | 'banned'
+export type AlertSeverity = 'low' | 'medium' | 'high'
+export type EventType = 'launch' | 'offline_check' | 'server_ping' | 'registration' | 'trial_check'' → '// Database Types for MCP Platform
+// Definisce le interfacce TypeScript per tutte le tabelle del database Supabase
+
+export interface DeviceTrial {
+  id: string
+  device_fingerprint: string
+  email?: string
+  auth_provider?: 'google' | 'microsoft' | 'apple' | 'unknown'  // ← OAuth provider
+  email_updated_at?: string // ← Timestamp aggiornamento email
+  download_ip?: string
+  country?: string
+  first_download: string // ISO timestamp
+  trial_expires: string // ISO timestamp
+  status: 'active' | 'expired' | 'banned'
+  created_at: string // ISO timestamp
+}
+
+export interface DeviceEvent {
+  id: string
+  device_fingerprint: string
+  event_type: 'launch' | 'offline_check' | 'server_ping' | 'registration' | 'trial_check' | 'oauth_login' | 'email_updated'  // ← Nuovi event types
+  timestamp: string // ISO timestamp
+  details?: Record<string, any>
+}
+
+export interface NewsletterSubscriber {
+  id: string
+  email: string
+  subscribed_at: string // ISO timestamp
+  status: 'active' | 'unsubscribed'
+}
+
+export interface AdminAlert {
+  id: string
+  alert_type: 
+    | 'multiple_devices_same_ip' 
+    | 'clock_manipulation' 
+    | 'vm_detected'
+    | 'trial_expired'
+    | 'suspicious_behavior'
+    | 'oauth_login_failed'     // ← Nuovo alert type
+  device_fingerprint?: string
+  details: Record<string, any>
+  severity: 'low' | 'medium' | 'high'
+  resolved: boolean
+  created_at: string // ISO timestamp
+}
+
+// API Request/Response Types
+export interface TrialDownloadRequest {
+  email?: string
+  user_agent?: string
+  referrer?: string
+}
+
+export interface TrialDownloadResponse {
+  success: boolean
+  download_url?: string
+  trial_id?: string
+  message?: string
+  error?: string
+}
+
+export interface DeviceRegisterRequest {
+  device_fingerprint: string
+  user_email?: string           // ← OAuth email
+  auth_provider?: string        // ← OAuth provider  
+  auth_token?: string          // ← OAuth token (opzionale)
+  system_info?: {
+    os: string
+    machine_name: string
+    user_name: string
+    dotnet_version: string
+    [key: string]: any
+  }
+}
+
+export interface DeviceRegisterResponse {
+  success: boolean
+  trial_expires?: string
+  trial_remaining_hours?: number
+  user_email?: string           // ← Email utente
+  auth_provider?: string        // ← Provider OAuth  
+  is_new_device?: boolean
+  message?: string
+  error?: string
+}
+
+export interface TrialCheckRequest {
+  device_fingerprint: string
+}
+
+export interface TrialCheckResponse {
+  success: boolean
+  trial_valid: boolean
+  trial_expires?: string
+  trial_remaining_hours?: number
+  status?: 'active' | 'expired' | 'banned'
+  user_email?: string           // ← Email utente se disponibile
+  auth_provider?: string        // ← Provider OAuth se disponibile
+  message?: string
+  error?: string
+}
+
+export interface AdminStatsResponse {
+  total_devices: number
+  active_trials: number
+  expired_trials: number
+  banned_devices: number
+  newsletter_subscribers: number
+  downloads_today: number
+  downloads_this_week: number
+  downloads_this_month: number
+  // OAuth Statistics
+  total_oauth_users: number     // ← Nuove statistiche OAuth
+  google_users: number
+  microsoft_users: number  
+  apple_users: number
+  top_countries: Array<{
+    country: string
+    count: number
+  }>
+  top_oauth_providers: Array<{  // ← Top provider OAuth
+    provider: string
+    count: number
+  }>
+  recent_activity: DeviceEvent[]
+  alerts_unresolved: number
+}
+
+export interface DeviceInfo {
+  device_fingerprint: string
+  email?: string
+  auth_provider?: string        // ← Provider OAuth
+  country?: string
+  first_download: string
+  trial_expires: string
+  status: string
+  last_seen?: string
+  total_launches: number
+  ip_address?: string
+}
+
+// OAuth Types
+export interface OAuthStatsResponse {
+  totalOAuthUsers: number
+  googleUsers: number
+  microsoftUsers: number
+  appleUsers: number
+  topProviders: Array<{
+    provider: string
+    count: number
+  }>
+}
+
+// Utility Types
+export type DatabaseTables = 
+  | 'device_trials'
+  | 'device_events' 
+  | 'newsletter_subscribers'
+  | 'admin_alerts'
+
+export type TrialStatus = 'active' | 'expired' | 'banned'
+export type AlertSeverity = 'low' | 'medium' | 'high'
+export type EventType = 'launch' | 'offline_check' | 'server_ping' | 'registration' | 'trial_check' | 'oauth_login' | 'email_updated'
+export type AuthProvider = 'google' | 'microsoft' | 'apple' | 'unknown'' (case-sensitive)]
+
+*22:30 ReplaceVSCodeText su supabase.ts [supabase.ts.20250604.223047]: Correzione degli errori di sintassi nel DatabaseService. I metodi statici OAuth erano stati aggiunti fuori dalla classe, causando errori di compilazione. Li sposto all'interno della classe DatabaseService mantenendo la sintassi corretta per TypeScript. Questo risolve l'errore 'static cannot be used as an identifier in strict mode'. [Dettagli: Sostituzione '  // IP-based detection
+  static async checkSuspiciousIP(ip: string): Promise<boolean> {
+    const { data } = await supabase
+      .from('device_trials')
+      .select('device_fingerprint')
+      .eq('download_ip', ip)
+    
+    // If more than 3 different devices from same IP, flag as suspicious
+    const uniqueDevices = new Set(data?.map(d => d.device_fingerprint))
+    
+    if (uniqueDevices.size > 3) {
+      await this.createAlert(
+        'multiple_devices_same_ip',
+        undefined,
+        { ip, device_count: uniqueDevices.size },
+        'high'
+      )
+      return true
+    }
+
+    return false
+  }
+}
+
+// Utility function to get client IP
+export function getClientIP(request: Request): string {
+  const forwardedFor = request.headers.get('x-forwarded-for')
+  const realIP = request.headers.get('x-real-ip')
+  
+  if (forwardedFor) {
+    return forwardedFor.split(',')[0].trim()
+  }
+  
+  if (realIP) {
+    return realIP
+  }
+  
+  return 'unknown'
+}
+
+// Utility function to get country from IP (basic implementation)
+export async function getCountryFromIP(ip: string): Promise<string> {
+  try {
+    // Using a free IP geolocation service
+    const response = await fetch(`http://ip-api.com/json/${ip}`)
+    const data = await response.json()
+    return data.country || 'Unknown'
+  } catch (error) {
+    console.error('Error getting country from IP:', error)
+    return 'Unknown'
+  }
+}
+
+
+  // OAuth Email Management
+  static async updateDeviceEmail(
+    deviceFingerprint: string, 
+    email: string,
+    authProvider?: string
+  ): Promise<boolean> {
+    const { error } = await supabase
+      .from('device_trials')
+      .update({ 
+        email,
+        auth_provider: authProvider,
+        email_updated_at: new Date().toISOString()
+      })
+      .eq('device_fingerprint', deviceFingerprint)
+
+    if (error) {
+      console.error('Error updating device email:', error)
+      return false
+    }
+
+    return true
+  }
+
+  // OAuth Analytics
+  static async getOAuthStats(): Promise<{
+    totalOAuthUsers: number
+    googleUsers: number
+    microsoftUsers: number
+    appleUsers: number
+    topProviders: Array<{ provider: string; count: number }>
+  }> {
+    try {
+      // Get OAuth users count
+      const { data: oauthData } = await supabase
+        .from('device_trials')
+        .select('auth_provider')
+        .not('email', 'is', null)
+
+      const providerCounts: Record<string, number> = {}
+      oauthData?.forEach(item => {
+        if (item.auth_provider) {
+          providerCounts[item.auth_provider] = (providerCounts[item.auth_provider] || 0) + 1
+        }
+      })
+
+      const topProviders = Object.entries(providerCounts)
+        .map(([provider, count]) => ({ provider, count }))
+        .sort((a, b) => b.count - a.count)
+
+      return {
+        totalOAuthUsers: oauthData?.length || 0,
+        googleUsers: providerCounts['google'] || 0,
+        microsoftUsers: providerCounts['microsoft'] || 0,
+        appleUsers: providerCounts['apple'] || 0,
+        topProviders
+      }
+    } catch (error) {
+      console.error('Error fetching OAuth stats:', error)
+      return {
+        totalOAuthUsers: 0,
+        googleUsers: 0,
+        microsoftUsers: 0,
+        appleUsers: 0,
+        topProviders: []
+      }
+    }
+  }' → '  // IP-based detection
+  static async checkSuspiciousIP(ip: string): Promise<boolean> {
+    const { data } = await supabase
+      .from('device_trials')
+      .select('device_fingerprint')
+      .eq('download_ip', ip)
+    
+    // If more than 3 different devices from same IP, flag as suspicious
+    const uniqueDevices = new Set(data?.map(d => d.device_fingerprint))
+    
+    if (uniqueDevices.size > 3) {
+      await this.createAlert(
+        'multiple_devices_same_ip',
+        undefined,
+        { ip, device_count: uniqueDevices.size },
+        'high'
+      )
+      return true
+    }
+
+    return false
+  }
+
+  // OAuth Email Management
+  static async updateDeviceEmail(
+    deviceFingerprint: string, 
+    email: string,
+    authProvider?: string
+  ): Promise<boolean> {
+    const { error } = await supabase
+      .from('device_trials')
+      .update({ 
+        email,
+        auth_provider: authProvider,
+        email_updated_at: new Date().toISOString()
+      })
+      .eq('device_fingerprint', deviceFingerprint)
+
+    if (error) {
+      console.error('Error updating device email:', error)
+      return false
+    }
+
+    return true
+  }
+
+  // OAuth Analytics
+  static async getOAuthStats(): Promise<{
+    totalOAuthUsers: number
+    googleUsers: number
+    microsoftUsers: number
+    appleUsers: number
+    topProviders: Array<{ provider: string; count: number }>
+  }> {
+    try {
+      // Get OAuth users count
+      const { data: oauthData } = await supabase
+        .from('device_trials')
+        .select('auth_provider')
+        .not('email', 'is', null)
+
+      const providerCounts: Record<string, number> = {}
+      oauthData?.forEach(item => {
+        if (item.auth_provider) {
+          providerCounts[item.auth_provider] = (providerCounts[item.auth_provider] || 0) + 1
+        }
+      })
+
+      const topProviders = Object.entries(providerCounts)
+        .map(([provider, count]) => ({ provider, count }))
+        .sort((a, b) => b.count - a.count)
+
+      return {
+        totalOAuthUsers: oauthData?.length || 0,
+        googleUsers: providerCounts['google'] || 0,
+        microsoftUsers: providerCounts['microsoft'] || 0,
+        appleUsers: providerCounts['apple'] || 0,
+        topProviders
+      }
+    } catch (error) {
+      console.error('Error fetching OAuth stats:', error)
+      return {
+        totalOAuthUsers: 0,
+        googleUsers: 0,
+        microsoftUsers: 0,
+        appleUsers: 0,
+        topProviders: []
+      }
+    }
+  }
+}' (case-sensitive)]
+
+*22:31 AppendToVSCodeFile su supabase.ts [supabase.ts.20250604.223110]: Ri-aggiunta delle utility functions per gestire client IP e geolocalizzazione che erano state rimosse accidentalmente durante la correzione degli errori di sintassi. Queste funzioni sono necessarie per il corretto funzionamento del sistema di registrazione device e tracking geografico. [Dettagli: Aggiunta di 781 caratteri alla fine del file]
+

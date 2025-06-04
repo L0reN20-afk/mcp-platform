@@ -5,8 +5,6 @@ export interface DeviceTrial {
   id: string
   device_fingerprint: string
   email?: string
-  auth_provider?: 'google' | 'microsoft' | 'apple' | 'unknown'  // ← OAuth provider
-  email_updated_at?: string // ← Timestamp aggiornamento email
   download_ip?: string
   country?: string
   first_download: string // ISO timestamp
@@ -18,7 +16,7 @@ export interface DeviceTrial {
 export interface DeviceEvent {
   id: string
   device_fingerprint: string
-  event_type: 'launch' | 'offline_check' | 'server_ping' | 'registration' | 'trial_check' | 'oauth_login' | 'email_updated'  // ← Nuovi event types
+  event_type: 'launch' | 'offline_check' | 'server_ping' | 'registration' | 'trial_check'
   timestamp: string // ISO timestamp
   details?: Record<string, any>
 }
@@ -38,7 +36,6 @@ export interface AdminAlert {
     | 'vm_detected'
     | 'trial_expired'
     | 'suspicious_behavior'
-    | 'oauth_login_failed'     // ← Nuovo alert type
   device_fingerprint?: string
   details: Record<string, any>
   severity: 'low' | 'medium' | 'high'
@@ -63,14 +60,12 @@ export interface TrialDownloadResponse {
 
 export interface DeviceRegisterRequest {
   device_fingerprint: string
-  user_email?: string           // ← OAuth email
-  auth_provider?: string        // ← OAuth provider  
-  auth_token?: string          // ← OAuth token (opzionale)
+  email?: string
+  user_agent?: string
   system_info?: {
     os: string
-    machine_name: string
-    user_name: string
-    dotnet_version: string
+    cpu: string
+    ram: string
     [key: string]: any
   }
 }
@@ -79,8 +74,6 @@ export interface DeviceRegisterResponse {
   success: boolean
   trial_expires?: string
   trial_remaining_hours?: number
-  user_email?: string           // ← Email utente
-  auth_provider?: string        // ← Provider OAuth  
   is_new_device?: boolean
   message?: string
   error?: string
@@ -96,8 +89,6 @@ export interface TrialCheckResponse {
   trial_expires?: string
   trial_remaining_hours?: number
   status?: 'active' | 'expired' | 'banned'
-  user_email?: string           // ← Email utente se disponibile
-  auth_provider?: string        // ← Provider OAuth se disponibile
   message?: string
   error?: string
 }
@@ -111,17 +102,8 @@ export interface AdminStatsResponse {
   downloads_today: number
   downloads_this_week: number
   downloads_this_month: number
-  // OAuth Statistics
-  total_oauth_users: number     // ← Nuove statistiche OAuth
-  google_users: number
-  microsoft_users: number  
-  apple_users: number
   top_countries: Array<{
     country: string
-    count: number
-  }>
-  top_oauth_providers: Array<{  // ← Top provider OAuth
-    provider: string
     count: number
   }>
   recent_activity: DeviceEvent[]
@@ -131,7 +113,6 @@ export interface AdminStatsResponse {
 export interface DeviceInfo {
   device_fingerprint: string
   email?: string
-  auth_provider?: string        // ← Provider OAuth
   country?: string
   first_download: string
   trial_expires: string
@@ -139,18 +120,6 @@ export interface DeviceInfo {
   last_seen?: string
   total_launches: number
   ip_address?: string
-}
-
-// OAuth Types
-export interface OAuthStatsResponse {
-  totalOAuthUsers: number
-  googleUsers: number
-  microsoftUsers: number
-  appleUsers: number
-  topProviders: Array<{
-    provider: string
-    count: number
-  }>
 }
 
 // Utility Types
@@ -162,5 +131,4 @@ export type DatabaseTables =
 
 export type TrialStatus = 'active' | 'expired' | 'banned'
 export type AlertSeverity = 'low' | 'medium' | 'high'
-export type EventType = 'launch' | 'offline_check' | 'server_ping' | 'registration' | 'trial_check' | 'oauth_login' | 'email_updated'
-export type AuthProvider = 'google' | 'microsoft' | 'apple' | 'unknown'
+export type EventType = 'launch' | 'offline_check' | 'server_ping' | 'registration' | 'trial_check'

@@ -29,8 +29,7 @@ export async function GET(request: NextRequest) {
       trial_info: existingTrial ? {
         status: existingTrial.status,
         trial_expires: existingTrial.trial_expires,
-        created_at: existingTrial.created_at,
-        user_email: existingTrial.email
+        created_at: existingTrial.created_at
       } : null
     })
 
@@ -45,17 +44,11 @@ export async function GET(request: NextRequest) {
   }
 }
 
-// POST method per registrare device con autenticazione OAuth semplice
+// POST method per registrare un nuovo device e attivare trial 48h
 export async function POST(request: NextRequest) {
   try {
     const body = await request.json()
-    const { 
-      device_fingerprint, 
-      system_info, 
-      user_email,           // ← OAuth email (Google/Microsoft/Apple)
-      auth_provider,        // ← "google" | "microsoft" | "apple" 
-      auth_token           // ← Token OAuth verificato (opzionale per ora)
-    } = body
+    const { device_fingerprint, system_info } = body
 
     // Validazione device fingerprint
     if (!device_fingerprint || device_fingerprint.length < 10) {
@@ -65,39 +58,13 @@ export async function POST(request: NextRequest) {
       }, { status: 400 })
     }
 
-    // Validazione email OAuth (se fornita)
-    if (user_email && !isValidEmail(user_email)) {
-      return NextResponse.json({
-        success: false,
-        error: 'Email non valida'
-      }, { status: 400 })
-    }
-
     // Verifica se device già registrato
     const existingTrial = await DatabaseService.getDeviceTrial(device_fingerprint)
     if (existingTrial) {
-      // Se device esiste ma ora ha autenticazione, aggiorna email
-      if (user_email && existingTrial.email !== user_email) {
-        await DatabaseService.updateDeviceEmail(device_fingerprint, user_email, auth_provider)
-        
-        await DatabaseService.logDeviceEvent(
-          device_fingerprint,
-          'email_updated',
-          {
-            old_email: existingTrial.email,
-            new_email: user_email,
-            auth_provider,
-            timestamp: new Date().toISOString()
-          }
-        )
-      }
-
       return NextResponse.json({
         success: true,
         trial_expires: existingTrial.trial_expires,
         trial_remaining_hours: await calculateRemainingHours(existingTrial.trial_expires),
-        user_email: user_email || existingTrial.email,
-        auth_provider: auth_provider || 'unknown',
         message: 'Device già registrato'
       })
     }
@@ -109,7 +76,7 @@ export async function POST(request: NextRequest) {
     // Crea nuovo trial
     const newTrial = await DatabaseService.createDeviceTrial(
       device_fingerprint,
-      user_email,  // ← Email OAuth
+      undefined, // email opzionale
       clientIP,
       country
     )
@@ -121,7 +88,7 @@ export async function POST(request: NextRequest) {
       }, { status: 500 })
     }
 
-    // Log registrazione con info OAuth
+    // Log registrazione
     await DatabaseService.logDeviceEvent(
       device_fingerprint,
       'registration',
@@ -129,24 +96,9 @@ export async function POST(request: NextRequest) {
         ip: clientIP,
         country,
         system_info,
-        user_email,
-        auth_provider: auth_provider || 'unknown',
         timestamp: new Date().toISOString()
       }
     )
-
-    // Se abbiamo autenticazione OAuth, salva provider
-    if (auth_provider) {
-      await DatabaseService.logDeviceEvent(
-        device_fingerprint,
-        'oauth_login',
-        {
-          provider: auth_provider,
-          email: user_email,
-          timestamp: new Date().toISOString()
-        }
-      )
-    }
 
     // Calcola ore rimanenti
     const remainingHours = await calculateRemainingHours(newTrial.trial_expires)
@@ -155,11 +107,7 @@ export async function POST(request: NextRequest) {
       success: true,
       trial_expires: newTrial.trial_expires,
       trial_remaining_hours: remainingHours,
-      user_email: user_email,
-      auth_provider: auth_provider || 'unknown',
-      message: user_email 
-        ? `Trial attivato per ${user_email} tramite ${auth_provider}`
-        : 'Trial attivato con successo'
+      message: 'Trial attivato con successo'
     })
 
   } catch (error) {
@@ -171,12 +119,6 @@ export async function POST(request: NextRequest) {
       debug_error: error instanceof Error ? error.message : String(error)
     }, { status: 500 })
   }
-}
-
-// Helper function per validare email
-function isValidEmail(email: string): boolean {
-  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
-  return emailRegex.test(email)
 }
 
 // Helper function per calcolare ore rimanenti
