@@ -110,7 +110,7 @@ export async function POST(request: NextRequest) {
       'suspicious_behavior',
       undefined,
       {
-        error: error.message,
+        error: error instanceof Error ? error.message : String(error),
         endpoint: 'device/register',
         timestamp: new Date().toISOString()
       },
