@@ -261,7 +261,7 @@ export default function Footer() {
                         href={link.href}
                         className="text-gray-400 hover:text-white transition-colors duration-300 flex items-center space-x-2 group"
                       >
-                        {link.hasIcon && link.Icon && (
+                        {link.hasIcon && 'Icon' in link && link.Icon && (
                           <link.Icon className="w-4 h-4 text-primary-400" />
                         )}
                         <span className="group-hover:translate-x-1 transition-transform duration-300">
