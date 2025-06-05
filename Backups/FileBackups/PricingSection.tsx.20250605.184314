@@ -281,8 +281,8 @@ export default function PricingSection() {
 
               <div className="text-center">
                 {/* Icon */}
-                <div className={`w-16 h-16 mx-auto mb-6 rounded-2xl bg-gradient-to-br ${plan.gradient} flex items-center justify-center relative`}>
-                  <plan.icon className="w-8 h-8 text-white absolute inset-0 m-auto" />
+                <div className={`w-16 h-16 mx-auto mb-6 rounded-2xl bg-gradient-to-br ${plan.gradient} flex items-center justify-center`}>
+                  <plan.icon className="w-8 h-8 text-white" />
                 </div>
 
                 {/* Plan Name */}
