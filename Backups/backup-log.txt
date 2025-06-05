@@ -2631,3 +2631,173 @@ import { getOptimalParticleCountWithMobile, generateOriginalSizes } from './util
 
 *14:39 AppendToVSCodeFile su globals.css [globals.css.20250605.143934]: Aggiunta di media queries e stili specifici per dispositivi mobili al CSS globale. Include styling per l'overlay mobile che migliora il contrasto del testo, ottimizzazioni per la gestione del sistema particellare su schermi piccoli, e media queries specifiche per garantire la leggibilità dei contenuti. Le regole desktop rimangono completamente invariate e queste aggiunte vengono applicate solo su dispositivi mobili tramite media queries appropriate. [Dettagli: Aggiunta di 2403 caratteri alla fine del file]
 
+*14:44 ReplaceVSCodeText su utils.ts [utils.ts.20250605.144458]: Fix critico per SSR safety: aggiunta controlli typeof window !== 'undefined' nella funzione isMobileDevice() per evitare ReferenceError durante il pre-rendering server-side su Vercel. La funzione ora ritorna false di default quando eseguita lato server e applica la rilevazione mobile solo lato client. [Dettagli: Sostituzione '// 📱 MOBILE DEVICE DETECTION - Rilevamento intelligente dispositivi mobili
+export function isMobileDevice(): boolean {
+  // Check viewport width (primary indicator)
+  const isMobileViewport = window.innerWidth <= 768
+  
+  // Check user agent (secondary confirmation)
+  const userAgent = navigator.userAgent || navigator.vendor || (window as any).opera
+  const isMobileUA = /Android|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini|Mobile|mobile/i.test(userAgent)
+  
+  // Check touch capability
+  const isTouchDevice = 'ontouchstart' in window || navigator.maxTouchPoints > 0
+  
+  // Combined detection
+  return isMobileViewport || (isMobileUA && isTouchDevice)
+}' → '// 📱 MOBILE DEVICE DETECTION - Rilevamento intelligente dispositivi mobili (SSR Safe)
+export function isMobileDevice(): boolean {
+  // 🔒 SSR Safety Check - Se siamo lato server, ritorna false
+  if (typeof window === 'undefined') {
+    return false
+  }
+  
+  // Check viewport width (primary indicator)
+  const isMobileViewport = window.innerWidth <= 768
+  
+  // Check user agent (secondary confirmation)
+  const userAgent = navigator.userAgent || navigator.vendor || (window as any).opera
+  const isMobileUA = /Android|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini|Mobile|mobile/i.test(userAgent)
+  
+  // Check touch capability
+  const isTouchDevice = 'ontouchstart' in window || navigator.maxTouchPoints > 0
+  
+  // Combined detection
+  return isMobileViewport || (isMobileUA && isTouchDevice)
+}' (case-sensitive)]
+
+*14:46 ModifyVSCodeFileContent su utils.ts: Fix critico SSR per deploy Vercel: aggiunta controlli typeof window !== 'undefined' a TUTTE le funzioni che accedono a window, navigator, document per prevenire ReferenceError durante il server-side rendering. Le funzioni ora ritornano valori di fallback sicuri quando eseguite lato server e applicano la logica completa solo lato client. Include fix per isMobileDevice(), getOptimalParticleCount(), createParticleMaterial(), detectDevicePerformance(), setupCamera(), setupRenderer(), handleResize() e tutte le relative funzioni mobile-optimized. [Dettagli: Sovrascrittura completa del contenuto (10834 caratteri)]
+
+*14:47 ModifyVSCodeFileContent su utils.ts: Fix critico SSR per deploy Vercel: aggiunta controlli typeof window !== 'undefined' a TUTTE le funzioni che accedono a window, navigator, document per prevenire ReferenceError durante il server-side rendering. Le funzioni ora ritornano valori di fallback sicuri quando eseguite lato server e applicano la logica completa solo lato client. Include fix per isMobileDevice(), getOptimalParticleCount(), createParticleMaterial(), detectDevicePerformance(), setupCamera(), setupRenderer(), handleResize() e tutte le relative funzioni mobile-optimized. [Dettagli: Sovrascrittura completa del contenuto (10834 caratteri)]
+
+*14:47 ReplaceVSCodeText su colorGenerators.ts [colorGenerators.ts.20250605.144741]: Fix SSR per colorGenerators: rimozione del require dinamico e aggiunta import statico di isMobileDevice da utils.ts. Questo previene errori durante il server-side rendering quando viene chiamata generateColorsForShapeWithMobile, assicurando che la funzione fallback correttamente ai colori desktop quando eseguita lato server. [Dettagli: Sostituzione 'import { COLOR_PALETTES } from './constants'' → 'import { COLOR_PALETTES } from './constants'
+import { isMobileDevice } from './utils'' (case-sensitive)]
+
+*14:47 ReplaceVSCodeText su colorGenerators.ts [colorGenerators.ts.20250605.144751]: Sostituzione del require dinamico con l'import statico già aggiunto per isMobileDevice, eliminando il potenziale problema SSR durante l'esecuzione della funzione generateColorsForShapeWithMobile. [Dettagli: Sostituzione '// 🎯 GENERATORE UNIVERSALE CON SUPPORTO MOBILE
+export function generateColorsForShapeWithMobile(shape: string, colors: Float32Array, count: number) {
+  // Import necessario per isMobileDevice
+  const { isMobileDevice } = require('./utils')
+  const isMobile = isMobileDevice()
+  
+  if (isMobile) {
+    // 📱 MOBILE: Palette contrastate
+    switch(shape) {
+      case 'hero':
+        generateBlueColorsMobile(colors, count)
+        break
+      case 'features':
+        generatePurpleColorsMobile(colors, count)
+        break
+      case 'packages':
+        generateCyanColorsMobile(colors, count)
+        break
+      case 'pricing':
+        generateRainbowColorsMobile(colors, count)
+        break
+      case 'demo':
+        generateDNAColorsMobile(colors, count)
+        break
+      default:
+        generateBlueColorsMobile(colors, count)
+    }
+  } else {
+    // 🖥️ DESKTOP: Funzione esistente invariata
+    generateColorsForShape(shape, colors, count)
+  }
+}' → '// 🎯 GENERATORE UNIVERSALE CON SUPPORTO MOBILE (SSR Safe)
+export function generateColorsForShapeWithMobile(shape: string, colors: Float32Array, count: number) {
+  const isMobile = isMobileDevice()
+  
+  if (isMobile) {
+    // 📱 MOBILE: Palette contrastate
+    switch(shape) {
+      case 'hero':
+        generateBlueColorsMobile(colors, count)
+        break
+      case 'features':
+        generatePurpleColorsMobile(colors, count)
+        break
+      case 'packages':
+        generateCyanColorsMobile(colors, count)
+        break
+      case 'pricing':
+        generateRainbowColorsMobile(colors, count)
+        break
+      case 'demo':
+        generateDNAColorsMobile(colors, count)
+        break
+      default:
+        generateBlueColorsMobile(colors, count)
+    }
+  } else {
+    // 🖥️ DESKTOP: Funzione esistente invariata
+    generateColorsForShape(shape, colors, count)
+  }
+}' (case-sensitive)]
+
+*14:48 ReplaceVSCodeText su ParticleBackground.tsx [ParticleBackground.tsx.20250605.144808]: Fix SSR per ParticleBackground: aggiunta useState per gestire il rilevamento mobile solo lato client ed evitare ReferenceError durante SSR. Il componente ora inizializza isMobile a false (server-safe) e lo aggiorna solo dopo il mount lato client, eliminando la chiamata diretta a isMobileDevice() nel JSX che causava errori durante il pre-rendering. [Dettagli: Sostituzione ''use client'
+
+import { useEffect, useRef } from 'react'
+import * as THREE from 'three'' → ''use client'
+
+import { useEffect, useRef, useState } from 'react'
+import * as THREE from 'three'' (case-sensitive)]
+
+*14:48 ReplaceVSCodeText su ParticleBackground.tsx [ParticleBackground.tsx.20250605.144819]: Aggiunta state per gestione mobile detection SSR-safe: introduzione di useState per isMobile che inizializza a false (sicuro per server) e viene aggiornato solo dopo il mount client-side, prevenendo errori durante il server-side rendering. [Dettagli: Sostituzione '// 🎯 COMPONENTE PRINCIPALE OTTIMIZZATO
+export default function ParticleBackground() {
+  const mountRef = useRef<HTMLDivElement>(null)
+  const sceneRef = useRef<THREE.Scene | null>(null)
+  const rendererRef = useRef<THREE.WebGLRenderer | null>(null)
+  const particleSystemRef = useRef<ParticleSystem | null>(null)
+  const animationIdRef = useRef<number>()
+
+  useEffect(() => {
+    if (!mountRef.current) return' → '// 🎯 COMPONENTE PRINCIPALE OTTIMIZZATO
+export default function ParticleBackground() {
+  const mountRef = useRef<HTMLDivElement>(null)
+  const sceneRef = useRef<THREE.Scene | null>(null)
+  const rendererRef = useRef<THREE.WebGLRenderer | null>(null)
+  const particleSystemRef = useRef<ParticleSystem | null>(null)
+  const animationIdRef = useRef<number>()
+  
+  // 📱 SSR Safe mobile detection
+  const [isMobile, setIsMobile] = useState(false)
+
+  useEffect(() => {
+    // 📱 Detect mobile only on client-side
+    setIsMobile(isMobileDevice())
+    
+    if (!mountRef.current) return' (case-sensitive)]
+
+*14:48 ReplaceVSCodeText su ParticleBackground.tsx [ParticleBackground.tsx.20250605.144828]: Sostituzione della chiamata diretta isMobileDevice() nel JSX con lo state locale isMobile per garantire SSR safety. Ora l'overlay mobile viene renderizzato solo quando isMobile è true, evitando errori durante il server-side rendering. [Dettagli: Sostituzione '      {/* 📱 MOBILE OVERLAY - Solo su dispositivi mobili per contrasto */}
+      {isMobileDevice() && (
+        <div 
+          className="mobile-contrast-overlay"
+          style={{
+            position: 'absolute',
+            top: 0,
+            left: 0,
+            width: '100%',
+            height: '100%',
+            background: 'linear-gradient(180deg, rgba(0,0,0,0.4) 0%, rgba(0,0,0,0.6) 50%, rgba(0,0,0,0.4) 100%)',
+            zIndex: 1,
+            pointerEvents: 'none'
+          }}
+        />
+      )}' → '      {/* 📱 MOBILE OVERLAY - Solo su dispositivi mobili per contrasto */}
+      {isMobile && (
+        <div 
+          className="mobile-contrast-overlay"
+          style={{
+            position: 'absolute',
+            top: 0,
+            left: 0,
+            width: '100%',
+            height: '100%',
+            background: 'linear-gradient(180deg, rgba(0,0,0,0.4) 0%, rgba(0,0,0,0.6) 50%, rgba(0,0,0,0.4) 100%)',
+            zIndex: 1,
+            pointerEvents: 'none'
+          }}
+        />
+      )}' (case-sensitive)]
+

@@ -199,8 +199,10 @@ export function generateRainbowColorsMobile(colors: Float32Array, count: number)
   }
 }
 
-// 🎯 GENERATORE UNIVERSALE CON SUPPORTO MOBILE (SSR Safe)
+// 🎯 GENERATORE UNIVERSALE CON SUPPORTO MOBILE
 export function generateColorsForShapeWithMobile(shape: string, colors: Float32Array, count: number) {
+  // Import necessario per isMobileDevice
+  const { isMobileDevice } = require('./utils')
   const isMobile = isMobileDevice()
   
   if (isMobile) {

@@ -1,6 +1,6 @@
 'use client'
 
-import { useEffect, useRef } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import * as THREE from 'three'
 
 // 📦 IMPORT MODULI SPECIALIZZATI
@@ -34,8 +34,14 @@ export default function ParticleBackground() {
   const rendererRef = useRef<THREE.WebGLRenderer | null>(null)
   const particleSystemRef = useRef<ParticleSystem | null>(null)
   const animationIdRef = useRef<number>()
+  
+  // 📱 SSR Safe mobile detection
+  const [isMobile, setIsMobile] = useState(false)
 
   useEffect(() => {
+    // 📱 Detect mobile only on client-side
+    setIsMobile(isMobileDevice())
+    
     if (!mountRef.current) return
 
     console.log('🎯 Inizializzazione sistema particelle ottimizzato...')
@@ -127,7 +133,7 @@ export default function ParticleBackground() {
       }} 
     >
       {/* 📱 MOBILE OVERLAY - Solo su dispositivi mobili per contrasto */}
-      {isMobileDevice() && (
+      {isMobile && (
         <div 
           className="mobile-contrast-overlay"
           style={{
