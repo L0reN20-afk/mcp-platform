@@ -5,7 +5,11 @@ import { motion } from 'framer-motion'
 import { Download, Zap, Users, Clock, Shield, Star } from 'lucide-react'
 import { gsap } from 'gsap'
 
-export default function HeroSection() {
+interface HeroSectionProps {
+  onTrialClick?: () => void
+}
+
+export default function HeroSection({ onTrialClick }: HeroSectionProps) {
   const titleRef = useRef<HTMLHeadingElement>(null)
   const subtitleRef = useRef<HTMLParagraphElement>(null)
 
@@ -32,6 +36,23 @@ export default function HeroSection() {
     
     console.log('✅ HeroSection inizializzata - solo Framer Motion attivo')
   }, [])
+
+  const handleTrialClick = () => {
+    if (onTrialClick) {
+      onTrialClick()
+    } else {
+      // Fallback se onTrialClick non è fornito
+      console.log('Trial click - modal dovrebbe aprirsi')
+    }
+  }
+
+  const handleDiscoverClick = () => {
+    // Scrolla alla sezione pacchetti
+    const packagesSection = document.querySelector('#packages')
+    if (packagesSection) {
+      packagesSection.scrollIntoView({ behavior: 'smooth' })
+    }
+  }
 
   const stats = [
     { icon: Zap, value: "4+", label: "Server MCP", color: "text-primary-400" },
@@ -99,6 +120,7 @@ export default function HeroSection() {
             <motion.button
               whileHover={{ scale: 1.05, y: -2 }}
               whileTap={{ scale: 0.95 }}
+              onClick={handleTrialClick}
               className="magnetic-button group bg-gradient-to-r from-primary-600 to-accent-600 text-white px-8 py-4 rounded-full font-semibold text-lg flex items-center space-x-3 hover:shadow-xl hover:shadow-primary-500/25 transition-all duration-300"
             >
               <Download className="w-5 h-5 group-hover:animate-bounce" />
@@ -108,6 +130,7 @@ export default function HeroSection() {
             <motion.button
               whileHover={{ scale: 1.05, y: -2 }}
               whileTap={{ scale: 0.95 }}
+              onClick={handleDiscoverClick}
               className="magnetic-button group bg-transparent border-2 border-white/20 text-white px-8 py-4 rounded-full font-semibold text-lg hover:border-accent-400 hover:text-accent-400 transition-all duration-300"
             >
               <span>Scopri i Pacchetti</span>

@@ -39,7 +39,7 @@ export default function Home() {
       <ParticleBackground />
       
       {/* Navigation */}
-      <Navigation onTrialClick={handleTrialClick} />
+      <Navigation />
       
       {/* Sections */}
       <div className="relative z-10">

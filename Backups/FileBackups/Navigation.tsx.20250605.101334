@@ -4,11 +4,7 @@ import { useState, useEffect } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { Menu, X, Download, Zap } from 'lucide-react'
 
-interface NavigationProps {
-  onTrialClick?: () => void
-}
-
-export default function Navigation({ onTrialClick }: NavigationProps) {
+export default function Navigation() {
   const [isOpen, setIsOpen] = useState(false)
   const [isScrolled, setIsScrolled] = useState(false)
 
@@ -35,15 +31,6 @@ export default function Navigation({ onTrialClick }: NavigationProps) {
       element.scrollIntoView({ behavior: 'smooth' })
     }
     setIsOpen(false)
-  }
-
-  const handleTrialClick = () => {
-    if (onTrialClick) {
-      onTrialClick()
-    } else {
-      console.log('Trial modal dovrebbe aprirsi')
-    }
-    setIsOpen(false) // Chiudi menu mobile se aperto
   }
 
   return (
@@ -94,18 +81,18 @@ export default function Navigation({ onTrialClick }: NavigationProps) {
 
           {/* CTA Buttons */}
           <div className="hidden md:flex items-center space-x-3">
-            <motion.button
+            <motion.a
+              href="/login"
               initial={{ opacity: 0, scale: 0.8 }}
               animate={{ opacity: 1, scale: 1 }}
               transition={{ delay: 0.4 }}
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
-              onClick={handleTrialClick}
               className="flex items-center space-x-2 bg-gradient-to-r from-primary-600 to-accent-600 text-white px-6 py-3 rounded-full font-semibold hover:shadow-lg hover:shadow-primary-500/25 transition-all duration-300"
             >
               <Download className="w-4 h-4" />
               <span>Trial 48h</span>
-            </motion.button>
+            </motion.a>
             
             <motion.button
               initial={{ opacity: 0, scale: 0.8 }}
@@ -161,8 +148,8 @@ export default function Navigation({ onTrialClick }: NavigationProps) {
                   transition={{ delay: navItems.length * 0.1 }}
                   whileHover={{ scale: 1.02 }}
                   whileTap={{ scale: 0.98 }}
-                  onClick={handleTrialClick}
                   className="flex items-center space-x-2 bg-gradient-to-r from-primary-600 to-accent-600 text-white px-6 py-3 rounded-full font-semibold w-full justify-center mt-4"
+                  onClick={() => scrollToSection('#demo')}
                 >
                   <Download className="w-4 h-4" />
                   <span>Trial 48h Gratuito</span>
