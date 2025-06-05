@@ -63,6 +63,25 @@ export default function ParticleBackground() {
     rendererRef.current = renderer
     particleSystemRef.current = particleSystem
 
+    // 🎨 LISTENER DINAMICO per cambi di tema (SSR Safe)
+    let themeMediaQuery: MediaQueryList | null = null
+    let handleThemeChange: ((e: MediaQueryListEvent) => void) | null = null
+    
+    if (typeof window !== 'undefined') {
+      themeMediaQuery = window.matchMedia('(prefers-color-scheme: light)')
+      handleThemeChange = (e: MediaQueryListEvent) => {
+        console.log(`🎨 Tema cambiato: ${e.matches ? 'chiaro' : 'scuro'}`)
+        if (e.matches) {
+          // Tema chiaro → Background opaco nero
+          renderer.setClearColor(0x000000, 1)
+        } else {
+          // Tema scuro → Background trasparente
+          renderer.setClearColor(0x000000, 0)
+        }
+      }
+      themeMediaQuery.addEventListener('change', handleThemeChange)
+    }
+
     // 🎬 ANIMATION LOOP OTTIMIZZATO
     const animate = () => {
       animationIdRef.current = requestAnimationFrame(animate)
@@ -90,15 +109,24 @@ export default function ParticleBackground() {
     // 📜 SETUP SCROLL TRIGGERS UNIFICATI (include progressive separation)
     setupScrollTriggers(particleSystem, scene)
 
-    // 📱 RESIZE HANDLER
+    // 📱 RESIZE HANDLER (SSR Safe)
     const resizeHandler = () => handleResizeEvent(camera, renderer, particleSystem, scene)
-    window.addEventListener('resize', resizeHandler)
+    if (typeof window !== 'undefined') {
+      window.addEventListener('resize', resizeHandler)
+    }
 
     console.log('✅ Sistema particelle ottimizzato inizializzato!')
 
     // 🧹 CLEANUP
     return () => {
-      window.removeEventListener('resize', resizeHandler)
+      // Cleanup listeners (SSR Safe)
+      if (typeof window !== 'undefined') {
+        window.removeEventListener('resize', resizeHandler)
+      }
+      // Cleanup tema listener (SSR Safe)
+      if (themeMediaQuery && handleThemeChange) {
+        themeMediaQuery.removeEventListener('change', handleThemeChange)
+      }
       if (animationIdRef.current) {
         cancelAnimationFrame(animationIdRef.current)
       }

@@ -152,12 +152,21 @@ export function setupRenderer(): THREE.WebGLRenderer {
   if (typeof window !== 'undefined') {
     renderer.setSize(window.innerWidth, window.innerHeight)
     renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2))
+    
+    // 🎨 BACKGROUND DINAMICO in base al tema del sistema
+    const isLightTheme = window.matchMedia('(prefers-color-scheme: light)').matches
+    if (isLightTheme) {
+      // Tema chiaro → Background opaco nero per contrasto
+      renderer.setClearColor(0x000000, 1)
+    } else {
+      // Tema scuro → Background trasparente per mostrare particelle
+      renderer.setClearColor(0x000000, 0)
+    }
   } else {
     renderer.setSize(1920, 1080) // Fallback dimensions
     renderer.setPixelRatio(1)
+    renderer.setClearColor(0x000000, 0) // Default trasparente
   }
-  
-  renderer.setClearColor(0x000000, 0) // Background trasparente per mostrare particelle
   
   return renderer
 }
@@ -235,15 +244,15 @@ export function getOptimalParticleCountWithMobile(shape: string): number {
 export function setupRendererWithMobileFallback(): THREE.WebGLRenderer {
   const isMobile = isMobileDevice()
   
-  // 🖥️ DESKTOP: Renderer identico a prima
+  // 🖥️ DESKTOP: Renderer con background dinamico
   if (!isMobile) {
     return setupRenderer()
   }
   
-  // 📱 MOBILE: Ottimizzazioni specifiche
+  // 📱 MOBILE: Ottimizzazioni specifiche + background dinamico
   const renderer = new THREE.WebGLRenderer({ 
     antialias: false,  // Disabilita antialiasing per performance
-    alpha: true,       // Abilita trasparenza per overlay
+    alpha: true,       // Abilita trasparenza
     powerPreference: 'low-power'  // Ottimizzazione batteria
   })
   
@@ -251,12 +260,21 @@ export function setupRendererWithMobileFallback(): THREE.WebGLRenderer {
   if (typeof window !== 'undefined') {
     renderer.setSize(window.innerWidth, window.innerHeight)
     renderer.setPixelRatio(1) // Forza pixel ratio 1 su mobile
+    
+    // 🎨 BACKGROUND DINAMICO in base al tema del sistema (mobile)
+    const isLightTheme = window.matchMedia('(prefers-color-scheme: light)').matches
+    if (isLightTheme) {
+      // Tema chiaro → Background opaco nero per contrasto
+      renderer.setClearColor(0x000000, 1)
+    } else {
+      // Tema scuro → Background trasparente per mostrare particelle
+      renderer.setClearColor(0x000000, 0)
+    }
   } else {
     renderer.setSize(1920, 1080) // Fallback dimensions
     renderer.setPixelRatio(1)
+    renderer.setClearColor(0x000000, 0) // Default trasparente
   }
-  
-  renderer.setClearColor(0x000000, 0) // Background trasparente per mostrare particelle
   
   return renderer
 }

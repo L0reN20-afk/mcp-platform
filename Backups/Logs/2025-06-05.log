@@ -695,3 +695,840 @@ Backups/
 
 *19:39 AppendToVSCodeFile su .gitignore: Aggiunta regola al .gitignore per escludere correttamente la directory Backups e tutti i file di backup automatici generati dal sistema MCP. Questo eviterà che i file di backup vengano tracciati da git e creino confusione nel repository. [Dettagli: Aggiunta di 39 caratteri alla fine del file]
 
+*19:46 ReplaceVSCodeText su constants.ts [constants.ts.20250605.194637]: Incremento delle dimensioni base delle particelle da 0.4 a 1.5 per renderle molto più visibili. Il problema potrebbe essere che le particelle sono troppo piccole per essere viste chiaramente. Incrementata anche l'opacità da 0.9 a 1.0 per massima visibilità e debug del problema di visualizzazione delle figure 3D nello sfondo. [Dettagli: Sostituzione '// 🎨 CONFIGURAZIONI MATERIALI
+export const MATERIAL_CONFIG = {
+  baseSize: 0.4,
+  opacity: 0.9,
+  sizeAttenuation: true,
+  transparent: true,
+  blending: 'additive' as const
+} as const' → '// 🎨 CONFIGURAZIONI MATERIALI
+export const MATERIAL_CONFIG = {
+  baseSize: 1.5, // Incrementato per visibilità
+  opacity: 1.0,  // Massima opacità
+  sizeAttenuation: true,
+  transparent: true,
+  blending: 'additive' as const
+} as const' (case-sensitive)]
+
+*19:46 ReplaceVSCodeText su colorGenerators.ts [colorGenerators.ts.20250605.194657]: Debug temporaneo: sostituzione dei colori blu della hero section con colori bianco puro per massima visibilità su sfondo nero. Questo servirà per diagnosticare se il problema è legato ai colori delle particelle che potrebbero essere troppo scuri per essere visibili. Se le particelle bianche sono visibili, sapremo che il problema era nei colori originali. [Dettagli: Sostituzione '// 🔵 COLORI BLU (Hero Section)
+export function generateBlueColors(colors: Float32Array, count: number) {
+  const palette = COLOR_PALETTES.hero
+  for (let i = 0; i < count; i++) {
+    colors[i * 3] = palette.r[0] + Math.random() * (palette.r[1] - palette.r[0])     // R
+    colors[i * 3 + 1] = palette.g[0] + Math.random() * (palette.g[1] - palette.g[0]) // G
+    colors[i * 3 + 2] = palette.b[0] + Math.random() * (palette.b[1] - palette.b[0]) // B
+  }
+}' → '// 🔵 COLORI BLU (Hero Section) - DEBUG: BIANCO PURO
+export function generateBlueColors(colors: Float32Array, count: number) {
+  for (let i = 0; i < count; i++) {
+    colors[i * 3] = 1.0     // R - BIANCO
+    colors[i * 3 + 1] = 1.0 // G - BIANCO  
+    colors[i * 3 + 2] = 1.0 // B - BIANCO
+  }
+}' (case-sensitive)]
+
+*19:47 ReplaceVSCodeText su constants.ts [constants.ts.20250605.194737]: Ripristino delle configurazioni originali del materiale delle particelle. Eliminata la modifica inutile che aveva incrementato baseSize da 0.4 a 1.5 e opacity da 0.9 a 1.0. Il problema delle particelle non visibili non è legato alle dimensioni o opacità, quindi ritorno ai valori originali che funzionavano correttamente. [Dettagli: Sostituzione '// 🎨 CONFIGURAZIONI MATERIALI
+export const MATERIAL_CONFIG = {
+  baseSize: 1.5, // Incrementato per visibilità
+  opacity: 1.0,  // Massima opacità
+  sizeAttenuation: true,
+  transparent: true,
+  blending: 'additive' as const
+} as const' → '// 🎨 CONFIGURAZIONI MATERIALI
+export const MATERIAL_CONFIG = {
+  baseSize: 0.4,
+  opacity: 0.9,
+  sizeAttenuation: true,
+  transparent: true,
+  blending: 'additive' as const
+} as const' (case-sensitive)]
+
+*19:47 ReplaceVSCodeText su colorGenerators.ts [colorGenerators.ts.20250605.194746]: Ripristino dei colori blu originali per la hero section. Eliminata la modifica di debug che aveva impostato colori bianco puro. Ritorno alla palette blu originale che utilizzava i valori da COLOR_PALETTES.hero con variazioni casuali nei range prestabiliti per creare l'effetto visivo corretto delle particelle. [Dettagli: Sostituzione '// 🔵 COLORI BLU (Hero Section) - DEBUG: BIANCO PURO
+export function generateBlueColors(colors: Float32Array, count: number) {
+  for (let i = 0; i < count; i++) {
+    colors[i * 3] = 1.0     // R - BIANCO
+    colors[i * 3 + 1] = 1.0 // G - BIANCO  
+    colors[i * 3 + 2] = 1.0 // B - BIANCO
+  }
+}' → '// 🔵 COLORI BLU (Hero Section)
+export function generateBlueColors(colors: Float32Array, count: number) {
+  const palette = COLOR_PALETTES.hero
+  for (let i = 0; i < count; i++) {
+    colors[i * 3] = palette.r[0] + Math.random() * (palette.r[1] - palette.r[0])     // R
+    colors[i * 3 + 1] = palette.g[0] + Math.random() * (palette.g[1] - palette.g[0]) // G
+    colors[i * 3 + 2] = palette.b[0] + Math.random() * (palette.b[1] - palette.b[0]) // B
+  }
+}' (case-sensitive)]
+
+*19:54 ReplaceVSCodeText su ParticleBackground.tsx [ParticleBackground.tsx.20250605.195411]: Ripristino del codice originale di ParticleBackground.tsx senza il logging debug aggiunto. Il problema delle particelle non visibili non è legato all'inizializzazione ma probabilmente a un conflitto di layering CSS o background. Ritorno al codice pulito per analizzare il vero problema strutturale. [Dettagli: Sostituzione '  useEffect(() => {
+    // 📱 Detect mobile only on client-side
+    setIsMobile(isMobileDevice())
+    
+    if (!mountRef.current) {
+      console.error('❌ mountRef.current è null!')
+      return
+    }
+
+    console.log('🎯 Inizializzazione sistema particelle ottimizzato...')
+
+    // 🏗️ SETUP SCENA BASE
+    console.log('📦 1. Creazione scena THREE.js...')
+    const scene = new THREE.Scene()
+    console.log('✅ Scena creata:', scene)
+    
+    console.log('📹 2. Creazione camera...')
+    const camera = setupCamera()
+    console.log('✅ Camera creata:', camera)
+    
+    console.log('🖥️ 3. Creazione renderer...')
+    const renderer = setupRendererWithMobileFallback()
+    console.log('✅ Renderer creato:', renderer)
+    console.log('🎨 Renderer domElement:', renderer.domElement)
+    
+    // 🎨 MOUNT RENDERER
+    console.log('🔗 4. Mounting renderer nel DOM...')
+    mountRef.current.appendChild(renderer.domElement)
+    console.log('✅ Renderer aggiunto al DOM')
+    
+    setupCanvasStyles(renderer.domElement)
+    console.log('✅ Stili canvas applicati')
+
+    // 🎯 INIZIALIZZAZIONE SISTEMA PARTICELLARE
+    console.log('🎯 5. Inizializzazione sistema particellare...')
+    const particleSystem = initializeParticleSystem(scene)
+    console.log('✅ Sistema particelle creato:', particleSystem)
+    console.log('🔢 Numero particelle:', particleSystem.currentParticleCount)
+    console.log('📐 Geometria:', particleSystem.geometry)
+    console.log('🎨 Materiale:', particleSystem.material)
+    console.log('⭐ Points object:', particleSystem.points)
+    
+    // 📦 SALVA RIFERIMENTI
+    sceneRef.current = scene
+    rendererRef.current = renderer
+    particleSystemRef.current = particleSystem
+
+    // 🎬 ANIMATION LOOP OTTIMIZZATO
+    console.log('🎬 6. Avvio animation loop...')
+    const animate = () => {
+      animationIdRef.current = requestAnimationFrame(animate)
+      
+      if (particleSystem.points) {
+        // Rotazione continua
+        particleSystem.points.rotation.y += ANIMATION_CONFIG.rotationSpeed.y
+        particleSystem.points.rotation.x += ANIMATION_CONFIG.rotationSpeed.x
+        
+        // 🌊 MORPHING CONTINUO per forme dinamiche (FIXED: no import dinamici)
+        if (particleSystem.currentShape === 'pricing') {
+          updateMorphingBlobOptimized(particleSystem)
+        }
+        
+        // 🧬 ANIMAZIONE DNA CONTINUA (FIXED: no import dinamici)
+        if (particleSystem.currentShape === 'demo') {
+          updateDNAHelixOptimized(particleSystem)
+        }
+      }
+
+      renderer.render(scene, camera)
+    }
+    animate()
+    console.log('✅ Animation loop avviato!')
+
+    // 📜 SETUP SCROLL TRIGGERS UNIFICATI (include progressive separation)
+    console.log('' → '  useEffect(() => {
+    // 📱 Detect mobile only on client-side
+    setIsMobile(isMobileDevice())
+    
+    if (!mountRef.current) return
+
+    console.log('🎯 Inizializzazione sistema particelle ottimizzato...')
+
+    // 🏗️ SETUP SCENA BASE
+    const scene = new THREE.Scene()
+    const camera = setupCamera()
+    const renderer = setupRendererWithMobileFallback()
+    
+    // 🎨 MOUNT RENDERER
+    mountRef.current.appendChild(renderer.domElement)
+    setupCanvasStyles(renderer.domElement)
+
+    // 🎯 INIZIALIZZAZIONE SISTEMA PARTICELLARE
+    const particleSystem = initializeParticleSystem(scene)
+    
+    // 📦 SALVA RIFERIMENTI
+    sceneRef.current = scene
+    rendererRef.current = renderer
+    particleSystemRef.current = particleSystem
+
+    // 🎬 ANIMATION LOOP OTTIMIZZATO
+    const animate = () => {
+      animationIdRef.current = requestAnimationFrame(animate)
+      
+      if (particleSystem.points) {
+        // Rotazione continua
+        particleSystem.points.rotation.y += ANIMATION_CONFIG.rotationSpeed.y
+        particleSystem.points.rotation.x += ANIMATION_CONFIG.rotationSpeed.x
+        
+        // 🌊 MORPHING CONTINUO per forme dinamiche (FIXED: no import dinamici)
+        if (particleSystem.currentShape === 'pricing') {
+          updateMorphingBlobOptimized(particleSystem)
+        }
+        
+        // 🧬 ANIMAZIONE DNA CONTINUA (FIXED: no import dinamici)
+        if (particleSystem.currentShape === 'demo') {
+          updateDNAHelixOptimized(particleSystem)
+        }
+      }
+
+      renderer.render(scene, camera)
+    }
+    animate()
+
+    // 📜 SETUP SCROLL TRIGGERS UNIFICATI (include progressive separation)
+    setupScrollTriggers(particleSystem, scene)
+
+    // 📱 RESIZE HANDLER
+    const resizeHandler = () => handleResizeEvent(camera, renderer, particleSystem, scene)
+    window.addEventListener('resize', resizeHandler)
+
+    console.log('✅ Sistema particelle ottimizzato inizializzato!')
+
+    // 🧹 CLEANUP
+    return () => {
+      window.removeEventListener('resize', resizeHandler)
+      if (animationIdRef.current) {
+        cancelAnimationFrame(animationIdRef.current)
+      }
+      if (mountRef.current && renderer.domElement) {
+        mountRef.current.removeChild(renderer.domElement)
+      }
+      
+      // Cleanup completo
+      if (particleSystem) {
+        cleanupResources(
+          renderer,
+          particleSystem.geometry,
+          particleSystem.material,
+          particleSystem.material.map as THREE.CanvasTexture
+        )
+      }
+    }
+  }, [])' (case-sensitive)]
+
+*19:54 ReplaceVSCodeText su globals.css [globals.css.20250605.195457]: Fix del vero problema di layering: rimozione del background nero fisso che copriva le particelle 3D. Il problema era che il background nero solido del body andava sopra il canvas Three.js trasparente. Ora il background si adatta dinamicamente: trasparente normalmente per mostrare le particelle, nero solo con tema chiaro del sistema per evitare il background bianco del browser. [Dettagli: Sostituzione 'html {
+  max-width: 100vw;
+  /* ✅ RIMOSSO overflow-x: hidden che interferiva con scroll verticale */
+  overflow-x: clip; /* Previene decentramento */
+  background: #000000; /* Forza background nero anche su html */
+}
+
+body {
+  max-width: 100vw;
+  overflow-x: hidden; /* Solo horizontal overflow nascosto */
+  position: relative; /* Previene decentramento */
+  color: rgb(var(--foreground-rgb));
+  background: #000000; /* Forza background nero sempre */
+}' → 'html {
+  max-width: 100vw;
+  /* ✅ RIMOSSO overflow-x: hidden che interferiva con scroll verticale */
+  overflow-x: clip; /* Previene decentramento */
+  /* Background dinamico: nero solo con tema chiaro */
+  background: transparent;
+}
+
+body {
+  max-width: 100vw;
+  overflow-x: hidden; /* Solo horizontal overflow nascosto */
+  position: relative; /* Previene decentramento */
+  color: rgb(var(--foreground-rgb));
+  /* Background dinamico: nero solo con tema chiaro */
+  background: transparent;
+}' (case-sensitive)]
+
+*19:55 ReplaceVSCodeText su globals.css [globals.css.20250605.195509]: Aggiunta della soluzione corretta per il tema chiaro: background nero solo quando necessario. Con tema scuro del sistema, html e body rimangono trasparenti per mostrare le particelle 3D. Con tema chiaro del sistema, viene applicato un background nero per evitare che il bianco del browser nasconda le particelle. Questa è la configurazione ottimale che risolve entrambi i problemi. [Dettagli: Sostituzione '/* 🎨 FORZA SEMPRE TEMA SCURO - Indipendente dalle preferenze sistema */
+@media (prefers-color-scheme: dark) {
+  html {
+    color-scheme: dark;
+  }
+}
+
+@media (prefers-color-scheme: light) {
+  html {
+    color-scheme: dark; /* Forza tema scuro anche quando sistema è chiaro */
+  }
+}' → '/* 🎨 TEMA DINAMICO - Background nero solo quando necessario */
+@media (prefers-color-scheme: dark) {
+  html {
+    color-scheme: dark;
+    background: transparent; /* Trasparente per mostrare particelle */
+  }
+  body {
+    background: transparent; /* Trasparente per mostrare particelle */
+  }
+}
+
+@media (prefers-color-scheme: light) {
+  html {
+    color-scheme: dark; /* Forza tema scuro anche quando sistema è chiaro */
+    background: #000000; /* Nero per evitare bianco del browser */
+  }
+  body {
+    background: #000000; /* Nero per evitare bianco del browser */
+  }
+}' (case-sensitive)]
+
+*19:55 ReplaceVSCodeText su globals.css [globals.css.20250605.195548]: Fix per la regola reduced motion che nascondeva completamente il canvas delle particelle. Invece di nascondere tutto il canvas, ora disabilitiamo solo le animazioni mantenendo le particelle statiche visibili. Sostituito display: none con animation: none per rispettare le preferenze di accessibilità senza perdere completamente l'effetto visivo delle particelle. [Dettagli: Sostituzione '@media (prefers-reduced-motion: reduce) {
+  /* ♿ Accessibility - Rispetta le preferenze di movimento ridotto */
+  .mobile-contrast-overlay {
+    background: rgba(0,0,0,0.6); /* Gradiente statico per utenti sensibili al movimento */
+  }
+  
+  canvas {
+    display: none !important; /* Nasconde completamente il sistema particellare */
+  }
+  
+  /* 🎨 Background fallback quando particelle sono disabilitate */
+  body {
+    background: linear-gradient(135deg, #0f0f23 0%, #1a1a2e 50%, #16213e 100%);
+  }
+}' → '@media (prefers-reduced-motion: reduce) {
+  /* ♿ Accessibility - Rispetta le preferenze di movimento ridotto */
+  .mobile-contrast-overlay {
+    background: rgba(0,0,0,0.6); /* Gradiente statico per utenti sensibili al movimento */
+  }
+  
+  canvas {
+    /* Mantieni particelle visibili ma senza animazioni */
+    animation: none !important;
+    transition: none !important;
+  }
+  
+  /* 🎨 Background fallback statico più elegante */
+  body {
+    background: linear-gradient(135deg, #0f0f23 0%, #1a1a2e 50%, #16213e 100%);
+  }
+}' (case-sensitive)]
+
+*19:59 ReplaceVSCodeText su globals.css [globals.css.20250605.195946]: Rimozione della scrollbar personalizzata che stava creando una barra di scorrimento indesiderata. La scrollbar deve rimanere hidden come era originariamente per non interferire con l'interfaccia pulita del sito. La gestione del background per i temi sarà risolta diversamente senza toccare gli stili di scrollbar. [Dettagli: Sostituzione '/* 🎨 SCROLLBAR STILIZZATA (non nascosta!) per compatibilità ScrollTrigger */
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: rgba(0, 0, 0, 0.1);
+}
+
+::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.3);
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(255, 255, 255, 0.5);
+}
+
+/* Firefox scrollbar styling */
+html {
+  scrollbar-width: thin;
+  scrollbar-color: rgba(255, 255, 255, 0.3) rgba(0, 0, 0, 0.1);
+}' → '/* 🎨 SCROLLBAR NASCOSTA per interfaccia pulita */
+::-webkit-scrollbar {
+  display: none;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: transparent;
+}
+
+/* Firefox scrollbar styling */
+html {
+  scrollbar-width: none;
+}' (case-sensitive)]
+
+*19:59 ReplaceVSCodeText su globals.css [globals.css.20250605.195959]: Rimozione completa dei background CSS che causavano problemi di layering. Html e body tornano completamente trasparenti. Il background nero per il tema chiaro sarà gestito direttamente dal renderer Three.js, non dal CSS, per evitare che il background vada sopra le particelle. Questa è l'approccio corretto per il layering. [Dettagli: Sostituzione 'html {
+  max-width: 100vw;
+  /* ✅ RIMOSSO overflow-x: hidden che interferiva con scroll verticale */
+  overflow-x: clip; /* Previene decentramento */
+  /* Background dinamico: nero solo con tema chiaro */
+  background: transparent;
+}
+
+body {
+  max-width: 100vw;
+  overflow-x: hidden; /* Solo horizontal overflow nascosto */
+  position: relative; /* Previene decentramento */
+  color: rgb(var(--foreground-rgb));
+  /* Background dinamico: nero solo con tema chiaro */
+  background: transparent;
+}' → 'html {
+  max-width: 100vw;
+  overflow-x: clip; /* Previene decentramento */
+  /* Sempre trasparente - background gestito da Three.js */
+}
+
+body {
+  max-width: 100vw;
+  overflow-x: hidden; /* Solo horizontal overflow nascosto */
+  position: relative; /* Previene decentramento */
+  color: rgb(var(--foreground-rgb));
+  /* Sempre trasparente - background gestito da Three.js */
+}' (case-sensitive)]
+
+*20:00 ReplaceVSCodeText su globals.css [globals.css.20250605.200009]: Rimozione delle media queries che impostavano background CSS in base al tema del sistema. Queste causavano il problema di layering dove il background andava sopra le particelle. Ora manteniamo solo il color-scheme per l'interfaccia, mentre il background sarà gestito esclusivamente dal renderer Three.js nel layer corretto. [Dettagli: Sostituzione '/* 🎨 TEMA DINAMICO - Background nero solo quando necessario */
+@media (prefers-color-scheme: dark) {
+  html {
+    color-scheme: dark;
+    background: transparent; /* Trasparente per mostrare particelle */
+  }
+  body {
+    background: transparent; /* Trasparente per mostrare particelle */
+  }
+}
+
+@media (prefers-color-scheme: light) {
+  html {
+    color-scheme: dark; /* Forza tema scuro anche quando sistema è chiaro */
+    background: #000000; /* Nero per evitare bianco del browser */
+  }
+  body {
+    background: #000000; /* Nero per evitare bianco del browser */
+  }
+}' → '/* 🎨 TEMA SCURO FORZATO - Solo color-scheme, no background CSS */
+@media (prefers-color-scheme: dark) {
+  html {
+    color-scheme: dark;
+  }
+}
+
+@media (prefers-color-scheme: light) {
+  html {
+    color-scheme: dark; /* Forza tema scuro anche quando sistema è chiaro */
+  }
+}' (case-sensitive)]
+
+*20:00 ReplaceVSCodeText su utils.ts [utils.ts.20250605.200026]: Implementazione della gestione dinamica del background nel renderer Three.js in base al tema del sistema. Quando il tema è chiaro, il renderer usa background opaco nero. Quando il tema è scuro, usa background trasparente. Questo risolve il problema di layering perché il background è renderizzato nel canvas stesso, non in un layer CSS sopra le particelle. [Dettagli: Sostituzione '// 🖥️ SETUP RENDERER (SSR Safe)
+export function setupRenderer(): THREE.WebGLRenderer {
+  const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true })
+  
+  // 🔒 SSR Safety Check
+  if (typeof window !== 'undefined') {
+    renderer.setSize(window.innerWidth, window.innerHeight)
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2))
+  } else {
+    renderer.setSize(1920, 1080) // Fallback dimensions
+    renderer.setPixelRatio(1)
+  }
+  
+  renderer.setClearColor(0x000000, 0) // Background trasparente per mostrare particelle
+  
+  return renderer
+}' → '// 🖥️ SETUP RENDERER (SSR Safe)
+export function setupRenderer(): THREE.WebGLRenderer {
+  const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true })
+  
+  // 🔒 SSR Safety Check
+  if (typeof window !== 'undefined') {
+    renderer.setSize(window.innerWidth, window.innerHeight)
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2))
+    
+    // 🎨 BACKGROUND DINAMICO in base al tema del sistema
+    const isLightTheme = window.matchMedia('(prefers-color-scheme: light)').matches
+    if (isLightTheme) {
+      // Tema chiaro → Background opaco nero per contrasto
+      renderer.setClearColor(0x000000, 1)
+    } else {
+      // Tema scuro → Background trasparente per mostrare particelle
+      renderer.setClearColor(0x000000, 0)
+    }
+  } else {
+    renderer.setSize(1920, 1080) // Fallback dimensions
+    renderer.setPixelRatio(1)
+    renderer.setClearColor(0x000000, 0) // Default trasparente
+  }
+  
+  return renderer
+}' (case-sensitive)]
+
+*20:00 ReplaceVSCodeText su utils.ts [utils.ts.20250605.200040]: Applicazione della stessa logica di background dinamico anche al renderer mobile per consistenza. Il renderer mobile ora rileva anch'esso il tema del sistema e applica background opaco nero con tema chiaro, trasparente con tema scuro. Mantenute le ottimizzazioni mobile (antialias: false, powerPreference: low-power) ma con gestione tema corretta. [Dettagli: Sostituzione '// 🖥️ SETUP RENDERER CON FALLBACK MOBILE (SSR Safe)
+export function setupRendererWithMobileFallback(): THREE.WebGLRenderer {
+  const isMobile = isMobileDevice()
+  
+  // 🖥️ DESKTOP: Renderer identico a prima
+  if (!isMobile) {
+    return setupRenderer()
+  }
+  
+  // 📱 MOBILE: Ottimizzazioni specifiche
+  const renderer = new THREE.WebGLRenderer({ 
+    antialias: false,  // Disabilita antialiasing per performance
+    alpha: true,       // Abilita trasparenza per overlay
+    powerPreference: 'low-power'  // Ottimizzazione batteria
+  })
+  
+  // 🔒 SSR Safety Check
+  if (typeof window !== 'undefined') {
+    renderer.setSize(window.innerWidth, window.innerHeight)
+    renderer.setPixelRatio(1) // Forza pixel ratio 1 su mobile
+  } else {
+    renderer.setSize(1920, 1080) // Fallback dimensions
+    renderer.setPixelRatio(1)
+  }
+  
+  renderer.setClearColor(0x000000, 0) // Background trasparente per mostrare particelle
+  
+  return renderer
+}' → '// 🖥️ SETUP RENDERER CON FALLBACK MOBILE (SSR Safe)
+export function setupRendererWithMobileFallback(): THREE.WebGLRenderer {
+  const isMobile = isMobileDevice()
+  
+  // 🖥️ DESKTOP: Renderer con background dinamico
+  if (!isMobile) {
+    return setupRenderer()
+  }
+  
+  // 📱 MOBILE: Ottimizzazioni specifiche + background dinamico
+  const renderer = new THREE.WebGLRenderer({ 
+    antialias: false,  // Disabilita antialiasing per performance
+    alpha: true,       // Abilita trasparenza
+    powerPreference: 'low-power'  // Ottimizzazione batteria
+  })
+  
+  // 🔒 SSR Safety Check
+  if (typeof window !== 'undefined') {
+    renderer.setSize(window.innerWidth, window.innerHeight)
+    renderer.setPixelRatio(1) // Forza pixel ratio 1 su mobile
+    
+    // 🎨 BACKGROUND DINAMICO in base al tema del sistema (mobile)
+    const isLightTheme = window.matchMedia('(prefers-color-scheme: light)').matches
+    if (isLightTheme) {
+      // Tema chiaro → Background opaco nero per contrasto
+      renderer.setClearColor(0x000000, 1)
+    } else {
+      // Tema scuro → Background trasparente per mostrare particelle
+      renderer.setClearColor(0x000000, 0)
+    }
+  } else {
+    renderer.setSize(1920, 1080) // Fallback dimensions
+    renderer.setPixelRatio(1)
+    renderer.setClearColor(0x000000, 0) // Default trasparente
+  }
+  
+  return renderer
+}' (case-sensitive)]
+
+*20:01 ReplaceVSCodeText su ParticleBackground.tsx: Aggiunta di un listener dinamico per i cambi di tema del sistema in tempo reale. Quando l'utente cambia da tema chiaro a scuro (o viceversa) mentre usa il sito, il background del renderer si aggiorna automaticamente senza bisogno di ricaricare la pagina. Questo garantisce un'esperienza utente fluida e reattiva ai cambi di preferenze di sistema. [Dettagli: Sostituzione '  useEffect(() => {
+    // 📱 Detect mobile only on client-side
+    setIsMobile(isMobileDevice())
+    
+    if (!mountRef.current) return
+
+    console.log('🎯 Inizializzazione sistema particelle ottimizzato...')
+
+    // 🏗️ SETUP SCENA BASE
+    const scene = new THREE.Scene()
+    const camera = setupCamera()
+    const renderer = setupRendererWithMobileFallback()
+    
+    // 🎨 MOUNT RENDERER
+    mountRef.current.appendChild(renderer.domElement)
+    setupCanvasStyles(renderer.domElement)
+
+    // 🎯 INIZIALIZZAZIONE SISTEMA PARTICELLARE
+    const particleSystem = initializeParticleSystem(scene)
+    
+    // 📦 SALVA RIFERIMENTI
+    sceneRef.current = scene
+    rendererRef.current = renderer
+    particleSystemRef.current = particleSystem
+
+    // 🎬 ANIMATION LOOP OTTIMIZZATO
+    const animate = () => {
+      animationIdRef.current = requestAnimationFrame(animate)
+      
+      if (particleSystem.points) {
+        // Rotazione continua
+        particleSystem.points.rotation.y += ANIMATION_CONFIG.rotationSpeed.y
+        particleSystem.points.rotation.x += ANIMATION_CONFIG.rotationSpeed.x
+        
+        // 🌊 MORPHING CONTINUO per forme dinamiche (FIXED: no import dinamici)
+        if (particleSystem.currentShape === 'pricing') {
+          updateMorphingBlobOptimized(particleSystem)
+        }
+        
+        // 🧬 ANIMAZIONE DNA CONTINUA (FIXED: no import dinamici)
+        if (particleSystem.currentShape === 'demo') {
+          updateDNAHelixOptimized(particleSystem)
+        }
+      }
+
+      renderer.render(scene, camera)
+    }
+    animate()
+
+    // 📜 SETUP SCROLL TRIGGERS UNIFICATI (include progressive separation)
+    setupScrollTriggers(particleSystem, scene)
+
+    // 📱 RESIZE HANDLER
+    const resizeHandler = () => handleResizeEvent(camera, renderer, particleSystem, scene)
+    window.addEventListener('resize', resizeHandler)
+
+    console.log('✅ Sistema particelle ottimizzato inizializzato!')
+
+    // 🧹 CLEANUP
+    return () => {
+      window.removeEventListener('resize', resizeHandler)
+      if (animationIdRef.current) {
+        cancelAnimationFrame(animationIdRef.current)
+      }
+      if (mountRef.current && renderer.domElement) {
+        mountRef.current.removeChild(renderer.domElement)
+      }
+      
+      // Cleanup completo
+      if (particleSystem) {
+        cleanupResources(
+          renderer,
+          particleSystem.geometry,
+          particleSystem.material,
+          particleSystem.material.map as THREE.CanvasTexture
+        )
+      }
+    }
+  }, [])' → '  useEffect(() => {
+    // 📱 Detect mobile only on client-side
+    setIsMobile(isMobileDevice())
+    
+    if (!mountRef.current) return
+
+    console.log('🎯 Inizializzazione sistema particelle ottimizzato...')
+
+    // 🏗️ SETUP SCENA BASE
+    const scene = new THREE.Scene()
+    const camera = setupCamera()
+    const renderer = setupRendererWithMobileFallback()
+    
+    // 🎨 MOUNT RENDERER
+    mountRef.current.appendChild(renderer.domElement)
+    setupCanvasStyles(renderer.domElement)
+
+    // 🎯 INIZIALIZZAZIONE SISTEMA PARTICELLARE
+    const particleSystem = initializeParticleSystem(scene)
+    
+    // 📦 SALVA RIFERIMENTI
+    sceneRef.current = scene
+    rendererRef.current = renderer
+    particleSystemRef.current = particleSystem
+
+    // 🎨 LISTENER DINAMICO per cambi di tema
+    const themeMediaQuery = window.matchMedia('(prefers-color-scheme: light)')
+    const handleThemeChange = (e: MediaQueryListEvent) => {
+      console.log(`🎨 Tema cambiato: ${e.matches ? 'chiaro' : 'scuro'}`)
+      if (e.matches) {
+        // Tema chiaro → Background opaco nero
+        renderer.setClearColor(0x000000, 1)
+      } else {
+        // Tema scuro → Background trasparente
+        renderer.setClearColor(0x000000, 0)
+      }
+    }
+    themeMediaQuery.addEventListener('change', handleThemeChange)
+
+    // 🎬 ANIMATION LOOP OTTIMIZZATO
+    const animate = () => {
+      animationIdRef.current = requestAnimationFrame(animate)
+      
+      if (particleSystem.points) {
+        // Rotazione continua
+        particleSystem.points.rotation.y += ANIMATION_CONFIG.rotationSpeed.y
+        particleSystem.points.rotation.x += ANIMATION_CONFIG.rotationSpeed.x
+        
+        // 🌊 MORPHING CONTINUO per forme dinamiche (FIXED: no import dinamici)
+        if (particleSystem.currentShape === 'pricing') {
+          updateMorphingBlobOptimized(particleSystem)
+        }
+        
+        // 🧬 ANIMAZIONE DNA CONTINUA (FIXED: no import dinamici)
+        if (particleSystem.currentShape === 'demo') {
+          updateDNAHelixOptimized(particleSystem)
+        }
+      }
+
+      renderer.render(scene, camera)
+    }
+    animate()
+
+    // 📜 SETUP SCROLL TRIGGERS UNIFICATI (include progressive separation)
+    setupScrollTriggers(particleSystem, scene)
+
+    // 📱 RESIZE HANDLER
+    const resizeHandler = () => handleResizeEvent(camera, renderer, particleSystem, scene)
+    window.addEventListener('resize', resizeHandler)
+
+    console.log('✅ Sistema particelle ottimizzato inizializzato!')
+
+    // 🧹 CLEANUP
+    return () => {
+      window.removeEventListener('resize', resizeHandler)
+      themeMediaQuery.removeEventListener('change', handleThemeChange)
+      if (animationIdRef.current) {
+        cancelAnimationFrame(animationIdRef.current)
+      }
+      if (mountRef.current && renderer.domElement) {
+        mountRef.current.removeChild(renderer.domElement)
+      }
+      
+      // Cleanup completo
+      if (particleSystem) {
+        cleanupResources(
+          renderer,
+          particleSystem.geometry,
+          particleSystem.material,
+          particleSystem.material.map as THREE.CanvasTexture
+        )
+      }
+    }
+  }, [])' (case-sensitive)]
+
+*20:01 ReplaceVSCodeText su ParticleBackground.tsx [ParticleBackground.tsx.20250605.200124]: Aggiunta di SSR safety check per il listener dei cambi di tema. Il listener viene creato solo quando window è disponibile (client-side) per evitare errori durante il server-side rendering. Questa è una pratica necessaria per Next.js e garantisce che il codice funzioni correttamente sia lato server che client. [Dettagli: Sostituzione '    // 🎨 LISTENER DINAMICO per cambi di tema
+    const themeMediaQuery = window.matchMedia('(prefers-color-scheme: light)')
+    const handleThemeChange = (e: MediaQueryListEvent) => {
+      console.log(`🎨 Tema cambiato: ${e.matches ? 'chiaro' : 'scuro'}`)
+      if (e.matches) {
+        // Tema chiaro → Background opaco nero
+        renderer.setClearColor(0x000000, 1)
+      } else {
+        // Tema scuro → Background trasparente
+        renderer.setClearColor(0x000000, 0)
+      }
+    }
+    themeMediaQuery.addEventListener('change', handleThemeChange)' → '    // 🎨 LISTENER DINAMICO per cambi di tema (SSR Safe)
+    let themeMediaQuery: MediaQueryList | null = null
+    let handleThemeChange: ((e: MediaQueryListEvent) => void) | null = null
+    
+    if (typeof window !== 'undefined') {
+      themeMediaQuery = window.matchMedia('(prefers-color-scheme: light)')
+      handleThemeChange = (e: MediaQueryListEvent) => {
+        console.log(`🎨 Tema cambiato: ${e.matches ? 'chiaro' : 'scuro'}`)
+        if (e.matches) {
+          // Tema chiaro → Background opaco nero
+          renderer.setClearColor(0x000000, 1)
+        } else {
+          // Tema scuro → Background trasparente
+          renderer.setClearColor(0x000000, 0)
+        }
+      }
+      themeMediaQuery.addEventListener('change', handleThemeChange)
+    }' (case-sensitive)]
+
+*20:01 ReplaceVSCodeText su ParticleBackground.tsx [ParticleBackground.tsx.20250605.200133]: Aggiornamento del cleanup per gestire correttamente la rimozione del listener dei cambi di tema con controlli SSR safe. Il listener viene rimosso solo se era stato effettivamente creato, evitando errori quando il componente viene smontato. Questo garantisce una gestione pulita delle risorse e previene memory leak. [Dettagli: Sostituzione '    // 🧹 CLEANUP
+    return () => {
+      window.removeEventListener('resize', resizeHandler)
+      themeMediaQuery.removeEventListener('change', handleThemeChange)
+      if (animationIdRef.current) {
+        cancelAnimationFrame(animationIdRef.current)
+      }
+      if (mountRef.current && renderer.domElement) {
+        mountRef.current.removeChild(renderer.domElement)
+      }
+      
+      // Cleanup completo
+      if (particleSystem) {
+        cleanupResources(
+          renderer,
+          particleSystem.geometry,
+          particleSystem.material,
+          particleSystem.material.map as THREE.CanvasTexture
+        )
+      }
+    }' → '    // 🧹 CLEANUP
+    return () => {
+      window.removeEventListener('resize', resizeHandler)
+      // Cleanup tema listener (SSR Safe)
+      if (themeMediaQuery && handleThemeChange) {
+        themeMediaQuery.removeEventListener('change', handleThemeChange)
+      }
+      if (animationIdRef.current) {
+        cancelAnimationFrame(animationIdRef.current)
+      }
+      if (mountRef.current && renderer.domElement) {
+        mountRef.current.removeChild(renderer.domElement)
+      }
+      
+      // Cleanup completo
+      if (particleSystem) {
+        cleanupResources(
+          renderer,
+          particleSystem.geometry,
+          particleSystem.material,
+          particleSystem.material.map as THREE.CanvasTexture
+        )
+      }
+    }' (case-sensitive)]
+
+*20:01 ReplaceVSCodeText su ParticleBackground.tsx [ParticleBackground.tsx.20250605.200144]: Aggiunta di SSR safety check anche per la rimozione del resize listener nel cleanup. Tutti i listener di window ora sono protetti da controlli SSR per evitare errori durante il server-side rendering di Next.js. Questo garantisce che il componente funzioni correttamente in tutti gli ambienti. [Dettagli: Sostituzione '    // 🧹 CLEANUP
+    return () => {
+      window.removeEventListener('resize', resizeHandler)
+      // Cleanup tema listener (SSR Safe)
+      if (themeMediaQuery && handleThemeChange) {
+        themeMediaQuery.removeEventListener('change', handleThemeChange)
+      }
+      if (animationIdRef.current) {
+        cancelAnimationFrame(animationIdRef.current)
+      }
+      if (mountRef.current && renderer.domElement) {
+        mountRef.current.removeChild(renderer.domElement)
+      }
+      
+      // Cleanup completo
+      if (particleSystem) {
+        cleanupResources(
+          renderer,
+          particleSystem.geometry,
+          particleSystem.material,
+          particleSystem.material.map as THREE.CanvasTexture
+        )
+      }
+    }' → '    // 🧹 CLEANUP
+    return () => {
+      // Cleanup listeners (SSR Safe)
+      if (typeof window !== 'undefined') {
+        window.removeEventListener('resize', resizeHandler)
+      }
+      // Cleanup tema listener (SSR Safe)
+      if (themeMediaQuery && handleThemeChange) {
+        themeMediaQuery.removeEventListener('change', handleThemeChange)
+      }
+      if (animationIdRef.current) {
+        cancelAnimationFrame(animationIdRef.current)
+      }
+      if (mountRef.current && renderer.domElement) {
+        mountRef.current.removeChild(renderer.domElement)
+      }
+      
+      // Cleanup completo
+      if (particleSystem) {
+        cleanupResources(
+          renderer,
+          particleSystem.geometry,
+          particleSystem.material,
+          particleSystem.material.map as THREE.CanvasTexture
+        )
+      }
+    }' (case-sensitive)]
+
+*20:01 ReplaceVSCodeText su ParticleBackground.tsx [ParticleBackground.tsx.20250605.200151]: Aggiunta di SSR safety check anche per la creazione del resize listener. Il listener viene aggiunto solo quando window è disponibile (client-side) per essere consistente con la logica di cleanup e evitare errori SSR. Questo completa la protezione SSR per tutti i listener del componente. [Dettagli: Sostituzione '    // 📱 RESIZE HANDLER
+    const resizeHandler = () => handleResizeEvent(camera, renderer, particleSystem, scene)
+    window.addEventListener('resize', resizeHandler)' → '    // 📱 RESIZE HANDLER (SSR Safe)
+    const resizeHandler = () => handleResizeEvent(camera, renderer, particleSystem, scene)
+    if (typeof window !== 'undefined') {
+      window.addEventListener('resize', resizeHandler)
+    }' (case-sensitive)]
+
