@@ -146,7 +146,7 @@ export function setupCamera(): THREE.PerspectiveCamera {
 
 // 🖥️ SETUP RENDERER (SSR Safe)
 export function setupRenderer(): THREE.WebGLRenderer {
-  const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: false })
+  const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true })
   
   // 🔒 SSR Safety Check
   if (typeof window !== 'undefined') {
@@ -157,7 +157,7 @@ export function setupRenderer(): THREE.WebGLRenderer {
     renderer.setPixelRatio(1)
   }
   
-  renderer.setClearColor(0x000000, 1) // Background nero opaco sempre
+  renderer.setClearColor(0x000000, 0) // Background trasparente per mostrare particelle
   
   return renderer
 }
@@ -256,7 +256,7 @@ export function setupRendererWithMobileFallback(): THREE.WebGLRenderer {
     renderer.setPixelRatio(1)
   }
   
-  renderer.setClearColor(0x000000, 1) // Background nero opaco per consistenza
+  renderer.setClearColor(0x000000, 0) // Background trasparente per mostrare particelle
   
   return renderer
 }
