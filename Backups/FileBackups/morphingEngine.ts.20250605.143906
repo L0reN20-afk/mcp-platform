@@ -141,7 +141,7 @@ function generatePositionsForShape(shape: string, positions: Float32Array, count
 // 🎯 GENERA TARGET POSITIONS E COLORI
 function generateTargetPositionsAndColors(particleSystem: ParticleSystem, shape: string, count: number) {
   generatePositionsForShape(shape, particleSystem.targetPositions, count)
-  generateColorsForShapeWithMobile(shape, particleSystem.colors, count)
+  generateColorsForShape(shape, particleSystem.colors, count)
   
   // Aggiorna timestamp per forme dinamiche
   if (shape === 'pricing' || shape === 'demo') {

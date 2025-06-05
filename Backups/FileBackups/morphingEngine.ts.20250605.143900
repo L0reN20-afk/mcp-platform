@@ -9,8 +9,8 @@ import {
   generateMorphingBlobPositions, 
   generateDoubleHelixPositions 
 } from './geometryGenerators'
-import { generateColorsForShape } from './colorGenerators'
-import { getOptimalParticleCount, generateOriginalSizes } from './utils'
+import { generateColorsForShapeWithMobile } from './colorGenerators'
+import { getOptimalParticleCountWithMobile, generateOriginalSizes } from './utils'
 
 // 🔄 ENGINE DI MORPHING - Gestisce tutte le transizioni tra forme
 
@@ -26,7 +26,7 @@ export function morphToShape(
   console.log(`✨ Morphing da ${particleSystem.currentShape} a ${shape}`)
   
   // Calcola numero ottimale per questa forma
-  const optimalCount = getOptimalParticleCount(shape)
+  const optimalCount = getOptimalParticleCountWithMobile(shape)
   console.log(`🔢 Forma ${shape}: ${optimalCount} particelle ottimali`)
   
   // Ricrea geometria se serve un numero diverso
@@ -56,8 +56,8 @@ export function morphToShape(
     return
   }
   
-  // Esegui animazione di esplosione completa CON SCALA CONSAPEVOLE
-  executeExplosionAnimationScaleAware(particleSystem, positions, colors, shape)
+  // Esegui animazione di esplosione completa
+  executeExplosionAnimation(particleSystem, positions, colors, shape)
 }
 
 // 🔄 RICREA GEOMETRIA CON NUOVO NUMERO DI PARTICELLE
@@ -166,23 +166,14 @@ function applyImmediateTransform(
   particleSystem.geometry.attributes.color.needsUpdate = true
 }
 
-// 💥 NUOVA! ESPLOSIONE CONSAPEVOLE DELLA SCALA ATTUALE
-function executeExplosionAnimationScaleAware(
+// 💥 ESEGUI ANIMAZIONE DI ESPLOSIONE COMPLETA
+function executeExplosionAnimation(
   particleSystem: ParticleSystem, 
   positions: Float32Array, 
   colors: Float32Array, 
   shape: string
 ) {
-  // 🎯 LEGGI LA SCALA ATTUALE DELLE PARTICELLE
-  const currentScale = particleSystem.points.scale.x // Assume uniformità x=y=z
-  const targetExplosionScale = ANIMATION_CONFIG.explosionScale // 4.0x
-  
-  console.log(`💥 ESPLOSIONE CONSAPEVOLE: Scala attuale ${currentScale.toFixed(2)}x → ${targetExplosionScale}x`)
-  
-  // ✅ SE PARTICELLE GIÀ ESPANSE (da progressive separation), PARTI DA LÌ!
-  if (currentScale > 1.0) {
-    console.log(`🌊 Particelle già espanse da Progressive Separation: ${currentScale.toFixed(2)}x`)
-  }
+  console.log(`💥 INIZIANDO ESPLOSIONE RAPIDA per ${shape}!`)
   
   // Salva i colori originali per mantenerli durante l'esplosione
   const originalColors = new Float32Array(colors)
@@ -194,76 +185,58 @@ function executeExplosionAnimationScaleAware(
     ease: "power2.out"
   })
   
-  // 🚀 ESPLOSIONE CHE PARTE DALLA SCALA ATTUALE (non sempre da 1.0x!)
+  // Fase 1: ESPLOSIONE RAPIDA
   gsap.to(particleSystem.points.scale, {
-    x: targetExplosionScale,
-    y: targetExplosionScale,
-    z: targetExplosionScale,
+    x: ANIMATION_CONFIG.explosionScale,
+    y: ANIMATION_CONFIG.explosionScale,
+    z: ANIMATION_CONFIG.explosionScale,
     duration: ANIMATION_CONFIG.explosionDuration,
     ease: "power3.out",
-    onStart: () => {
-      console.log(`🚀 ESPLOSIONE INIZIATA da ${currentScale.toFixed(2)}x!`)
-    },
-    onComplete: () => {
-      console.log(`💥 ESPLOSIONE COMPLETATA: ${currentScale.toFixed(2)}x → ${targetExplosionScale}x!`)
-    }
+    onStart: () => console.log('🚀 ESPLOSIONE INIZIATA!'),
+    onComplete: () => console.log('💥 ESPLOSIONE COMPLETATA!')
   })
   
-  // Fase 2: ROTAZIONE CONTROLLATA (durata adattata alla scala iniziale)
-  const rotationDuration = currentScale > 1.5 ? 1.2 : 1.5 // Meno rotazione se già espanse
-  
+  // Fase 2: ROTAZIONE CONTROLLATA
   gsap.to(particleSystem.points.rotation, {
     x: particleSystem.points.rotation.x + Math.PI * 2,
     y: particleSystem.points.rotation.y + Math.PI * 3,
     z: particleSystem.points.rotation.z + Math.PI * 1,
-    duration: rotationDuration,
+    duration: 1.5,
     ease: "power2.inOut"
   })
   
-  // Fase 2.5: SHAKE ADATTATO (meno shake se già espanse)
-  const shakeIntensity = currentScale > 1.5 ? 0.2 : 0.3
-  
+  // Fase 2.5: SHAKE VELOCE
   gsap.to(particleSystem.points.position, {
-    x: `+=${shakeIntensity}`, 
-    y: `+=${shakeIntensity * 0.7}`, 
-    z: `+=${shakeIntensity * 0.8}`,
+    x: "+=0.3", 
+    y: "+=0.2", 
+    z: "+=0.25",
     duration: 0.1,
     repeat: 6,
     yoyo: true,
     ease: "power2.inOut"
   })
   
-  // Fase 3: DISPERSIONE CASUALE ADATTATA
-  applyRandomDispersionScaleAware(positions, particleSystem, currentScale)
+  // Fase 3: DISPERSIONE CASUALE
+  applyRandomDispersion(positions, particleSystem)
   
-  // Fase 4: RICOMPOSIZIONE (pausa adattata)
-  const pauseDuration = currentScale > 1.5 ? 0.4 : ANIMATION_CONFIG.pauseDuration
-  
-  gsap.delayedCall(pauseDuration, () => {
+  // Fase 4: RICOMPOSIZIONE
+  gsap.delayedCall(ANIMATION_CONFIG.pauseDuration, () => {
     executeRecomposition(particleSystem, positions, colors, originalColors, shape)
   })
 }
 
-// 🌪️ DISPERSIONE CASUALE ADATTATA ALLA SCALA
-function applyRandomDispersionScaleAware(
-  positions: Float32Array, 
-  particleSystem: ParticleSystem,
-  currentScale: number
-) {
-  // Meno dispersione se le particelle sono già espanse
-  const disperseMultiplier = currentScale > 1.5 ? 0.7 : 1.0
-  const explosionStrength = ANIMATION_CONFIG.explosionStrength * disperseMultiplier
-  
+// 🌪️ APPLICA DISPERSIONE CASUALE
+function applyRandomDispersion(positions: Float32Array, particleSystem: ParticleSystem) {
   for (let i = 0; i < positions.length; i += 3) {
-    positions[i] += (Math.random() - 0.5) * explosionStrength     
-    positions[i + 1] += (Math.random() - 0.5) * explosionStrength   
-    positions[i + 2] += (Math.random() - 0.5) * explosionStrength 
+    positions[i] += (Math.random() - 0.5) * ANIMATION_CONFIG.explosionStrength     
+    positions[i + 1] += (Math.random() - 0.5) * ANIMATION_CONFIG.explosionStrength   
+    positions[i + 2] += (Math.random() - 0.5) * ANIMATION_CONFIG.explosionStrength 
   }
   particleSystem.geometry.attributes.position.needsUpdate = true
-  console.log(`🌪️ DISPERSIONE ADATTATA (${disperseMultiplier.toFixed(1)}x intensità)!`)
+  console.log('🌪️ DISPERSIONE RAPIDA APPLICATA!')
 }
 
-// 🎨 ESEGUI RICOMPOSIZIONE (invariata)
+// 🎨 ESEGUI RICOMPOSIZIONE
 function executeRecomposition(
   particleSystem: ParticleSystem, 
   positions: Float32Array, 
@@ -304,9 +277,10 @@ function executeRecomposition(
   })
   
   particleSystem.currentShape = shape
+  particleSystem.isMorphing = false // Reset flag per permettere morphing successivi
 }
 
-// 🌈 ESEGUI TRANSIZIONE COLORI (invariata)
+// 🌈 ESEGUI TRANSIZIONE COLORI
 function executeColorTransition(
   colors: Float32Array, 
   originalColors: Float32Array, 

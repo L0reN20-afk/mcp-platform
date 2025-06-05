@@ -26,7 +26,7 @@ export function morphToShape(
   console.log(`✨ Morphing da ${particleSystem.currentShape} a ${shape}`)
   
   // Calcola numero ottimale per questa forma
-  const optimalCount = getOptimalParticleCountWithMobile(shape)
+  const optimalCount = getOptimalParticleCount(shape)
   console.log(`🔢 Forma ${shape}: ${optimalCount} particelle ottimali`)
   
   // Ricrea geometria se serve un numero diverso
@@ -77,7 +77,7 @@ function recreateGeometry(
   const newSizes = new Float32Array(optimalCount)
   
   // Inizializza i nuovi colori con i colori correnti
-  generateColorsForShapeWithMobile(particleSystem.currentShape, newColors, optimalCount)
+  generateColorsForShape(particleSystem.currentShape, newColors, optimalCount)
   console.log(`🎨 Colori inizializzati per forma corrente: ${particleSystem.currentShape}`)
   
   // Genera dimensioni e posizioni per le nuove particelle
@@ -141,7 +141,7 @@ function generatePositionsForShape(shape: string, positions: Float32Array, count
 // 🎯 GENERA TARGET POSITIONS E COLORI
 function generateTargetPositionsAndColors(particleSystem: ParticleSystem, shape: string, count: number) {
   generatePositionsForShape(shape, particleSystem.targetPositions, count)
-  generateColorsForShapeWithMobile(shape, particleSystem.colors, count)
+  generateColorsForShape(shape, particleSystem.colors, count)
   
   // Aggiorna timestamp per forme dinamiche
   if (shape === 'pricing' || shape === 'demo') {

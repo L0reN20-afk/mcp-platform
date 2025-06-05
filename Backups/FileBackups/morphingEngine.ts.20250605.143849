@@ -197,7 +197,6 @@ function executeExplosionAnimation(
   })
   
   // Fase 2: ROTAZIONE CONTROLLATA
-  const { rotationSpeed } = ANIMATION_CONFIG
   gsap.to(particleSystem.points.rotation, {
     x: particleSystem.points.rotation.x + Math.PI * 2,
     y: particleSystem.points.rotation.y + Math.PI * 3,
@@ -278,6 +277,7 @@ function executeRecomposition(
   })
   
   particleSystem.currentShape = shape
+  particleSystem.isMorphing = false // Reset flag per permettere morphing successivi
 }
 
 // 🌈 ESEGUI TRANSIZIONE COLORI
