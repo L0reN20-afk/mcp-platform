@@ -31,7 +31,8 @@ html {
   max-width: 100vw;
   /* ✅ RIMOSSO overflow-x: hidden che interferiva con scroll verticale */
   overflow-x: clip; /* Previene decentramento */
-  background: #000000; /* Forza background nero anche su html */
+  /* Background dinamico: nero solo con tema chiaro */
+  background: transparent;
 }
 
 body {
@@ -39,7 +40,8 @@ body {
   overflow-x: hidden; /* Solo horizontal overflow nascosto */
   position: relative; /* Previene decentramento */
   color: rgb(var(--foreground-rgb));
-  background: #000000; /* Forza background nero sempre */
+  /* Background dinamico: nero solo con tema chiaro */
+  background: transparent;
 }
 
 /* 🎨 SCROLLBAR STILIZZATA (non nascosta!) per compatibilità ScrollTrigger */
@@ -71,16 +73,24 @@ a {
   text-decoration: none;
 }
 
-/* 🎨 FORZA SEMPRE TEMA SCURO - Indipendente dalle preferenze sistema */
+/* 🎨 TEMA DINAMICO - Background nero solo quando necessario */
 @media (prefers-color-scheme: dark) {
   html {
     color-scheme: dark;
+    background: transparent; /* Trasparente per mostrare particelle */
+  }
+  body {
+    background: transparent; /* Trasparente per mostrare particelle */
   }
 }
 
 @media (prefers-color-scheme: light) {
   html {
     color-scheme: dark; /* Forza tema scuro anche quando sistema è chiaro */
+    background: #000000; /* Nero per evitare bianco del browser */
+  }
+  body {
+    background: #000000; /* Nero per evitare bianco del browser */
   }
 }
 
@@ -273,10 +283,12 @@ canvas {
   }
   
   canvas {
-    display: none !important; /* Nasconde completamente il sistema particellare */
+    /* Mantieni particelle visibili ma senza animazioni */
+    animation: none !important;
+    transition: none !important;
   }
   
-  /* 🎨 Background fallback quando particelle sono disabilitate */
+  /* 🎨 Background fallback statico più elegante */
   body {
     background: linear-gradient(135deg, #0f0f23 0%, #1a1a2e 50%, #16213e 100%);
   }
