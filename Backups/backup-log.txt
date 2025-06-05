@@ -2529,3 +2529,5 @@ Il sistema mantiene tutte le ottimizzazioni esistenti per performance e responsi
 
 *10:19 ModifyVSCodeFileContent su page.tsx [page.tsx.20250605.101959]: Aggiornamento della page principale per passare la prop onTrialClick anche al componente Navigation, in modo che tutti i pulsanti trial nel sito utilizzino lo stesso modal globale. Aggiunta della prop handleTrialClick al componente Navigation per centralizzare completamente la gestione del TrialModal. [Dettagli: Sovrascrittura completa del contenuto (2010 caratteri)]
 
+*11:00 ModifyVSCodeFileContent su TrialModal.tsx [TrialModal.tsx.20250605.110044]: Correzione dell'errore ESLint di build Vercel: rimozione degli apostrofi non escaped che causano l'errore react/no-unescaped-entities. Sostituzione di tutte le occorrenze di apostrofi nelle stringhe JSX con versioni escaped o alternative senza apostrofo per evitare l'errore di build su Vercel. L'errore era alla riga 482 colonna 38 nel TrialModal.tsx. [Dettagli: Sovrascrittura completa del contenuto (20275 caratteri)]
+
