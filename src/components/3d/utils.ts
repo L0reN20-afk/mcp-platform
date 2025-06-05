@@ -224,10 +224,34 @@ export function isMobileDevice(): boolean {
   return isMobileViewport || (isMobileUA && isTouchDevice)
 }
 
+<<<<<<< HEAD
 // 🎯 CALCOLO PARTICELLE CON OTTIMIZZAZIONI MOBILE (SSR Safe) - STESSO NUMERO, SOLO OTTIMIZZAZIONI RENDERING
 export function getOptimalParticleCountWithMobile(shape: string): number {
   // 🖥️📱 STESSO NUMERO DI PARTICELLE per desktop e mobile
   // Solo le ottimizzazioni di rendering cambiano (materiale, colori, etc.)
+=======
+// 🎯 CALCOLO PARTICELLE CON OTTIMIZZAZIONI MOBILE (SSR Safe)
+export function getOptimalParticleCountWithMobile(shape: string): number {
+  const isMobile = isMobileDevice()
+  
+  if (isMobile) {
+    // 📱 MOBILE: Usa MOBILE_CONFIG per performance ottimali
+    const { MOBILE_CONFIG } = require('./constants')
+    const baseCount = Math.min(MOBILE_CONFIG.maxParticles, 800)
+    
+    // Riduci ulteriormente in base alla forma
+    switch(shape) {
+      case 'hero': return Math.floor(baseCount * 0.8)      // 640 particelle
+      case 'features': return Math.floor(baseCount * 0.7)  // 560 particelle
+      case 'packages': return Math.floor(baseCount * 0.6)  // 480 particelle
+      case 'pricing': return Math.floor(baseCount * 0.9)   // 720 particelle (morfing needs more)
+      case 'demo': return Math.floor(baseCount * 0.7)      // 560 particelle
+      default: return Math.floor(baseCount * 0.8)
+    }
+  }
+  
+  // 🖥️ DESKTOP: Usa la funzione esistente (ZERO modifiche)
+>>>>>>> 4ed3c122f421cdfaf6790628c621d8596043d603
   return getOptimalParticleCount(shape)
 }
 
@@ -272,11 +296,19 @@ export function createParticleMaterialWithMobileOptimizations(circleTexture: THR
   
   // 📱 MOBILE: Ottimizzazioni specifiche
   return new THREE.PointsMaterial({
+<<<<<<< HEAD
     size: MATERIAL_CONFIG.baseSize * 1.1, // Particelle leggermente più grandi per visibilità
     sizeAttenuation: MATERIAL_CONFIG.sizeAttenuation,
     vertexColors: true,
     transparent: MATERIAL_CONFIG.transparent,
     opacity: 0.85, // Opacità equilibrata per contrasto
+=======
+    size: MATERIAL_CONFIG.baseSize * 1.2, // Particelle leggermente più grandi per visibilità
+    sizeAttenuation: MATERIAL_CONFIG.sizeAttenuation,
+    vertexColors: true,
+    transparent: MATERIAL_CONFIG.transparent,
+    opacity: 0.95, // Opacità più alta per contrasto
+>>>>>>> 4ed3c122f421cdfaf6790628c621d8596043d603
     blending: THREE.AdditiveBlending,
     map: circleTexture
   })
@@ -305,5 +337,9 @@ export function handleResizeWithMobile(
   
   // Mantieni pixel ratio fisso a 1 su mobile
   renderer.setPixelRatio(1)
+<<<<<<< HEAD
   material.size = MATERIAL_CONFIG.baseSize * 1.1
+=======
+  material.size = MATERIAL_CONFIG.baseSize * 1.2
+>>>>>>> 4ed3c122f421cdfaf6790628c621d8596043d603
 }

@@ -126,6 +126,7 @@ export function generateColorsForShape(shape: string, colors: Float32Array, coun
 
 // 📱 VERSIONI MOBILE - COLORI PIÙ CONTRASTATI E BRILLANTI
 
+<<<<<<< HEAD
 // 🔵 COLORI BLU MOBILE (Hero Section) - Contrasto moderato per leggibilità
 export function generateBlueColorsMobile(colors: Float32Array, count: number) {
   for (let i = 0; i < count; i++) {
@@ -154,11 +155,42 @@ export function generateCyanColorsMobile(colors: Float32Array, count: number) {
 }
 
 // 🧬 COLORI DNA MOBILE (Demo Section) - Bio-tech equilibrato
+=======
+// 🔵 COLORI BLU MOBILE (Hero Section) - Più brillanti per contrasto
+export function generateBlueColorsMobile(colors: Float32Array, count: number) {
+  for (let i = 0; i < count; i++) {
+    colors[i * 3] = 0.3 + Math.random() * 0.4     // R - Più saturato
+    colors[i * 3 + 1] = 0.6 + Math.random() * 0.4 // G - Più brillante
+    colors[i * 3 + 2] = 0.9 + Math.random() * 0.1 // B - Blu intenso
+  }
+}
+
+// 🟣 COLORI VIOLA MOBILE (Features Section) - Contrasto elevato
+export function generatePurpleColorsMobile(colors: Float32Array, count: number) {
+  for (let i = 0; i < count; i++) {
+    colors[i * 3] = 0.7 + Math.random() * 0.3     // R - Rosso intenso
+    colors[i * 3 + 1] = 0.2 + Math.random() * 0.3 // G - Verde ridotto
+    colors[i * 3 + 2] = 0.9 + Math.random() * 0.1 // B - Blu massimo
+  }
+}
+
+// 🔷 COLORI CYAN MOBILE (Packages Section) - Luminosità aumentata
+export function generateCyanColorsMobile(colors: Float32Array, count: number) {
+  for (let i = 0; i < count; i++) {
+    colors[i * 3] = 0.1 + Math.random() * 0.2     // R - Rosso minimo
+    colors[i * 3 + 1] = 0.8 + Math.random() * 0.2 // G - Verde brillante
+    colors[i * 3 + 2] = 0.9 + Math.random() * 0.1 // B - Blu massimo
+  }
+}
+
+// 🧬 COLORI DNA MOBILE (Demo Section) - Bio-tech contrastato
+>>>>>>> 4ed3c122f421cdfaf6790628c621d8596043d603
 export function generateDNAColorsMobile(colors: Float32Array, count: number) {
   for (let i = 0; i < count; i++) {
     const isFirstHelix = i % 2 === 0
     
     if (isFirstHelix) {
+<<<<<<< HEAD
       // Prima elica: Verde bio moderato
       colors[i * 3] = 0.2 + Math.random() * 0.2     // R - Rosso leggero
       colors[i * 3 + 1] = 0.6 + Math.random() * 0.2 // G - Verde equilibrato
@@ -168,16 +200,36 @@ export function generateDNAColorsMobile(colors: Float32Array, count: number) {
       colors[i * 3] = 0.2 + Math.random() * 0.2     // R - Rosso leggero
       colors[i * 3 + 1] = 0.4 + Math.random() * 0.2 // G - Verde moderato
       colors[i * 3 + 2] = 0.7 + Math.random() * 0.2 // B - Blu equilibrato
+=======
+      // Prima elica: Verde bio brillante
+      colors[i * 3] = 0.1 + Math.random() * 0.2     // R - Rosso minimo
+      colors[i * 3 + 1] = 0.8 + Math.random() * 0.2 // G - Verde intenso
+      colors[i * 3 + 2] = 0.4 + Math.random() * 0.3 // B - Blu moderato
+    } else {
+      // Seconda elica: Blu tech brillante
+      colors[i * 3] = 0.1 + Math.random() * 0.2     // R - Rosso minimo
+      colors[i * 3 + 1] = 0.5 + Math.random() * 0.3 // G - Verde moderato
+      colors[i * 3 + 2] = 0.9 + Math.random() * 0.1 // B - Blu massimo
+>>>>>>> 4ed3c122f421cdfaf6790628c621d8596043d603
     }
   }
 }
 
+<<<<<<< HEAD
 // 🌈 COLORI ARCOBALENO MOBILE (Pricing Section) - Saturazione equilibrata
 export function generateRainbowColorsMobile(colors: Float32Array, count: number) {
   for (let i = 0; i < count; i++) {
     const hue = (i / count) * 6.28
     const saturation = 0.7 // Saturazione moderata per mobile
     const value = 0.8      // Luminosità equilibrata per mobile
+=======
+// 🌈 COLORI ARCOBALENO MOBILE (Pricing Section) - Saturazione massima
+export function generateRainbowColorsMobile(colors: Float32Array, count: number) {
+  for (let i = 0; i < count; i++) {
+    const hue = (i / count) * 6.28
+    const saturation = 1.0 // Saturazione massima per mobile
+    const value = 1.0      // Luminosità massima per mobile
+>>>>>>> 4ed3c122f421cdfaf6790628c621d8596043d603
     
     const h = (hue * 180 / Math.PI) / 60
     const c = value * saturation

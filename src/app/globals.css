@@ -196,9 +196,15 @@ canvas {
     height: 100%;
     background: linear-gradient(
       180deg, 
+<<<<<<< HEAD
       rgba(0,0,0,0.2) 0%, 
       rgba(0,0,0,0.3) 50%, 
       rgba(0,0,0,0.2) 100%
+=======
+      rgba(0,0,0,0.4) 0%, 
+      rgba(0,0,0,0.6) 50%, 
+      rgba(0,0,0,0.4) 100%
+>>>>>>> 4ed3c122f421cdfaf6790628c621d8596043d603
     );
     z-index: 1;
     pointer-events: none;
@@ -236,9 +242,15 @@ canvas {
   .mobile-contrast-overlay {
     background: linear-gradient(
       180deg, 
+<<<<<<< HEAD
       rgba(0,0,0,0.25) 0%, 
       rgba(0,0,0,0.35) 50%, 
       rgba(0,0,0,0.25) 100%
+=======
+      rgba(0,0,0,0.5) 0%, 
+      rgba(0,0,0,0.7) 50%, 
+      rgba(0,0,0,0.5) 100%
+>>>>>>> 4ed3c122f421cdfaf6790628c621d8596043d603
     );
   }
   

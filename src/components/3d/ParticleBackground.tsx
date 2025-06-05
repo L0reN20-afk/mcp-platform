@@ -142,7 +142,11 @@ export default function ParticleBackground() {
             left: 0,
             width: '100%',
             height: '100%',
+<<<<<<< HEAD
             background: 'linear-gradient(180deg, rgba(0,0,0,0.2) 0%, rgba(0,0,0,0.3) 50%, rgba(0,0,0,0.2) 100%)',
+=======
+            background: 'linear-gradient(180deg, rgba(0,0,0,0.4) 0%, rgba(0,0,0,0.6) 50%, rgba(0,0,0,0.4) 100%)',
+>>>>>>> 4ed3c122f421cdfaf6790628c621d8596043d603
             zIndex: 1,
             pointerEvents: 'none'
           }}
