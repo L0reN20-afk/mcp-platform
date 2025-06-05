@@ -154,7 +154,7 @@ export default function TrialModal({ isOpen, onClose }: TrialModalProps) {
       console.error('OAuth error:', error)
       setTrialResult({
         success: false,
-        error: error instanceof Error ? error.message : 'Errore durante l\'autenticazione'
+        error: error instanceof Error ? error.message : 'Errore durante la autenticazione'
       })
       setIsLoading(false)
       setLoadingProvider(null)
@@ -237,7 +237,7 @@ export default function TrialModal({ isOpen, onClose }: TrialModalProps) {
   const handleClose = () => {
     if (!isLoading) {
       onClose()
-      // Reset state dopo un delay per l'animazione
+      // Reset state dopo un delay per la animazione
       setTimeout(() => {
         setTrialResult(null)
         setLoadingProvider(null)
@@ -479,7 +479,7 @@ export default function TrialModal({ isOpen, onClose }: TrialModalProps) {
                     </div>
                     <div className="flex items-center gap-2 text-gray-600">
                       <Check className="w-4 h-4 text-green-500" />
-                      Nessun limite d'uso
+                      Nessun limite di uso
                     </div>
                   </div>
                 </motion.div>
