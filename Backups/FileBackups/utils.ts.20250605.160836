@@ -272,7 +272,7 @@ export function createParticleMaterialWithMobileOptimizations(circleTexture: THR
   
   // 📱 MOBILE: Ottimizzazioni specifiche
   return new THREE.PointsMaterial({
-    size: MATERIAL_CONFIG.baseSize * 1.1, // Particelle leggermente più grandi per visibilità
+    size: MATERIAL_CONFIG.baseSize * 1.2, // Particelle leggermente più grandi per visibilità
     sizeAttenuation: MATERIAL_CONFIG.sizeAttenuation,
     vertexColors: true,
     transparent: MATERIAL_CONFIG.transparent,
@@ -305,5 +305,5 @@ export function handleResizeWithMobile(
   
   // Mantieni pixel ratio fisso a 1 su mobile
   renderer.setPixelRatio(1)
-  material.size = MATERIAL_CONFIG.baseSize * 1.1
+  material.size = MATERIAL_CONFIG.baseSize * 1.2
 }

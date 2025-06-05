@@ -305,5 +305,5 @@ export function handleResizeWithMobile(
   
   // Mantieni pixel ratio fisso a 1 su mobile
   renderer.setPixelRatio(1)
-  material.size = MATERIAL_CONFIG.baseSize * 1.1
+  material.size = MATERIAL_CONFIG.baseSize * 1.2
 }

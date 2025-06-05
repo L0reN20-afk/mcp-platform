@@ -126,58 +126,58 @@ export function generateColorsForShape(shape: string, colors: Float32Array, coun
 
 // 📱 VERSIONI MOBILE - COLORI PIÙ CONTRASTATI E BRILLANTI
 
-// 🔵 COLORI BLU MOBILE (Hero Section) - Contrasto moderato per leggibilità
+// 🔵 COLORI BLU MOBILE (Hero Section) - Più brillanti per contrasto
 export function generateBlueColorsMobile(colors: Float32Array, count: number) {
   for (let i = 0; i < count; i++) {
-    colors[i * 3] = 0.3 + Math.random() * 0.3     // R - Meno saturato
-    colors[i * 3 + 1] = 0.5 + Math.random() * 0.3 // G - Più equilibrato  
-    colors[i * 3 + 2] = 0.7 + Math.random() * 0.2 // B - Blu moderato
+    colors[i * 3] = 0.3 + Math.random() * 0.4     // R - Più saturato
+    colors[i * 3 + 1] = 0.6 + Math.random() * 0.4 // G - Più brillante
+    colors[i * 3 + 2] = 0.9 + Math.random() * 0.1 // B - Blu intenso
   }
 }
 
-// 🟣 COLORI VIOLA MOBILE (Features Section) - Contrasto equilibrato
+// 🟣 COLORI VIOLA MOBILE (Features Section) - Contrasto elevato
 export function generatePurpleColorsMobile(colors: Float32Array, count: number) {
   for (let i = 0; i < count; i++) {
-    colors[i * 3] = 0.6 + Math.random() * 0.2     // R - Rosso moderato
-    colors[i * 3 + 1] = 0.3 + Math.random() * 0.2 // G - Verde equilibrato
-    colors[i * 3 + 2] = 0.7 + Math.random() * 0.2 // B - Blu moderato
+    colors[i * 3] = 0.7 + Math.random() * 0.3     // R - Rosso intenso
+    colors[i * 3 + 1] = 0.2 + Math.random() * 0.3 // G - Verde ridotto
+    colors[i * 3 + 2] = 0.9 + Math.random() * 0.1 // B - Blu massimo
   }
 }
 
-// 🔷 COLORI CYAN MOBILE (Packages Section) - Luminosità moderata
+// 🔷 COLORI CYAN MOBILE (Packages Section) - Luminosità aumentata
 export function generateCyanColorsMobile(colors: Float32Array, count: number) {
   for (let i = 0; i < count; i++) {
-    colors[i * 3] = 0.2 + Math.random() * 0.2     // R - Rosso leggero
-    colors[i * 3 + 1] = 0.6 + Math.random() * 0.2 // G - Verde equilibrato
-    colors[i * 3 + 2] = 0.7 + Math.random() * 0.2 // B - Blu moderato
+    colors[i * 3] = 0.1 + Math.random() * 0.2     // R - Rosso minimo
+    colors[i * 3 + 1] = 0.8 + Math.random() * 0.2 // G - Verde brillante
+    colors[i * 3 + 2] = 0.9 + Math.random() * 0.1 // B - Blu massimo
   }
 }
 
-// 🧬 COLORI DNA MOBILE (Demo Section) - Bio-tech equilibrato
+// 🧬 COLORI DNA MOBILE (Demo Section) - Bio-tech contrastato
 export function generateDNAColorsMobile(colors: Float32Array, count: number) {
   for (let i = 0; i < count; i++) {
     const isFirstHelix = i % 2 === 0
     
     if (isFirstHelix) {
-      // Prima elica: Verde bio moderato
-      colors[i * 3] = 0.2 + Math.random() * 0.2     // R - Rosso leggero
-      colors[i * 3 + 1] = 0.6 + Math.random() * 0.2 // G - Verde equilibrato
-      colors[i * 3 + 2] = 0.4 + Math.random() * 0.2 // B - Blu leggero
+      // Prima elica: Verde bio brillante
+      colors[i * 3] = 0.1 + Math.random() * 0.2     // R - Rosso minimo
+      colors[i * 3 + 1] = 0.8 + Math.random() * 0.2 // G - Verde intenso
+      colors[i * 3 + 2] = 0.4 + Math.random() * 0.3 // B - Blu moderato
     } else {
-      // Seconda elica: Blu tech moderato
-      colors[i * 3] = 0.2 + Math.random() * 0.2     // R - Rosso leggero
-      colors[i * 3 + 1] = 0.4 + Math.random() * 0.2 // G - Verde moderato
-      colors[i * 3 + 2] = 0.7 + Math.random() * 0.2 // B - Blu equilibrato
+      // Seconda elica: Blu tech brillante
+      colors[i * 3] = 0.1 + Math.random() * 0.2     // R - Rosso minimo
+      colors[i * 3 + 1] = 0.5 + Math.random() * 0.3 // G - Verde moderato
+      colors[i * 3 + 2] = 0.9 + Math.random() * 0.1 // B - Blu massimo
     }
   }
 }
 
-// 🌈 COLORI ARCOBALENO MOBILE (Pricing Section) - Saturazione equilibrata
+// 🌈 COLORI ARCOBALENO MOBILE (Pricing Section) - Saturazione massima
 export function generateRainbowColorsMobile(colors: Float32Array, count: number) {
   for (let i = 0; i < count; i++) {
     const hue = (i / count) * 6.28
-    const saturation = 0.7 // Saturazione moderata per mobile
-    const value = 0.8      // Luminosità equilibrata per mobile
+    const saturation = 1.0 // Saturazione massima per mobile
+    const value = 1.0      // Luminosità massima per mobile
     
     const h = (hue * 180 / Math.PI) / 60
     const c = value * saturation

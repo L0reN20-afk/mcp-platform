@@ -39,3 +39,318 @@
             </motion.button>
           </div>' (case-sensitive)]
 
+*16:05 ReplaceVSCodeText su utils.ts [utils.ts.20250605.160557]: Correzione logica mobile particles: rimozione della riduzione automatica del numero di particelle su mobile. La funzione ora mantiene lo stesso numero di particelle sia su desktop che mobile, applicando solo le ottimizzazioni di rendering (materiale, colori, renderer) senza ridurre il numero effettivo di particelle come erroneamente implementato prima. [Dettagli: Sostituzione '// 🎯 CALCOLO PARTICELLE CON OTTIMIZZAZIONI MOBILE (SSR Safe)
+export function getOptimalParticleCountWithMobile(shape: string): number {
+  const isMobile = isMobileDevice()
+  
+  if (isMobile) {
+    // 📱 MOBILE: Usa MOBILE_CONFIG per performance ottimali
+    const { MOBILE_CONFIG } = require('./constants')
+    const baseCount = Math.min(MOBILE_CONFIG.maxParticles, 800)
+    
+    // Riduci ulteriormente in base alla forma
+    switch(shape) {
+      case 'hero': return Math.floor(baseCount * 0.8)      // 640 particelle
+      case 'features': return Math.floor(baseCount * 0.7)  // 560 particelle
+      case 'packages': return Math.floor(baseCount * 0.6)  // 480 particelle
+      case 'pricing': return Math.floor(baseCount * 0.9)   // 720 particelle (morfing needs more)
+      case 'demo': return Math.floor(baseCount * 0.7)      // 560 particelle
+      default: return Math.floor(baseCount * 0.8)
+    }
+  }
+  
+  // 🖥️ DESKTOP: Usa la funzione esistente (ZERO modifiche)
+  return getOptimalParticleCount(shape)
+}' → '// 🎯 CALCOLO PARTICELLE CON OTTIMIZZAZIONI MOBILE (SSR Safe) - STESSO NUMERO, SOLO OTTIMIZZAZIONI RENDERING
+export function getOptimalParticleCountWithMobile(shape: string): number {
+  // 🖥️📱 STESSO NUMERO DI PARTICELLE per desktop e mobile
+  // Solo le ottimizzazioni di rendering cambiano (materiale, colori, etc.)
+  return getOptimalParticleCount(shape)
+}' (case-sensitive)]
+
+*16:06 ReplaceVSCodeText su colorGenerators.ts [colorGenerators.ts.20250605.160610]: Riduzione contrasto colori mobile: moderazione dei valori RGB per le palette mobile riducendo la saturazione e luminosità eccessive. I colori blu mobile ora hanno valori più equilibrati (0.4-0.7 invece di 0.6-1.0) per ridurre il contrasto eccessivo sui titoli mantenendo comunque una buona leggibilità. [Dettagli: Sostituzione '// 🔵 COLORI BLU MOBILE (Hero Section) - Più brillanti per contrasto
+export function generateBlueColorsMobile(colors: Float32Array, count: number) {
+  for (let i = 0; i < count; i++) {
+    colors[i * 3] = 0.3 + Math.random() * 0.4     // R - Più saturato
+    colors[i * 3 + 1] = 0.6 + Math.random() * 0.4 // G - Più brillante
+    colors[i * 3 + 2] = 0.9 + Math.random() * 0.1 // B - Blu intenso
+  }
+}' → '// 🔵 COLORI BLU MOBILE (Hero Section) - Contrasto moderato per leggibilità
+export function generateBlueColorsMobile(colors: Float32Array, count: number) {
+  for (let i = 0; i < count; i++) {
+    colors[i * 3] = 0.3 + Math.random() * 0.3     // R - Meno saturato
+    colors[i * 3 + 1] = 0.5 + Math.random() * 0.3 // G - Più equilibrato  
+    colors[i * 3 + 2] = 0.7 + Math.random() * 0.2 // B - Blu moderato
+  }
+}' (case-sensitive)]
+
+*16:06 ReplaceVSCodeText su colorGenerators.ts [colorGenerators.ts.20250605.160639]: Riduzione contrasto per tutti i colori mobile: moderazione dei valori RGB per viola, cyan, DNA e arcobaleno mobile riducendo saturazione eccessiva. I colori ora hanno un range più equilibrato per evitare il contrasto troppo elevato sui titoli mantenendo la distinzione dalle palette desktop. [Dettagli: Sostituzione '// 🟣 COLORI VIOLA MOBILE (Features Section) - Contrasto elevato
+export function generatePurpleColorsMobile(colors: Float32Array, count: number) {
+  for (let i = 0; i < count; i++) {
+    colors[i * 3] = 0.7 + Math.random() * 0.3     // R - Rosso intenso
+    colors[i * 3 + 1] = 0.2 + Math.random() * 0.3 // G - Verde ridotto
+    colors[i * 3 + 2] = 0.9 + Math.random() * 0.1 // B - Blu massimo
+  }
+}
+
+// 🔷 COLORI CYAN MOBILE (Packages Section) - Luminosità aumentata
+export function generateCyanColorsMobile(colors: Float32Array, count: number) {
+  for (let i = 0; i < count; i++) {
+    colors[i * 3] = 0.1 + Math.random() * 0.2     // R - Rosso minimo
+    colors[i * 3 + 1] = 0.8 + Math.random() * 0.2 // G - Verde brillante
+    colors[i * 3 + 2] = 0.9 + Math.random() * 0.1 // B - Blu massimo
+  }
+}
+
+// 🧬 COLORI DNA MOBILE (Demo Section) - Bio-tech contrastato
+export function generateDNAColorsMobile(colors: Float32Array, count: number) {
+  for (let i = 0; i < count; i++) {
+    const isFirstHelix = i % 2 === 0
+    
+    if (isFirstHelix) {
+      // Prima elica: Verde bio brillante
+      colors[i * 3] = 0.1 + Math.random() * 0.2     // R - Rosso minimo
+      colors[i * 3 + 1] = 0.8 + Math.random() * 0.2 // G - Verde intenso
+      colors[i * 3 + 2] = 0.4 + Math.random() * 0.3 // B - Blu moderato
+    } else {
+      // Seconda elica: Blu tech brillante
+      colors[i * 3] = 0.1 + Math.random() * 0.2     // R - Rosso minimo
+      colors[i * 3 + 1] = 0.5 + Math.random() * 0.3 // G - Verde moderato
+      colors[i * 3 + 2] = 0.9 + Math.random() * 0.1 // B - Blu massimo
+    }
+  }
+}
+
+// 🌈 COLORI ARCOBALENO MOBILE (Pricing Section) - Saturazione massima
+export function generateRainbowColorsMobile(colors: Float32Array, count: number) {
+  for (let i = 0; i < count; i++) {
+    const hue = (i / count) * 6.28
+    const saturation = 1.0 // Saturazione massima per mobile
+    const value = 1.0      // Luminosità massima per mobile
+    
+    const h = (hue * 180 / Math.PI) / 60
+    const c = value * saturation
+    const x = c * (1 - Math.abs((h % 2) - 1))
+    const m = value - c
+    
+    let r = 0, g = 0, b = 0
+    
+    if (h >= 0 && h < 1) { r = c; g = x; b = 0 }
+    else if (h >= 1 && h < 2) { r = x; g = c; b = 0 }
+    else if (h >= 2 && h < 3) { r = 0; g = c; b = x }
+    else if (h >= 3 && h < 4) { r = 0; g = x; b = c }
+    else if (h >= 4 && h < 5) { r = x; g = 0; b = c }
+    else if (h >= 5 && h < 6) { r = c; g = 0; b = x }
+    
+    colors[i * 3] = r + m      // R
+    colors[i * 3 + 1] = g + m  // G  
+    colors[i * 3 + 2] = b + m  // B
+  }
+}' → '// 🟣 COLORI VIOLA MOBILE (Features Section) - Contrasto equilibrato
+export function generatePurpleColorsMobile(colors: Float32Array, count: number) {
+  for (let i = 0; i < count; i++) {
+    colors[i * 3] = 0.6 + Math.random() * 0.2     // R - Rosso moderato
+    colors[i * 3 + 1] = 0.3 + Math.random() * 0.2 // G - Verde equilibrato
+    colors[i * 3 + 2] = 0.7 + Math.random() * 0.2 // B - Blu moderato
+  }
+}
+
+// 🔷 COLORI CYAN MOBILE (Packages Section) - Luminosità moderata
+export function generateCyanColorsMobile(colors: Float32Array, count: number) {
+  for (let i = 0; i < count; i++) {
+    colors[i * 3] = 0.2 + Math.random() * 0.2     // R - Rosso leggero
+    colors[i * 3 + 1] = 0.6 + Math.random() * 0.2 // G - Verde equilibrato
+    colors[i * 3 + 2] = 0.7 + Math.random() * 0.2 // B - Blu moderato
+  }
+}
+
+// 🧬 COLORI DNA MOBILE (Demo Section) - Bio-tech equilibrato
+export function generateDNAColorsMobile(colors: Float32Array, count: number) {
+  for (let i = 0; i < count; i++) {
+    const isFirstHelix = i % 2 === 0
+    
+    if (isFirstHelix) {
+      // Prima elica: Verde bio moderato
+      colors[i * 3] = 0.2 + Math.random() * 0.2     // R - Rosso leggero
+      colors[i * 3 + 1] = 0.6 + Math.random() * 0.2 // G - Verde equilibrato
+      colors[i * 3 + 2] = 0.4 + Math.random() * 0.2 // B - Blu leggero
+    } else {
+      // Seconda elica: Blu tech moderato
+      colors[i * 3] = 0.2 + Math.random() * 0.2     // R - Rosso leggero
+      colors[i * 3 + 1] = 0.4 + Math.random() * 0.2 // G - Verde moderato
+      colors[i * 3 + 2] = 0.7 + Math.random() * 0.2 // B - Blu equilibrato
+    }
+  }
+}
+
+// 🌈 COLORI ARCOBALENO MOBILE (Pricing Section) - Saturazione equilibrata
+export function generateRainbowColorsMobile(colors: Float32Array, count: number) {
+  for (let i = 0; i < count; i++) {
+    const hue = (i / count) * 6.28
+    const saturation = 0.7 // Saturazione moderata per mobile
+    const value = 0.8      // Luminosità equilibrata per mobile
+    
+    const h = (hue * 180 / Math.PI) / 60
+    const c = value * saturation
+    const x = c * (1 - Math.abs((h % 2) - 1))
+    const m = value - c
+    
+    let r = 0, g = 0, b = 0
+    
+    if (h >= 0 && h < 1) { r = c; g = x; b = 0 }
+    else if (h >= 1 && h < 2) { r = x; g = c; b = 0 }
+    else if (h >= 2 && h < 3) { r = 0; g = c; b = x }
+    else if (h >= 3 && h < 4) { r = 0; g = x; b = c }
+    else if (h >= 4 && h < 5) { r = x; g = 0; b = c }
+    else if (h >= 5 && h < 6) { r = c; g = 0; b = x }
+    
+    colors[i * 3] = r + m      // R
+    colors[i * 3 + 1] = g + m  // G  
+    colors[i * 3 + 2] = b + m  // B
+  }
+}' (case-sensitive)]
+
+*16:06 ReplaceVSCodeText su ParticleBackground.tsx [ParticleBackground.tsx.20250605.160649]: Riduzione opacità overlay mobile: diminuzione dell'intensità del gradiente semitrasparente da rgba(0,0,0,0.4-0.6) a rgba(0,0,0,0.2-0.3) per renderlo più leggero e meno invasivo, mantenendo comunque un minimo contrasto per la leggibilità del testo. [Dettagli: Sostituzione '            background: 'linear-gradient(180deg, rgba(0,0,0,0.4) 0%, rgba(0,0,0,0.6) 50%, rgba(0,0,0,0.4) 100%)',' → '            background: 'linear-gradient(180deg, rgba(0,0,0,0.2) 0%, rgba(0,0,0,0.3) 50%, rgba(0,0,0,0.2) 100%)',' (case-sensitive)]
+
+*16:06 ReplaceVSCodeText su globals.css [globals.css.20250605.160656]: Aggiornamento overlay mobile nel CSS globale per coerenza: riduzione dell'opacità del gradiente mobile da rgba(0,0,0,0.4-0.6) a rgba(0,0,0,0.2-0.3) in tutte le media queries per garantire consistenza con l'overlay del ParticleBackground. [Dettagli: Sostituzione '  .mobile-contrast-overlay {
+    background: linear-gradient(
+      180deg, 
+      rgba(0,0,0,0.4) 0%, 
+      rgba(0,0,0,0.6) 50%, 
+      rgba(0,0,0,0.4) 100%
+    );' → '  .mobile-contrast-overlay {
+    background: linear-gradient(
+      180deg, 
+      rgba(0,0,0,0.2) 0%, 
+      rgba(0,0,0,0.3) 50%, 
+      rgba(0,0,0,0.2) 100%
+    );' (case-sensitive)]
+
+*16:07 ReplaceVSCodeText su globals.css: Riduzione opacità overlay mobile nella media query 768px: diminuzione dell'intensità del gradiente da rgba(0,0,0,0.4-0.6) a rgba(0,0,0,0.2-0.3) per renderlo più leggero e meno invasivo come richiesto dall'utente. [Dettagli: Sostituzione '  .mobile-contrast-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(
+      180deg, 
+      rgba(0,0,0,0.4) 0%, 
+      rgba(0,0,0,0.6) 50%, 
+      rgba(0,0,0,0.4) 100%
+    );
+    z-index: 1;
+    pointer-events: none;
+  }' → '  .mobile-contrast-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(
+      180deg, 
+      rgba(0,0,0,0.2) 0%, 
+      rgba(0,0,0,0.3) 50%, 
+      rgba(0,0,0,0.2) 100%
+    );
+    z-index: 1;
+    pointer-events: none;
+  }' (case-sensitive)]
+
+*16:07 ReplaceVSCodeText su globals.css [globals.css.20250605.160719]: Riduzione opacità overlay mobile nella media query 480px: diminuzione dell'intensità del gradiente da rgba(0,0,0,0.5-0.7) a rgba(0,0,0,0.25-0.35) per renderlo più leggero anche sui dispositivi extra small, mantenendo coerenza con l'overlay principale. [Dettagli: Sostituzione '  .mobile-contrast-overlay {
+    background: linear-gradient(
+      180deg, 
+      rgba(0,0,0,0.5) 0%, 
+      rgba(0,0,0,0.7) 50%, 
+      rgba(0,0,0,0.5) 100%
+    );
+  }' → '  .mobile-contrast-overlay {
+    background: linear-gradient(
+      180deg, 
+      rgba(0,0,0,0.25) 0%, 
+      rgba(0,0,0,0.35) 50%, 
+      rgba(0,0,0,0.25) 100%
+    );
+  }' (case-sensitive)]
+
+*16:07 ReplaceVSCodeText su PackagesSection.tsx [PackagesSection.tsx.20250605.160745]: Fix responsive per i pulsanti tab navigation su mobile: riduzione del padding orizzontale da px-8 a px-4 su mobile e aggiustamento della dimensione del font per garantire che i pulsanti 'Pacchetti Completi' e 'Server Singoli' si posizionino correttamente affiancati anche su schermi piccoli senza andare a capo. [Dettagli: Sostituzione '        {/* Tab Navigation */}
+        <motion.div
+          initial={{ opacity: 0, y: 30 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.8, delay: 0.2 }}
+          className="flex justify-center mb-12"
+        >
+          <div className="bg-white/5 backdrop-blur-sm border border-white/10 rounded-full p-2">
+            <button
+              onClick={() => setActiveTab('packages')}
+              className={`px-8 py-3 rounded-full font-semibold transition-all duration-300 ${
+                activeTab === 'packages'
+                  ? 'bg-gradient-to-r from-accent-600 to-success-600 text-white'
+                  : 'text-white/60 hover:text-white'
+              }`}
+            >
+              Pacchetti Completi
+            </button>
+            <button
+              onClick={() => setActiveTab('individual')}
+              className={`px-8 py-3 rounded-full font-semibold transition-all duration-300 ${
+                activeTab === 'individual'
+                  ? 'bg-gradient-to-r from-accent-600 to-success-600 text-white'
+                  : 'text-white/60 hover:text-white'
+              }`}
+            >
+              Server Singoli
+            </button>
+          </div>
+        </motion.div>' → '        {/* Tab Navigation */}
+        <motion.div
+          initial={{ opacity: 0, y: 30 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.8, delay: 0.2 }}
+          className="flex justify-center mb-12"
+        >
+          <div className="bg-white/5 backdrop-blur-sm border border-white/10 rounded-full p-2">
+            <button
+              onClick={() => setActiveTab('packages')}
+              className={`px-4 sm:px-8 py-3 rounded-full font-semibold text-sm sm:text-base transition-all duration-300 ${
+                activeTab === 'packages'
+                  ? 'bg-gradient-to-r from-accent-600 to-success-600 text-white'
+                  : 'text-white/60 hover:text-white'
+              }`}
+            >
+              Pacchetti Completi
+            </button>
+            <button
+              onClick={() => setActiveTab('individual')}
+              className={`px-4 sm:px-8 py-3 rounded-full font-semibold text-sm sm:text-base transition-all duration-300 ${
+                activeTab === 'individual'
+                  ? 'bg-gradient-to-r from-accent-600 to-success-600 text-white'
+                  : 'text-white/60 hover:text-white'
+              }`}
+            >
+              Server Singoli
+            </button>
+          </div>
+        </motion.div>' (case-sensitive)]
+
+*16:07 ReplaceVSCodeText su PackagesSection.tsx [PackagesSection.tsx.20250605.160752]: Miglioramento ulteriore per mobile: aggiunta di gap tra i pulsanti su schermi piccoli per facilitare il tocco e migliorare l'usabilità mobile dei tab di navigazione tra Pacchetti Completi e Server Singoli. [Dettagli: Sostituzione '          <div className="bg-white/5 backdrop-blur-sm border border-white/10 rounded-full p-2">' → '          <div className="bg-white/5 backdrop-blur-sm border border-white/10 rounded-full p-2 flex gap-1 sm:gap-0">' (case-sensitive)]
+
+*16:08 ReplaceVSCodeText su PackagesSection.tsx [PackagesSection.tsx.20250605.160806]: Responsive typography per mobile: riduzione delle dimensioni del titolo principale da text-4xl md:text-6xl a text-3xl md:text-6xl per migliorare la leggibilità e il layout su dispositivi mobili, evitando che il testo "Scegli il tuo Piano Perfetto" risulti troppo grande per schermi piccoli. [Dettagli: Sostituzione '          <h2 className="text-4xl md:text-6xl font-bold mb-6 text-reveal">' → '          <h2 className="text-3xl md:text-6xl font-bold mb-6 text-reveal">' (case-sensitive)]
+
+*16:08 ReplaceVSCodeText su PackagesSection.tsx [PackagesSection.tsx.20250605.160814]: Responsive sizing per header icon e text: riduzione delle dimensioni dell'icona da w-8 h-8 a w-6 h-6 sm:w-8 sm:h-8 e del testo da text-lg a text-base sm:text-lg per proporzionalità migliore su dispositivi mobili nella sezione header di PackagesSection. [Dettagli: Sostituzione '          <div className="flex items-center justify-center mb-6">
+            <Package className="w-8 h-8 text-accent-400 mr-3" />
+            <span className="text-accent-400 font-semibold text-lg">Pacchetti e Server</span>
+          </div>' → '          <div className="flex items-center justify-center mb-6">
+            <Package className="w-6 h-6 sm:w-8 sm:h-8 text-accent-400 mr-3" />
+            <span className="text-accent-400 font-semibold text-base sm:text-lg">Pacchetti e Server</span>
+          </div>' (case-sensitive)]
+
+*16:08 ReplaceVSCodeText su PackagesSection.tsx [PackagesSection.tsx.20250605.160821]: Responsive typography per il paragrafo descrittivo: riduzione da text-xl a text-lg sm:text-xl per migliorare la leggibilità su mobile del testo descrittivo "Pacchetti completi con risparmio garantito o server individuali per massima flessibilità". [Dettagli: Sostituzione '          <p className="text-xl text-gray-400 max-w-3xl mx-auto">' → '          <p className="text-lg sm:text-xl text-gray-400 max-w-3xl mx-auto">' (case-sensitive)]
+
+*16:08 ReplaceVSCodeText su utils.ts [utils.ts.20250605.160829]: Riduzione opacità materiale mobile: diminuzione dell'opacità delle particelle mobile da 0.95 a 0.85 per renderle meno invasive e più equilibrate con l'overlay più leggero, mantenendo la visibilità ma riducendo l'impatto visivo eccessivo. [Dettagli: Sostituzione '    opacity: 0.95, // Opacità più alta per contrasto' → '    opacity: 0.85, // Opacità equilibrata per contrasto' (case-sensitive)]
+
+*16:08 ReplaceVSCodeText su utils.ts [utils.ts.20250605.160836]: Riduzione dimensioni particelle mobile: diminuzione del moltiplicatore di dimensione da 1.2 a 1.1 per particelle leggermente meno invasive mantenendo comunque la visibilità migliorata su mobile rispetto al desktop. [Dettagli: Sostituzione '    size: MATERIAL_CONFIG.baseSize * 1.2, // Particelle leggermente più grandi per visibilità' → '    size: MATERIAL_CONFIG.baseSize * 1.1, // Particelle leggermente più grandi per visibilità' (case-sensitive)]
+
+*16:08 ReplaceVSCodeText su utils.ts [utils.ts.20250605.160844]: Coerenza dimensioni particelle mobile nel resize handler: aggiornamento del moltiplicatore di dimensione anche nella funzione di resize da 1.2 a 1.1 per mantenere coerenza con le ottimizzazioni delle dimensioni particelle mobile. [Dettagli: Sostituzione '  material.size = MATERIAL_CONFIG.baseSize * 1.2' → '  material.size = MATERIAL_CONFIG.baseSize * 1.1' (case-sensitive)]
+
