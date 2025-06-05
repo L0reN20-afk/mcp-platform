@@ -2692,3 +2692,70 @@ export async function getCountryFromIP(ip: string): Promise<string> {
 
 *22:31 AppendToVSCodeFile su supabase.ts [supabase.ts.20250604.223110]: Ri-aggiunta delle utility functions per gestire client IP e geolocalizzazione che erano state rimosse accidentalmente durante la correzione degli errori di sintassi. Queste funzioni sono necessarie per il corretto funzionamento del sistema di registrazione device e tracking geografico. [Dettagli: Aggiunta di 781 caratteri alla fine del file]
 
+*22:42 ReplaceVSCodeText su route.ts [route.ts.20250604.224235]: Aggiornamento dell'endpoint admin stats per includere le nuove statistiche OAuth. Integra il metodo getOAuthStats() per fornire dati completi su provider OAuth (Google, Microsoft, Apple) e aggiorna la response per rispettare il nuovo tipo AdminStatsResponse che include total_oauth_users, google_users, microsoft_users, apple_users e top_oauth_providers. [Dettagli: Sostituzione '    // Recupera statistiche dal database
+    const stats = await DatabaseService.getAdminStats()
+
+    // Recupera attività recente (ultimi 10 eventi)
+    const { data: recentActivity } = await supabase
+      .from('device_events')
+      .select('*')
+      .order('timestamp', { ascending: false })
+      .limit(10)
+
+    // Conta alert non risolti
+    const { count: unresolvedAlerts } = await supabase
+      .from('admin_alerts')
+      .select('*', { count: 'exact', head: true })
+      .eq('resolved', false)
+
+    const response: AdminStatsResponse = {
+      total_devices: stats.totalDevices,
+      active_trials: stats.activeTrials,
+      expired_trials: stats.expiredTrials,
+      banned_devices: stats.bannedDevices,
+      newsletter_subscribers: stats.newsletterSubscribers,
+      downloads_today: stats.downloadsToday,
+      downloads_this_week: 0, // TODO: implementare
+      downloads_this_month: 0, // TODO: implementare
+      top_countries: stats.topCountries,
+      recent_activity: recentActivity || [],
+      alerts_unresolved: unresolvedAlerts || 0
+    }' → '    // Recupera statistiche dal database
+    const stats = await DatabaseService.getAdminStats()
+    
+    // Recupera statistiche OAuth
+    const oauthStats = await DatabaseService.getOAuthStats()
+
+    // Recupera attività recente (ultimi 10 eventi)
+    const { data: recentActivity } = await supabase
+      .from('device_events')
+      .select('*')
+      .order('timestamp', { ascending: false })
+      .limit(10)
+
+    // Conta alert non risolti
+    const { count: unresolvedAlerts } = await supabase
+      .from('admin_alerts')
+      .select('*', { count: 'exact', head: true })
+      .eq('resolved', false)
+
+    const response: AdminStatsResponse = {
+      total_devices: stats.totalDevices,
+      active_trials: stats.activeTrials,
+      expired_trials: stats.expiredTrials,
+      banned_devices: stats.bannedDevices,
+      newsletter_subscribers: stats.newsletterSubscribers,
+      downloads_today: stats.downloadsToday,
+      downloads_this_week: 0, // TODO: implementare
+      downloads_this_month: 0, // TODO: implementare
+      // Nuove statistiche OAuth
+      total_oauth_users: oauthStats.totalOAuthUsers,
+      google_users: oauthStats.googleUsers,
+      microsoft_users: oauthStats.microsoftUsers,
+      apple_users: oauthStats.appleUsers,
+      top_countries: stats.topCountries,
+      top_oauth_providers: oauthStats.topProviders,
+      recent_activity: recentActivity || [],
+      alerts_unresolved: unresolvedAlerts || 0
+    }' (case-sensitive)]
+

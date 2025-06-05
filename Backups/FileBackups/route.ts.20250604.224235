@@ -20,9 +20,6 @@ export async function GET(request: NextRequest) {
 
     // Recupera statistiche dal database
     const stats = await DatabaseService.getAdminStats()
-    
-    // Recupera statistiche OAuth
-    const oauthStats = await DatabaseService.getOAuthStats()
 
     // Recupera attività recente (ultimi 10 eventi)
     const { data: recentActivity } = await supabase
@@ -46,13 +43,7 @@ export async function GET(request: NextRequest) {
       downloads_today: stats.downloadsToday,
       downloads_this_week: 0, // TODO: implementare
       downloads_this_month: 0, // TODO: implementare
-      // Nuove statistiche OAuth
-      total_oauth_users: oauthStats.totalOAuthUsers,
-      google_users: oauthStats.googleUsers,
-      microsoft_users: oauthStats.microsoftUsers,
-      apple_users: oauthStats.appleUsers,
       top_countries: stats.topCountries,
-      top_oauth_providers: oauthStats.topProviders,
       recent_activity: recentActivity || [],
       alerts_unresolved: unresolvedAlerts || 0
     }
