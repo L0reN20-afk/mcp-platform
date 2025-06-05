@@ -358,3 +358,11 @@ export function generateRainbowColorsMobile(colors: Float32Array, count: number)
 
 *16:30 ModifyVSCodeFileContent su utils.ts [utils.ts.20250605.163010]: Risoluzione conflitti merge in utils.ts: rimozione di tutti i marker di merge conflict e mantenimento delle versioni corrette secondo le richieste dell'utente. Mantenuta la funzione getOptimalParticleCountWithMobile che NON riduce il numero di particelle su mobile, e le ottimizzazioni moderate per opacità (0.85) e dimensioni (1.1x) come richiesto per rendere l'esperienza mobile meno invasiva. [Dettagli: Sovrascrittura completa del contenuto (10183 caratteri)]
 
+*16:33 ReplaceVSCodeText su ParticleBackground.tsx [ParticleBackground.tsx.20250605.163345]: Risoluzione merge conflict mantenendo l'overlay mobile più leggero: rimozione dei conflict markers e mantenimento della versione con opacità ridotta rgba(0,0,0,0.2-0.3) come richiesto dall'utente per un overlay meno invasivo. [Dettagli: Sostituzione '<<<<<<< HEAD
+            background: 'linear-gradient(180deg, rgba(0,0,0,0.2) 0%, rgba(0,0,0,0.3) 50%, rgba(0,0,0,0.2) 100%)',
+=======
+            background: 'linear-gradient(180deg, rgba(0,0,0,0.4) 0%, rgba(0,0,0,0.6) 50%, rgba(0,0,0,0.4) 100%)',
+>>>>>>> 4ed3c122f421cdfaf6790628c621d8596043d603' → '            background: 'linear-gradient(180deg, rgba(0,0,0,0.2) 0%, rgba(0,0,0,0.3) 50%, rgba(0,0,0,0.2) 100%)',' (case-sensitive)]
+
+*16:34 ModifyVSCodeFileContent su ParticleBackground.tsx: Risoluzione definitiva del merge conflict in ParticleBackground.tsx: riscrittura completa della sezione con overlay mobile utilizzando la versione con opacità più leggera (0.2-0.3) come richiesto dall'utente, eliminando completamente tutti i conflict markers che impedivano il build su Vercel. [Dettagli: Sovrascrittura completa del contenuto (8160 caratteri)]
+
