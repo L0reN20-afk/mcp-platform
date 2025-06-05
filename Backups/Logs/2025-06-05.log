@@ -1532,3 +1532,93 @@ export function setupRendererWithMobileFallback(): THREE.WebGLRenderer {
       window.addEventListener('resize', resizeHandler)
     }' (case-sensitive)]
 
+*20:07 ReplaceVSCodeText su globals.css [globals.css.20250605.200715]: Ripristino della scrollbar stilizzata per compatibilità con GSAP ScrollTrigger. La scrollbar era stata nascosta completamente causando problemi di scroll, ma GSAP ScrollTrigger richiede che sia visibile per funzionare correttamente. Ripristinata una versione molto sottile e discreta ma funzionale per mantenere la compatibilità senza compromettere l'estetica. [Dettagli: Sostituzione '/* 🎨 SCROLLBAR NASCOSTA per interfaccia pulita */
+::-webkit-scrollbar {
+  display: none;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: transparent;
+}
+
+/* Firefox scrollbar styling */
+html {
+  scrollbar-width: none;
+}' → '/* 🎨 SCROLLBAR STILIZZATA sottile per compatibilità ScrollTrigger */
+::-webkit-scrollbar {
+  width: 4px; /* Molto sottile ma visibile */
+}
+
+::-webkit-scrollbar-track {
+  background: rgba(0, 0, 0, 0.05);
+}
+
+::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.2);
+  border-radius: 2px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(255, 255, 255, 0.4);
+}
+
+/* Firefox scrollbar styling */
+html {
+  scrollbar-width: thin;
+  scrollbar-color: rgba(255, 255, 255, 0.2) rgba(0, 0, 0, 0.05);
+}' (case-sensitive)]
+
+*20:08 ReplaceVSCodeText su globals.css [globals.css.20250605.200800]: Ripristino completo della scrollbar alle impostazioni originali precedenti a tutte le modifiche della chat. Ripristinati width: 8px, border-radius: 4px e tutti i colori esatti come erano configurati inizialmente. Questo dovrebbe risolvere completamente i problemi di scroll riportando il comportamento identico a quello che c'era prima delle modifiche. [Dettagli: Sostituzione '/* 🎨 SCROLLBAR STILIZZATA sottile per compatibilità ScrollTrigger */
+::-webkit-scrollbar {
+  width: 4px; /* Molto sottile ma visibile */
+}
+
+::-webkit-scrollbar-track {
+  background: rgba(0, 0, 0, 0.05);
+}
+
+::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.2);
+  border-radius: 2px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(255, 255, 255, 0.4);
+}
+
+/* Firefox scrollbar styling */
+html {
+  scrollbar-width: thin;
+  scrollbar-color: rgba(255, 255, 255, 0.2) rgba(0, 0, 0, 0.05);
+}' → '/* 🎨 SCROLLBAR STILIZZATA (non nascosta!) per compatibilità ScrollTrigger */
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: rgba(0, 0, 0, 0.1);
+}
+
+::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.3);
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(255, 255, 255, 0.5);
+}
+
+/* Firefox scrollbar styling */
+html {
+  scrollbar-width: thin;
+  scrollbar-color: rgba(255, 255, 255, 0.3) rgba(0, 0, 0, 0.1);
+}' (case-sensitive)]
+

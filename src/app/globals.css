@@ -41,26 +41,28 @@ body {
   /* Sempre trasparente - background gestito da Three.js */
 }
 
-/* 🎨 SCROLLBAR NASCOSTA per interfaccia pulita */
+/* 🎨 SCROLLBAR STILIZZATA (non nascosta!) per compatibilità ScrollTrigger */
 ::-webkit-scrollbar {
-  display: none;
+  width: 8px;
 }
 
 ::-webkit-scrollbar-track {
-  background: transparent;
+  background: rgba(0, 0, 0, 0.1);
 }
 
 ::-webkit-scrollbar-thumb {
-  background: transparent;
+  background: rgba(255, 255, 255, 0.3);
+  border-radius: 4px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: transparent;
+  background: rgba(255, 255, 255, 0.5);
 }
 
 /* Firefox scrollbar styling */
 html {
-  scrollbar-width: none;
+  scrollbar-width: thin;
+  scrollbar-color: rgba(255, 255, 255, 0.3) rgba(0, 0, 0, 0.1);
 }
 
 a {
