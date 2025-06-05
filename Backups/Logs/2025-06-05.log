@@ -518,3 +518,180 @@ export function generateColorsForShapeWithMobile(shape: string, colors: Float32A
 *18:45 ReplaceVSCodeText su colorGenerators.ts [colorGenerators.ts.20250605.184535]: Rimozione import non necessario: eliminazione dell'import di isMobileDevice da utils.ts che non è più utilizzato nel file colorGenerators.ts dopo la semplificazione della logica che ora usa sempre i colori desktop. [Dettagli: Sostituzione 'import { COLOR_PALETTES } from './constants'
 import { isMobileDevice } from './utils'' → 'import { COLOR_PALETTES } from './constants'' (case-sensitive)]
 
+*19:03 ReplaceVSCodeText su globals.css [globals.css.20250605.190321]: Forzatura tema scuro sempre attivo: rimozione della dipendenza da prefers-color-scheme e impostazione dei valori scuri come default. Il sito ora manterrà sempre l'aspetto scuro professionale indipendentemente dalle impostazioni del sistema operativo dell'utente, garantendo coerenza visiva e brand identity. [Dettagli: Sostituzione ':root {
+  --foreground-rgb: 0, 0, 0;
+  --background-start-rgb: 214, 219, 220;
+  --background-end-rgb: 255, 255, 255;
+  --primary-glow: conic-gradient(
+    from 180deg at 50% 50%,
+    #16abff33 0deg,
+    #0885ff33 55deg,
+    #54d6ff33 120deg,
+    #0071ff33 160deg,
+    transparent 360deg
+  );
+  --secondary-glow: radial-gradient(
+    rgba(255, 255, 255, 1),
+    rgba(255, 255, 255, 0)
+  );
+}' → ':root {
+  /* 🎨 TEMA SCURO SEMPRE ATTIVO - Indipendente dalle preferenze sistema */
+  --foreground-rgb: 255, 255, 255;
+  --background-start-rgb: 0, 0, 0;
+  --background-end-rgb: 0, 0, 0;
+  --primary-glow: radial-gradient(rgba(1, 65, 255, 0.4), rgba(1, 65, 255, 0));
+  --secondary-glow: linear-gradient(
+    to bottom right,
+    rgba(1, 65, 255, 0),
+    rgba(1, 65, 255, 0),
+    rgba(1, 65, 255, 0.3)
+  );
+}' (case-sensitive)]
+
+*19:03 ReplaceVSCodeText su globals.css [globals.css.20250605.190332]: Rimozione media query prefers-color-scheme: eliminazione della sezione che sovrascrive i colori in base alle preferenze del sistema. Ora il sito mantiene sempre i valori scuri impostati come default, garantendo coerenza visiva indipendentemente dalle impostazioni del dispositivo. [Dettagli: Sostituzione '@media (prefers-color-scheme: dark) {
+  :root {
+    --foreground-rgb: 255, 255, 255;
+    --background-start-rgb: 0, 0, 0;
+    --background-end-rgb: 0, 0, 0;
+    --primary-glow: radial-gradient(rgba(1, 65, 255, 0.4), rgba(1, 65, 255, 0));
+    --secondary-glow: linear-gradient(
+      to bottom right,
+      rgba(1, 65, 255, 0),
+      rgba(1, 65, 255, 0),
+      rgba(1, 65, 255, 0.3)
+    );
+  }
+}' → '/* Tema scuro forzato - rimossa dipendenza da prefers-color-scheme */' (case-sensitive)]
+
+*19:03 ReplaceVSCodeText su globals.css [globals.css.20250605.190342]: Forzatura color-scheme scuro: impostazione diretta di color-scheme: dark su html senza media query per garantire che il browser utilizzi sempre gli elementi di interfaccia scuri (scrollbar, form controls, etc.) indipendentemente dalle preferenze del sistema. [Dettagli: Sostituzione '/* Firefox scrollbar styling */
+html {
+  scrollbar-width: thin;
+  scrollbar-color: rgba(255, 255, 255, 0.3) rgba(0, 0, 0, 0.1);
+}
+
+body {
+  color: rgb(var(--foreground-rgb));
+  background: transparent;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+@media (prefers-color-scheme: dark) {
+  html {
+    color-scheme: dark;
+  }
+}' → '/* 🌙 FORZATURA TEMA SCURO per elementi browser */
+html {
+  color-scheme: dark;
+  scrollbar-width: thin;
+  scrollbar-color: rgba(255, 255, 255, 0.3) rgba(0, 0, 0, 0.1);
+}' (case-sensitive)]
+
+*19:21 ReplaceVSCodeText su globals.css: Fix per il problema del background quando il tema del dispositivo è impostato su chiaro. Cambiato da background: transparent a background: #000000 per forzare sempre uno sfondo nero, indipendentemente dalle preferenze di sistema. Questo assicura che gli elementi grafici del background rimangano sempre visibili e che il sito mantenga il suo aspetto intended anche quando l'utente ha il tema chiaro attivato nel browser/sistema operativo. [Dettagli: Sostituzione 'body {
+  max-width: 100vw;
+  overflow-x: hidden; /* Solo horizontal overflow nascosto */
+  position: relative; /* Previene decentramento */
+  color: rgb(var(--foreground-rgb));
+  background: transparent;
+}' → 'body {
+  max-width: 100vw;
+  overflow-x: hidden; /* Solo horizontal overflow nascosto */
+  position: relative; /* Previene decentramento */
+  color: rgb(var(--foreground-rgb));
+  background: #000000; /* Forza background nero sempre */
+}' (case-sensitive)]
+
+*19:21 ReplaceVSCodeText su globals.css [globals.css.20250605.192111]: Aggiunta regola CSS per forzare sempre il tema scuro indipendentemente dalle preferenze di sistema. Questo assicura che il sito mantenga sempre l'aspetto scuro intended anche quando l'utente ha il tema chiaro attivato nel browser/sistema operativo. La regola viene applicata sia per light che dark mode. [Dettagli: Sostituzione '@media (prefers-color-scheme: dark) {
+  html {
+    color-scheme: dark;
+  }
+}' → '/* 🎨 FORZA SEMPRE TEMA SCURO - Indipendente dalle preferenze sistema */
+@media (prefers-color-scheme: dark) {
+  html {
+    color-scheme: dark;
+  }
+}
+
+@media (prefers-color-scheme: light) {
+  html {
+    color-scheme: dark; /* Forza tema scuro anche quando sistema è chiaro */
+  }
+}' (case-sensitive)]
+
+*19:21 ReplaceVSCodeText su globals.css [globals.css.20250605.192122]: Aggiunta regola universale per forzare il background nero su tutti gli elementi di base HTML. Questo assicura che anche se ci sono conflitti con altri CSS o framework, il background rimarrà sempre nero. Aggiunta anche la regola per l'elemento html per garantire consistenza completa del tema scuro. [Dettagli: Sostituzione 'html {
+  max-width: 100vw;
+  /* ✅ RIMOSSO overflow-x: hidden che interferiva con scroll verticale */
+  overflow-x: clip; /* Previene decentramento */
+}
+
+body {
+  max-width: 100vw;
+  overflow-x: hidden; /* Solo horizontal overflow nascosto */
+  position: relative; /* Previene decentramento */
+  color: rgb(var(--foreground-rgb));
+  background: #000000; /* Forza background nero sempre */
+}' → 'html {
+  max-width: 100vw;
+  /* ✅ RIMOSSO overflow-x: hidden che interferiva con scroll verticale */
+  overflow-x: clip; /* Previene decentramento */
+  background: #000000; /* Forza background nero anche su html */
+}
+
+body {
+  max-width: 100vw;
+  overflow-x: hidden; /* Solo horizontal overflow nascosto */
+  position: relative; /* Previene decentramento */
+  color: rgb(var(--foreground-rgb));
+  background: #000000; /* Forza background nero sempre */
+}' (case-sensitive)]
+
+*19:22 ReplaceVSCodeText su utils.ts [utils.ts.20250605.192205]: Fix del background trasparente del renderer Three.js che causava problemi quando il tema del dispositivo era impostato su chiaro. Cambiato il valore alpha da 0 (completamente trasparente) a 1 (completamente opaco) per forzare sempre uno sfondo nero, indipendentemente dalle preferenze di sistema. Questo assicura che gli elementi grafici del background rimangano sempre visibili e che il sito mantenga il suo aspetto intended. [Dettagli: Sostituzione '  renderer.setClearColor(0x000000, 0) // Background trasparente' → '  renderer.setClearColor(0x000000, 1) // Background nero opaco sempre' (case-sensitive)]
+
+*19:22 ReplaceVSCodeText su utils.ts [utils.ts.20250605.192213]: Fix del background semi-trasparente nella versione mobile del renderer Three.js per essere consistente con la versione desktop. Cambiato il valore alpha da 0.3 (semi-trasparente) a 1 (completamente opaco) per assicurare che il background sia sempre nero, indipendentemente dal tema del sistema. L'overlay mobile fornisce già il contrasto necessario, quindi non serve più la trasparenza. [Dettagli: Sostituzione '  renderer.setClearColor(0x000000, 0.3) // Background semi-trasparente per contrasto' → '  renderer.setClearColor(0x000000, 1) // Background nero opaco per consistenza' (case-sensitive)]
+
+*19:35 ReplaceVSCodeText su utils.ts [utils.ts.20250605.193555]: Correzione del renderer Three.js per tornare trasparente e permettere la visibilità delle particelle 3D. Il background opaco nero copriva completamente le particelle, mentre la struttura corretta è: HTML/body con background nero fisso (per risolvere il tema chiaro) + renderer trasparente (per mostrare le particelle sopra). Ripristinato alpha: true e clearColor con alpha 0 per la trasparenza. [Dettagli: Sostituzione '// 🖥️ SETUP RENDERER (SSR Safe)
+export function setupRenderer(): THREE.WebGLRenderer {
+  const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: false })
+  
+  // 🔒 SSR Safety Check
+  if (typeof window !== 'undefined') {
+    renderer.setSize(window.innerWidth, window.innerHeight)
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2))
+  } else {
+    renderer.setSize(1920, 1080) // Fallback dimensions
+    renderer.setPixelRatio(1)
+  }
+  
+  renderer.setClearColor(0x000000, 1) // Background nero opaco sempre
+  
+  return renderer
+}' → '// 🖥️ SETUP RENDERER (SSR Safe)
+export function setupRenderer(): THREE.WebGLRenderer {
+  const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true })
+  
+  // 🔒 SSR Safety Check
+  if (typeof window !== 'undefined') {
+    renderer.setSize(window.innerWidth, window.innerHeight)
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2))
+  } else {
+    renderer.setSize(1920, 1080) // Fallback dimensions
+    renderer.setPixelRatio(1)
+  }
+  
+  renderer.setClearColor(0x000000, 0) // Background trasparente per mostrare particelle
+  
+  return renderer
+}' (case-sensitive)]
+
+*19:36 ReplaceVSCodeText su utils.ts [utils.ts.20250605.193603]: Correzione anche del renderer mobile per essere consistente con la versione desktop. Ripristinato background trasparente per permettere la visibilità delle particelle 3D. Il renderer deve essere trasparente per mostrare le particelle sopra il background nero fisso del body HTML. Mantenute le ottimizzazioni mobile (antialias: false, powerPreference: low-power) ma con trasparenza. [Dettagli: Sostituzione '  renderer.setClearColor(0x000000, 1) // Background nero opaco per consistenza' → '  renderer.setClearColor(0x000000, 0) // Background trasparente per mostrare particelle' (case-sensitive)]
+
+*19:38 ReplaceVSCodeText su .gitignore [.gitignore.20250605.193857]: Correzione del .gitignore per escludere correttamente la directory Backups. La voce precedente aveva caratteri strani con spazi tra le lettere che non funzionavano. Sostituita con la sintassi corretta per ignorare tutti i file di backup automatici generati dal sistema MCP. [Dettagli: Sostituzione 'B a c k u p s /  
+ B a c k u p s /' → '# MCP Backup System
+Backups/
+*.backup' (case-sensitive)]
+
+*19:39 AppendToVSCodeFile su .gitignore: Aggiunta regola al .gitignore per escludere correttamente la directory Backups e tutti i file di backup automatici generati dal sistema MCP. Questo eviterà che i file di backup vengano tracciati da git e creino confusione nel repository. [Dettagli: Aggiunta di 39 caratteri alla fine del file]
+
