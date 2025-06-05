@@ -157,7 +157,7 @@ export function setupRenderer(): THREE.WebGLRenderer {
     renderer.setPixelRatio(1)
   }
   
-  renderer.setClearColor(0x000000, 0) // Background trasparente
+  renderer.setClearColor(0x000000, 1) // Background nero opaco sempre
   
   return renderer
 }
@@ -256,7 +256,7 @@ export function setupRendererWithMobileFallback(): THREE.WebGLRenderer {
     renderer.setPixelRatio(1)
   }
   
-  renderer.setClearColor(0x000000, 0.3) // Background semi-trasparente per contrasto
+  renderer.setClearColor(0x000000, 1) // Background nero opaco per consistenza
   
   return renderer
 }
