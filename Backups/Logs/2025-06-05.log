@@ -354,3 +354,7 @@ export function generateRainbowColorsMobile(colors: Float32Array, count: number)
 
 *16:08 ReplaceVSCodeText su utils.ts [utils.ts.20250605.160844]: Coerenza dimensioni particelle mobile nel resize handler: aggiornamento del moltiplicatore di dimensione anche nella funzione di resize da 1.2 a 1.1 per mantenere coerenza con le ottimizzazioni delle dimensioni particelle mobile. [Dettagli: Sostituzione '  material.size = MATERIAL_CONFIG.baseSize * 1.2' → '  material.size = MATERIAL_CONFIG.baseSize * 1.1' (case-sensitive)]
 
+*16:29 ModifyVSCodeFileContent su colorGenerators.ts [colorGenerators.ts.20250605.162913]: Risoluzione conflitti merge in colorGenerators.ts: rimozione di tutti i marker di merge conflict (<<<<<<< HEAD, =======, >>>>>>> commit) e mantenimento delle versioni mobile con contrasto moderato/equilibrato come richiesto dall'utente. Le funzioni mobile ora hanno valori RGB bilanciati per evitare contrasti eccessivi sui titoli colorati. [Dettagli: Sovrascrittura completa del contenuto (8578 caratteri)]
+
+*16:30 ModifyVSCodeFileContent su utils.ts [utils.ts.20250605.163010]: Risoluzione conflitti merge in utils.ts: rimozione di tutti i marker di merge conflict e mantenimento delle versioni corrette secondo le richieste dell'utente. Mantenuta la funzione getOptimalParticleCountWithMobile che NON riduce il numero di particelle su mobile, e le ottimizzazioni moderate per opacità (0.85) e dimensioni (1.1x) come richiesto per rendere l'esperienza mobile meno invasiva. [Dettagli: Sovrascrittura completa del contenuto (10183 caratteri)]
+
