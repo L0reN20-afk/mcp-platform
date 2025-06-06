@@ -179,7 +179,7 @@ export default function PackagesSection() {
       {/* Background - PIù TRASPARENTE per vedere il cubo */}
       <div className="absolute inset-0 bg-gradient-to-b from-black/30 via-gray-900/15 to-black/30"></div>
       
-      <div className="container mx-auto px-6 relative z-10">
+      <div className="container mx-auto relative z-10">
         {/* Section Header */}
         <motion.div
           initial={{ opacity: 0, y: 50 }}
@@ -198,9 +198,14 @@ export default function PackagesSection() {
               Piano Perfetto
             </span>
           </h2>
-          <p className="text-lg sm:text-xl text-gray-400 max-w-3xl mx-auto">
-            Pacchetti completi con risparmio garantito o server individuali per massima flessibilità
-          </p>
+          {/* Description con Safe Zone */}
+          <div className="relative">
+            {/* Safe Zone Background */}
+            <div className="absolute inset-0 bg-black/14 backdrop-blur-sm rounded-xl -m-3"></div>
+            <p className="relative text-lg sm:text-xl text-gray-400 max-w-3xl mx-auto px-3">
+              Pacchetti completi con risparmio garantito o server individuali per massima flessibilità
+            </p>
+          </div>
         </motion.div>
 
         {/* Tab Navigation */}

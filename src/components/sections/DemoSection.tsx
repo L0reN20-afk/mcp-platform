@@ -261,7 +261,7 @@ fs.watch('./src', (event) => {
       {/* Background - PIù TRASPARENTE per vedere l'icosaedro */}
       <div className="absolute inset-0 bg-gradient-to-b from-black/30 via-gray-900/15 to-black/30"></div>
       
-      <div className="container mx-auto px-6 relative z-10">
+      <div className="container mx-auto relative z-10">
         {/* Section Header */}
         <motion.div
           initial={{ opacity: 0, y: 50 }}
@@ -280,10 +280,15 @@ fs.watch('./src', (event) => {
               Gratuitamente
             </span>
           </h2>
-          <p className="text-xl text-gray-400 max-w-3xl mx-auto mb-8">
-            Scarica il trial completo 48 ore e testa tutti i server MCP in azione. 
-            Nessuna carta di credito richiesta.
-          </p>
+          {/* Description con Safe Zone */}
+          <div className="relative mb-8">
+            {/* Safe Zone Background */}
+            <div className="absolute inset-0 bg-black/14 backdrop-blur-sm rounded-xl -m-3"></div>
+            <p className="relative text-xl text-gray-400 max-w-3xl mx-auto px-3">
+              Scarica il trial completo 48 ore e testa tutti i server MCP in azione. 
+              Nessuna carta di credito richiesta.
+            </p>
+          </div>
           
           {/* Trial CTA */}
           <motion.div
@@ -355,7 +360,7 @@ fs.watch('./src', (event) => {
               className={`flex items-center space-x-3 px-6 py-3 rounded-full border-2 transition-all duration-300 ${
                 activeDemo === index
                   ? `border-${example.color.split('-')[1]}-400 bg-${example.color.split('-')[1]}-400/10 ${example.color}`
-                  : 'border-white/20 text-white/60 hover:border-white/40 hover:text-white'
+                  : 'border-white/20 bg-white/10 text-white/80 hover:border-white/40 hover:text-white'
               }`}
             >
               <example.icon className="w-5 h-5" />

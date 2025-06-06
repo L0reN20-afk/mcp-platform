@@ -27,15 +27,23 @@ export default function TrialModal({ isOpen, onClose }: TrialModalProps) {
   useEffect(() => {
     if (isOpen) {
       generateDeviceFingerprint()
-      // Blocca scroll del body
-      document.body.style.overflow = 'hidden'
+      
+      // 🔧 FIX: Calcola larghezza scrollbar per evitare layout shift
+      const scrollbarWidth = window.innerWidth - document.documentElement.clientWidth
+      document.documentElement.style.setProperty('--scrollbar-width', `${scrollbarWidth}px`)
+      
+      // 🎯 FIX: Usa classe CSS invece di style diretto per gestione consistente
+      document.body.classList.add('modal-open')
     } else {
-      // Ripristina alle impostazioni CSS globali invece di forzare 'auto'
-      document.body.style.overflow = ''
+      // 🎯 FIX: Ripristino pulito via classe
+      document.body.classList.remove('modal-open')
+      document.documentElement.style.removeProperty('--scrollbar-width')
     }
 
     return () => {
-      document.body.style.overflow = ''
+      // 🔒 SAFETY: Cleanup sempre garantito
+      document.body.classList.remove('modal-open')
+      document.documentElement.style.removeProperty('--scrollbar-width')
     }
   }, [isOpen])
 

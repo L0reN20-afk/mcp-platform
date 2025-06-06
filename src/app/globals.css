@@ -27,23 +27,29 @@
   margin: 0;
 }
 
+/* 🔧 FIX DOPPIA SCROLLBAR - Gestione unificata html/body */
 html {
-  max-width: 100vw;
-  overflow-x: hidden; /* Ripristino all'originale */
+  /* RIMOSSO: overflow-x: hidden che causava conflitti */
+  /* RIMOSSO: max-width: 100vw non necessario */
   scrollbar-width: thin;
   scrollbar-color: rgba(255, 255, 255, 0.3) rgba(0, 0, 0, 0.1);
   /* Sempre trasparente - background gestito da Three.js */
 }
 
 body {
-  max-width: 100vw;
-  overflow-x: hidden; /* Solo horizontal overflow nascosto */
+  /* 🎯 GESTIONE SCROLL UNIFICATA - Previene doppie scrollbar */
+  overflow: auto; /* Gestione normale del scroll - una sola scrollbar */
+  overflow-x: hidden; /* Solo nasconde scroll orizzontale */
+  width: 100vw; /* Larghezza fissa per prevenire resize */
+  min-height: 100vh; /* Altezza minima per contenuto */
   position: relative; /* Previene decentramento */
   color: rgb(var(--foreground-rgb));
+  /* 🔧 FIX: Stabilità scrollbar durante modal open/close */
+  scrollbar-gutter: stable;
   /* Sempre trasparente - background gestito da Three.js */
 }
 
-/* 🎨 SCROLLBAR STILIZZATA (non nascosta!) per compatibilità ScrollTrigger */
+/* 🎨 SCROLLBAR STILIZZATA - RIABILITATA con fix */
 ::-webkit-scrollbar {
   width: 8px;
 }
@@ -98,14 +104,19 @@ a {
   }
 }
 
-/* GSAP & Three.js optimization */
+/* 🔧 FIX CANVAS THREE.JS - Previene interferenze con scroll */
 canvas {
   display: block;
   position: fixed;
   top: 0;
   left: 0;
+  width: 100vw;
+  height: 100vh;
   z-index: -1;
   pointer-events: none;
+  /* 🎯 FIX: Forza layer isolato per evitare scroll conflicts */
+  will-change: transform;
+  transform: translateZ(0);
 }
 
 .section-container {
@@ -154,6 +165,34 @@ canvas {
   pointer-events: none;
 }
 
+/* 📝 TEXT-SHADOW MINIMO solo per testi descrittivi (quasi impercettibile) */
+.hero-subtitle, 
+.text-xl, 
+.text-2xl,
+.text-lg,
+p.text-xl,
+p.text-lg,
+p.text-gray-200,
+p.text-gray-300,
+p.text-gray-400,
+.text-gray-200,
+.text-gray-300,
+.text-gray-400 {
+  text-shadow: 
+    0 1px 2px rgba(0,0,0,0.1),
+    0 0px 1px rgba(0,0,0,0.05);
+}
+
+/* 🚫 ESCLUSIONI: Nessun text-shadow per bottoni CTA con gradient */
+button[class*="bg-gradient"],
+button[class*="magnetic-button"],
+button[class*="from-"],
+.magnetic-button,
+.magnetic-button span,
+button[class*="bg-gradient"] span {
+  text-shadow: none !important;
+}
+
 /* 🚫 RIMOSSO scroll-behavior: smooth che conflittava con ScrollTrigger */
 /* Smooth scroll gestito da GSAP ScrollTrigger invece che CSS */
 
@@ -171,6 +210,16 @@ canvas {
 /* 📱 MOBILE OPTIMIZATIONS - Ottimizzazioni specifiche per dispositivi mobili */
 
 @media (max-width: 768px) {
+  /* 🔧 FIX MOBILE: Gestione scroll consistente */
+  body {
+    overflow: auto; /* Mantieni gestione normale */
+    overflow-x: hidden; /* Solo horizontal nascosto */
+    touch-action: pan-y; /* Solo scroll verticale per touch */
+    overscroll-behavior-x: none; /* Previene bounce orizzontale */
+    /* 🎯 RIMOSSO: width: 100% che poteva causare conflitti */
+    /* 🎯 RIMOSSO: position: relative ridondante */
+  }
+  
   /* 🎨 Overlay mobile per contrasto del testo - PIÙ LEGGERO */
   .mobile-contrast-overlay {
     position: absolute;
@@ -194,10 +243,7 @@ canvas {
     z-index: 10; /* Sopra l'overlay mobile */
   }
   
-  /* 🎨 Migliora il contrasto per elementi di testo principali */
-  h1, h2, h3, h4, h5, h6 {
-    text-shadow: 0 2px 4px rgba(0,0,0,0.5);
-  }
+  /* 🎨 Text-shadow già applicato globalmente - qui solo ottimizzazioni mobile */
   
   /* 📱 Ottimizzazioni performance mobile per Canvas */
   canvas {
@@ -212,15 +258,6 @@ canvas {
   
   .hover\\:shadow-xl {
     box-shadow: none !important;
-  }
-  
-  /* 🔒 PREVIENE DECENTRAMENTO CON SWIPE */
-  body {
-    touch-action: pan-y; /* Solo scroll verticale */
-    overscroll-behavior-x: none; /* Previene bounce orizzontale */
-    width: 100%;
-    position: relative;
-    overflow-x: hidden; /* Solo body, non html */
   }
   
   /* Container principali fissati */
@@ -241,9 +278,11 @@ canvas {
     );
   }
   
-  /* 🎯 Incrementa il text shadow su schermi molto piccoli */
+  /* 🎯 Text-shadow leggermente più intenso su schermi molto piccoli (ma sempre moderato) */
   h1, h2, h3, h4, h5, h6 {
-    text-shadow: 0 3px 6px rgba(0,0,0,0.7);
+    text-shadow: 
+      0 3px 6px rgba(0,0,0,0.35),
+      0 2px 4px rgba(0,0,0,0.25);
   }
   
   /* 📊 Riduci complessità animazioni su dispositivi molto piccoli */
@@ -289,4 +328,19 @@ canvas {
     overscroll-behavior: none;
     -webkit-overflow-scrolling: touch;
   }
+}
+
+/* 🔧 CLASSE UTILITY PER MODAL - Previene layout shift */
+.modal-open {
+  overflow: hidden !important;
+  padding-right: var(--scrollbar-width, 0px);
+}
+
+/* 🎯 FIX: Calcolo larghezza scrollbar per compensazione */
+.scrollbar-measure {
+  position: absolute;
+  top: -9999px;
+  width: 50px;
+  height: 50px;
+  overflow: scroll;
 }

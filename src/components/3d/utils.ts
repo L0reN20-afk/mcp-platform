@@ -26,6 +26,35 @@ export function createCircleTexture(): THREE.CanvasTexture {
   return new THREE.CanvasTexture(canvas)
 }
 
+// 🖥️ DETECTION SISTEMA OPERATIVO per correzioni colore (SSR Safe)
+export function isWindowsOS(): boolean {
+  // 🔒 SSR Safety Check
+  if (typeof window === 'undefined' || typeof navigator === 'undefined') {
+    return false // Assume non-Windows su server
+  }
+  
+  // Detection multipla per massima accuratezza
+  const platform = navigator.platform?.toLowerCase() || ''
+  const userAgent = navigator.userAgent?.toLowerCase() || ''
+  
+  return (
+    platform.includes('win') ||
+    userAgent.includes('windows') ||
+    userAgent.includes('win32') ||
+    userAgent.includes('win64')
+  )
+}
+
+// 🎨 CORREZIONE SATURAZIONE COLORE per Windows
+export function getColorSaturationBoost(): number {
+  return isWindowsOS() ? 1.25 : 1.0 // +25% saturazione su Windows
+}
+
+// 🌈 CORREZIONE LUMINOSITÀ per Windows  
+export function getColorBrightnessBoost(): number {
+  return isWindowsOS() ? 1.15 : 1.0 // +15% luminosità su Windows
+}
+
 // 🎯 CALCOLO NUMERO OTTIMALE DI PARTICELLE (SSR Safe)
 export function getOptimalParticleCount(shape: string): number {
   // 🔒 SSR Safety Check
@@ -65,7 +94,7 @@ export function generateOriginalSizes(sizes: Float32Array, count: number) {
   }
 }
 
-// 🔧 CREAZIONE MATERIALE PARTICELLE (SSR Safe)
+// 🔧 CREAZIONE MATERIALE PARTICELLE (SSR Safe) - con correzione Windows
 export function createParticleMaterial(circleTexture: THREE.CanvasTexture): THREE.PointsMaterial {
   // 🔒 SSR Safety Check
   const pixelRatio = typeof window !== 'undefined' 
@@ -74,12 +103,15 @@ export function createParticleMaterial(circleTexture: THREE.CanvasTexture): THRE
   
   const adjustedSize = MATERIAL_CONFIG.baseSize * pixelRatio
   
+  // 🖥️ Correzione opacità per Windows
+  const windowsOpacityBoost = isWindowsOS() ? 1.0 : MATERIAL_CONFIG.opacity // Opacità massima su Windows
+  
   return new THREE.PointsMaterial({
     size: adjustedSize,
     sizeAttenuation: MATERIAL_CONFIG.sizeAttenuation,
     vertexColors: true,
     transparent: MATERIAL_CONFIG.transparent,
-    opacity: MATERIAL_CONFIG.opacity,
+    opacity: windowsOpacityBoost,
     blending: THREE.AdditiveBlending,
     map: circleTexture
   })
@@ -279,22 +311,24 @@ export function setupRendererWithMobileFallback(): THREE.WebGLRenderer {
   return renderer
 }
 
-// 🎨 MATERIALE PARTICELLE CON OTTIMIZZAZIONI MOBILE (SSR Safe)
+// 🎨 MATERIALE PARTICELLE CON OTTIMIZZAZIONI MOBILE (SSR Safe) - con correzione Windows
 export function createParticleMaterialWithMobileOptimizations(circleTexture: THREE.CanvasTexture): THREE.PointsMaterial {
   const isMobile = isMobileDevice()
   
-  // 🖥️ DESKTOP: Materiale identico a prima
+  // 🖥️ DESKTOP: Materiale identico a prima con correzione Windows
   if (!isMobile) {
     return createParticleMaterial(circleTexture)
   }
   
-  // 📱 MOBILE: Ottimizzazioni specifiche
+  // 📱 MOBILE: Ottimizzazioni specifiche con correzione Windows
+  const windowsOpacityBoost = isWindowsOS() ? 0.95 : 0.85 // Opacità equilibrata mobile Windows
+  
   return new THREE.PointsMaterial({
     size: MATERIAL_CONFIG.baseSize * 1.1, // Particelle leggermente più grandi per visibilità
     sizeAttenuation: MATERIAL_CONFIG.sizeAttenuation,
     vertexColors: true,
     transparent: MATERIAL_CONFIG.transparent,
-    opacity: 0.85, // Opacità equilibrata per contrasto
+    opacity: windowsOpacityBoost,
     blending: THREE.AdditiveBlending,
     map: circleTexture
   })

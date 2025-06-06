@@ -1622,3 +1622,44 @@ html {
   scrollbar-color: rgba(255, 255, 255, 0.3) rgba(0, 0, 0, 0.1);
 }' (case-sensitive)]
 
+*20:14 ReplaceVSCodeText su globals.css [globals.css.20250605.201404]: Ripristino della configurazione overflow originale per html. Rimozione di overflow-x: clip che stava causando conflitti e scrollbar duplicate. Ripristino alla configurazione overflow originale che non causava problemi di scrollbar multiple. La gestione overflow deve essere semplice e non conflittuale. [Dettagli: Sostituzione 'html {
+  max-width: 100vw;
+  overflow-x: clip; /* Previene decentramento */
+  /* Sempre trasparente - background gestito da Three.js */
+}' → 'html {
+  max-width: 100vw;
+  overflow-x: hidden; /* Ripristino all'originale */
+  /* Sempre trasparente - background gestito da Three.js */
+}' (case-sensitive)]
+
+*20:14 ReplaceVSCodeText su globals.css [globals.css.20250605.201414]: Rimozione del conflitto overflow nelle media queries mobile. Eliminata la regola che applicava overflow-x: clip sia su html che su body insieme, che stava causando scrollbar duplicate. Mantengo solo la configurazione body che era probabilmente l'originale, senza toccare html nelle media queries. [Dettagli: Sostituzione '  /* 🔒 PREVIENE DECENTRAMENTO CON SWIPE */
+  body {
+    touch-action: pan-y; /* Solo scroll verticale */
+    overscroll-behavior-x: none; /* Previene bounce orizzontale */
+  }
+  
+  html, body {
+    width: 100%;
+    position: relative;
+    overflow-x: clip; /* Clip invece di hidden per maggiore stabilità */
+  }
+  
+  /* Container principali fissati */
+  .container {
+    max-width: 100vw;
+    overflow-x: hidden;
+  }' → '  /* 🔒 PREVIENE DECENTRAMENTO CON SWIPE */
+  body {
+    touch-action: pan-y; /* Solo scroll verticale */
+    overscroll-behavior-x: none; /* Previene bounce orizzontale */
+    width: 100%;
+    position: relative;
+    overflow-x: hidden; /* Solo body, non html */
+  }
+  
+  /* Container principali fissati */
+  .container {
+    max-width: 100vw;
+    overflow-x: hidden;
+  }' (case-sensitive)]
+

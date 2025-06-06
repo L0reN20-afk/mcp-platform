@@ -73,7 +73,7 @@ export default function CTASection({ onTrialClick }: CTASectionProps) {
         <div className="absolute bottom-0 right-1/4 w-96 h-96 bg-accent-500/10 rounded-full blur-3xl animate-pulse delay-700"></div>
       </div>
       
-      <div className="container mx-auto px-6 relative z-10">
+      <div className="container mx-auto relative z-10">
         {/* Main CTA */}
         <motion.div
           initial={{ opacity: 0, y: 50 }}

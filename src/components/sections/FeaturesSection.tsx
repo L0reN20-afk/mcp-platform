@@ -123,7 +123,7 @@ export default function FeaturesSection() {
     <section id="features" className="relative py-20 section-container">
       <div className="absolute inset-0 bg-gradient-to-b from-black/30 via-gray-900/15 to-black/30"></div>
       
-      <div className="container mx-auto px-6 relative z-10">
+      <div className="container mx-auto relative z-10">
         <motion.div
           initial={{ opacity: 0, y: 50 }}
           whileInView={{ opacity: 1, y: 0 }}
@@ -141,9 +141,14 @@ export default function FeaturesSection() {
               Professionali
             </span>
           </h2>
-          <p className="text-xl text-gray-400 max-w-3xl mx-auto">
-            Ogni server MCP offre automazione completa e controllo avanzato per massimizzare la tua produttività
-          </p>
+          {/* Description con Safe Zone */}
+          <div className="relative max-w-3xl mx-auto">
+            {/* Safe Zone Background */}
+            <div className="absolute inset-0 bg-black/15 backdrop-blur-sm rounded-xl -m-3"></div>
+            <p className="relative text-xl text-gray-300 px-3">
+              Ogni server MCP offre automazione completa e controllo avanzato per massimizzare la tua produttività
+            </p>
+          </div>
         </motion.div>
 
         <motion.div
@@ -162,7 +167,7 @@ export default function FeaturesSection() {
               className={`flex items-center space-x-3 px-6 py-3 rounded-full border-2 transition-all duration-300 ${
                 activeServer === index
                   ? server.buttonActiveClass
-                  : 'border-white/20 text-white/60 hover:border-white/40 hover:text-white'
+                  : 'border-white/20 bg-white/10 text-white/80 hover:border-white/40 hover:text-white'
               }`}
             >
               <server.icon className="w-5 h-5" />

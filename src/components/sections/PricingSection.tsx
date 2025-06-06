@@ -195,7 +195,7 @@ export default function PricingSection() {
       {/* Background - PIù TRASPARENTE per vedere il blob morfante */}
       <div className="absolute inset-0 bg-gradient-to-b from-black/30 via-gray-900/15 to-black/30"></div>
       
-      <div className="container mx-auto px-6 relative z-10">
+      <div className="container mx-auto relative z-10">
         {/* Section Header */}
         <motion.div
           initial={{ opacity: 0, y: 50 }}
@@ -214,13 +214,18 @@ export default function PricingSection() {
               Esigenza
             </span>
           </h2>
-          <p className="text-xl text-gray-400 max-w-3xl mx-auto mb-8">
-            Inizia gratis con il trial 48h, poi scegli il piano perfetto per te
-          </p>
+          {/* Description con Safe Zone */}
+          <div className="relative mb-8">
+            {/* Safe Zone Background */}
+            <div className="absolute inset-0 bg-black/14 backdrop-blur-sm rounded-xl -m-3"></div>
+            <p className="relative text-xl text-gray-300 max-w-3xl mx-auto px-3">
+              Inizia gratis con il trial 48h, poi scegli il piano perfetto per te
+            </p>
+          </div>
 
           {/* Annual/Monthly Toggle */}
           <div className="flex items-center justify-center space-x-4">
-            <span className={`font-medium ${!isAnnual ? 'text-white' : 'text-gray-400'}`}>
+            <span className={`font-medium ${!isAnnual ? 'text-white' : 'text-gray-300'}`}>
               Mensile
             </span>
             <motion.button
@@ -234,7 +239,7 @@ export default function PricingSection() {
                 className="absolute top-1 w-6 h-6 bg-gradient-to-r from-primary-500 to-accent-500 rounded-full"
               />
             </motion.button>
-            <span className={`font-medium ${isAnnual ? 'text-white' : 'text-gray-400'}`}>
+            <span className={`font-medium ${isAnnual ? 'text-white' : 'text-gray-300'}`}>
               Annuale
             </span>
             {isAnnual && (
@@ -287,7 +292,7 @@ export default function PricingSection() {
 
                 {/* Plan Name */}
                 <h3 className="text-2xl font-bold text-white mb-2">{plan.name}</h3>
-                <p className="text-gray-400 mb-6">{plan.description}</p>
+                <p className="text-gray-300 mb-6">{plan.description}</p>
 
                 {/* Price */}
                 <div className="mb-8">
@@ -295,7 +300,7 @@ export default function PricingSection() {
                     <span className="text-4xl font-bold text-white">{plan.price}</span>
                     {plan.originalPrice && (
                       <>
-                        <span className="text-lg text-gray-400 line-through">{plan.originalPrice}</span>
+                        <span className="text-lg text-gray-300 line-through">{plan.originalPrice}</span>
                         <div className="bg-success-500 text-white px-2 py-1 rounded-full text-xs font-semibold">
                           -{Math.round((1 - parseFloat(plan.price.replace('€', '')) / parseFloat(plan.originalPrice.replace('€', ''))) * 100)}%
                         </div>
@@ -303,7 +308,7 @@ export default function PricingSection() {
                     )}
                   </div>
                   {plan.price !== 'Gratuito' && (
-                    <p className="text-sm text-gray-400">al mese, fatturato {isAnnual ? 'annualmente' : 'mensilmente'}</p>
+                    <p className="text-sm text-gray-300">al mese, fatturato {isAnnual ? 'annualmente' : 'mensilmente'}</p>
                   )}
                 </div>
 
@@ -405,7 +410,7 @@ export default function PricingSection() {
                   <p className="text-gray-300 mb-4 italic">&quot;{testimonial.comment}&quot;</p>
                   <div>
                     <div className="font-semibold text-white">{testimonial.name}</div>
-                    <div className="text-sm text-gray-400">{testimonial.role}</div>
+                    <div className="text-sm text-gray-300">{testimonial.role}</div>
                     <div className="text-sm text-primary-400">{testimonial.company}</div>
                   </div>
                 </div>
@@ -442,7 +447,7 @@ export default function PricingSection() {
                    data-suffix={stat.value.replace(/\d/g, '')}>
                 {stat.value}
               </div>
-              <div className="text-gray-400 text-sm">{stat.label}</div>
+              <div className="text-gray-300 text-sm">{stat.label}</div>
             </motion.div>
           ))}
         </motion.div>

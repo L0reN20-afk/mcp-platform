@@ -70,14 +70,14 @@ export const MOBILE_CONFIG = {
   pixelRatioLimit: 1
 } as const
 
-// 🌈 DEFINIZIONI COLORI BASE
+// 🌈 DEFINIZIONI COLORI BASE - LUMINOSITÀ ALTA per particelle spettacolari
 export const COLOR_PALETTES = {
-  hero: { r: [0.2, 0.5], g: [0.5, 0.8], b: [0.8, 1.0] },
-  features: { r: [0.6, 0.9], g: [0.2, 0.5], b: [0.8, 1.0] },
-  packages: { r: [0.1, 0.3], g: [0.7, 1.0], b: [0.8, 1.0] },
-  pricing: { rainbow: true },
+  hero: { r: [0.2, 0.5], g: [0.5, 0.8], b: [0.8, 1.0] },        // BLU - luminosità alta
+  features: { r: [0.6, 0.9], g: [0.2, 0.5], b: [0.8, 1.0] },    // VIOLA - luminosità alta  
+  packages: { r: [0.1, 0.3], g: [0.7, 1.0], b: [0.8, 1.0] },    // CYAN - luminosità alta
+  pricing: { rainbow: true },                                     // Mantenuto per varietà
   demo: { 
-    helix1: { r: [0.1, 0.3], g: [0.8, 1.0], b: [0.3, 0.5] },
-    helix2: { r: [0.1, 0.3], g: [0.4, 0.7], b: [0.9, 1.0] }
+    helix1: { r: [0.1, 0.3], g: [0.8, 1.0], b: [0.3, 0.5] },    // DNA Verde - luminosità alta
+    helix2: { r: [0.1, 0.25], g: [0.4, 0.6], b: [0.8, 1.0] }    // DNA Blu - mantiene intensità
   }
 } as const

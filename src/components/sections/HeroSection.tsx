@@ -66,7 +66,7 @@ export default function HeroSection({ onTrialClick }: HeroSectionProps) {
       {/* Background gradient overlay - PIù TRASPARENTE per vedere meglio le particelle */}
       <div className="absolute inset-0 bg-gradient-to-br from-black/40 via-gray-900/20 to-black/40 pointer-events-none"></div>
       
-      <div className="container mx-auto px-6 py-20 relative z-10">
+      <div className="container mx-auto py-20 relative z-10">
         <div className="max-w-6xl mx-auto text-center">
           {/* Main Title */}
           <motion.div
@@ -84,31 +84,41 @@ export default function HeroSection({ onTrialClick }: HeroSectionProps) {
             <div className="w-32 h-1 bg-gradient-to-r from-primary-500 to-accent-500 mx-auto rounded-full"></div>
           </motion.div>
 
-          {/* Subtitle */}
-          <motion.p 
-            ref={subtitleRef}
+          {/* Subtitle con Safe Zone */}
+          <motion.div
             initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8, delay: 0.3 }}
-            className="hero-subtitle text-xl md:text-2xl lg:text-3xl text-gray-300 mb-8 max-w-4xl mx-auto leading-relaxed"
+            className="relative mb-8"
           >
-            Server MCP professionali per{' '}
-            <span className="text-primary-400 font-semibold">automazione completa</span>
-            {' '}di VS Code, Visual Studio, Word e Filesystem.{' '}
-            <span className="text-accent-400 font-semibold">Trial 48h gratuito</span>
-            {' '}disponibile ora.
-          </motion.p>
+            {/* Safe Zone Background */}
+            <div className="absolute inset-0 bg-black/14 backdrop-blur-sm rounded-2xl -m-4"></div>
+            <p 
+              ref={subtitleRef}
+              className="hero-subtitle relative text-xl md:text-2xl lg:text-3xl text-gray-200 max-w-4xl mx-auto leading-relaxed px-4"
+            >
+              Server MCP professionali per{' '}
+              <span className="text-primary-400 font-semibold">automazione completa</span>
+              {' '}di VS Code, Visual Studio, Word e Filesystem.{' '}
+              <span className="text-accent-400 font-semibold">Trial 48h gratuito</span>
+              {' '}disponibile ora.
+            </p>
+          </motion.div>
 
-          {/* Description */}
-          <motion.p 
+          {/* Description con Safe Zone */}
+          <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8, delay: 0.6 }}
-            className="text-lg text-gray-400 mb-12 max-w-3xl mx-auto"
+            className="relative mb-12"
           >
-            Piattaforma che offre abbonamenti mensili per server MCP personalizzati. 
-            Scegli tra pacchetti completi o server individuali per automatizzare il tuo workflow di sviluppo.
-          </motion.p>
+            {/* Safe Zone Background */}
+            <div className="absolute inset-0 bg-black/14 backdrop-blur-sm rounded-xl -m-3"></div>
+            <p className="relative text-lg text-gray-300 max-w-3xl mx-auto px-3">
+              Piattaforma che offre abbonamenti mensili per server MCP personalizzati. 
+              Scegli tra pacchetti completi o server individuali per automatizzare il tuo workflow di sviluppo.
+            </p>
+          </motion.div>
 
           {/* CTA Buttons */}
           <motion.div 
@@ -127,14 +137,20 @@ export default function HeroSection({ onTrialClick }: HeroSectionProps) {
               <span>Scarica Trial 48h Gratuito</span>
             </motion.button>
             
-            <motion.button
-              whileHover={{ scale: 1.05, y: -2 }}
-              whileTap={{ scale: 0.95 }}
-              onClick={handleDiscoverClick}
-              className="magnetic-button group bg-transparent border-2 border-white/20 text-white px-8 py-4 rounded-full font-semibold text-lg hover:border-accent-400 hover:text-accent-400 transition-all duration-300"
-            >
-              <span>Scopri i Pacchetti</span>
-            </motion.button>
+            {/* Safe Zone per bottone Scopri i Pacchetti */}
+            <div className="relative">
+              {/* Safe Zone Background */}
+              <div className="absolute inset-0 bg-black/14 backdrop-blur-sm rounded-full -m-2"></div>
+              
+              <motion.button
+                whileHover={{ scale: 1.05, y: -2 }}
+                whileTap={{ scale: 0.95 }}
+                onClick={handleDiscoverClick}
+                className="relative magnetic-button group bg-transparent border-2 border-white/20 text-white px-8 py-4 rounded-full font-semibold text-lg hover:border-accent-400 hover:text-accent-400 transition-all duration-300"
+              >
+                <span>Scopri i Pacchetti</span>
+              </motion.button>
+            </div>
           </motion.div>
 
           {/* Stats */}
