@@ -274,12 +274,21 @@ fs.watch('./src', (event) => {
             <Play className="w-8 h-8 text-warning-400 mr-3" />
             <span className="text-warning-400 font-semibold text-lg">Trial 48h Gratuito</span>
           </div>
-          <h2 className="text-4xl md:text-6xl font-bold mb-6 text-reveal">
-            Prova Subito{' '}
-            <span className="bg-gradient-to-r from-warning-400 to-success-400 bg-clip-text text-transparent">
-              Gratuitamente
-            </span>
-          </h2>
+          {/* Main Title con Safe Zone Avanzata */}
+          <div className="relative max-w-4xl mx-auto mb-6">
+            {/* Safe Zone Background - Protezione dalle particelle DNA verde-blu */}
+            <div className="absolute inset-0 bg-black/25 backdrop-blur-md rounded-2xl shadow-2xl shadow-black/50 border border-white/10 -m-6"></div>
+            <div className="relative px-6 py-4">
+              <h2 className="text-4xl md:text-6xl font-bold text-reveal mb-6">
+                Prova Subito{' '}
+                <span className="bg-gradient-to-r from-warning-400 to-success-400 bg-clip-text text-transparent">
+                  Gratuitamente
+                </span>
+              </h2>
+              {/* Linea decorativa warning-success */}
+              <div className="w-32 h-1 bg-gradient-to-r from-warning-500 to-success-500 mx-auto rounded-full"></div>
+            </div>
+          </div>
           {/* Description con Safe Zone */}
           <div className="relative mb-8">
             {/* Safe Zone Background */}

@@ -95,18 +95,26 @@ export default function CTASection({ onTrialClick }: CTASectionProps) {
           </motion.div>
 
           {/* Main Headline */}
-          <motion.h2
-            initial={{ opacity: 0, y: 30 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.8, delay: 0.1 }}
-            className="text-5xl md:text-7xl font-bold mb-6 leading-tight"
-          >
-            Non Perdere{' '}
-            <span className="bg-gradient-to-r from-warning-400 via-primary-400 to-accent-400 bg-clip-text text-transparent">
-              l&apos;Opportunità
-            </span>
-          </motion.h2>
+          <div className="relative max-w-5xl mx-auto mb-6">
+            {/* Safe Zone Background - Protezione dalle particelle di sfondo */}
+            <div className="absolute inset-0 bg-black/25 backdrop-blur-md rounded-2xl shadow-2xl shadow-black/50 border border-white/10 -m-6"></div>
+            <div className="relative px-6 py-4">
+              <motion.h2
+                initial={{ opacity: 0, y: 30 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.8, delay: 0.1 }}
+                className="text-5xl md:text-7xl font-bold mb-6 leading-tight"
+              >
+                Non Perdere{' '}
+                <span className="bg-gradient-to-r from-warning-400 via-primary-400 to-accent-400 bg-clip-text text-transparent">
+                  l&apos;Opportunità
+                </span>
+              </motion.h2>
+              {/* Linea decorativa warning-accent */}
+              <div className="w-32 h-1 bg-gradient-to-r from-warning-500 to-accent-500 mx-auto rounded-full"></div>
+            </div>
+          </div>
 
           {/* Subheadline */}
           <motion.p

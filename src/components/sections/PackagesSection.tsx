@@ -192,12 +192,21 @@ export default function PackagesSection() {
             <Package className="w-6 h-6 sm:w-8 sm:h-8 text-accent-400 mr-3" />
             <span className="text-accent-400 font-semibold text-base sm:text-lg">Pacchetti e Server</span>
           </div>
-          <h2 className="text-3xl md:text-6xl font-bold mb-6 text-reveal">
-            Scegli il tuo{' '}
-            <span className="bg-gradient-to-r from-accent-400 to-success-400 bg-clip-text text-transparent">
-              Piano Perfetto
-            </span>
-          </h2>
+          {/* Main Title con Safe Zone Avanzata */}
+          <div className="relative max-w-4xl mx-auto mb-6">
+            {/* Safe Zone Background - Protezione dalle particelle cyan */}
+            <div className="absolute inset-0 bg-black/25 backdrop-blur-md rounded-2xl shadow-2xl shadow-black/50 border border-white/10 -m-6"></div>
+            <div className="relative px-6 py-4">
+              <h2 className="text-3xl md:text-6xl font-bold text-reveal mb-6">
+                Scegli il tuo{' '}
+                <span className="bg-gradient-to-r from-accent-400 to-success-400 bg-clip-text text-transparent">
+                  Piano Perfetto
+                </span>
+              </h2>
+              {/* Linea decorativa cyan-success */}
+              <div className="w-32 h-1 bg-gradient-to-r from-accent-500 to-success-500 mx-auto rounded-full"></div>
+            </div>
+          </div>
           {/* Description con Safe Zone */}
           <div className="relative">
             {/* Safe Zone Background */}
@@ -216,7 +225,7 @@ export default function PackagesSection() {
           transition={{ duration: 0.8, delay: 0.2 }}
           className="flex justify-center mb-12"
         >
-          <div className="bg-white/5 backdrop-blur-sm border border-white/10 rounded-full p-2 flex gap-1 sm:gap-0">
+          <div className="bg-white/5 backdrop-blur-sm border-2 border-accent-400/30 rounded-full p-2 flex gap-1 sm:gap-0">
             <button
               onClick={() => setActiveTab('packages')}
               className={`px-4 sm:px-8 py-3 rounded-full font-semibold text-sm sm:text-base transition-all duration-300 ${
@@ -260,10 +269,12 @@ export default function PackagesSection() {
                     transition={{ duration: 0.6, delay: index * 0.2 }}
                     whileHover={{ y: -10, scale: 1.02 }}
                     onClick={() => selectPackage(pkg.id)}
-                    className={`card-item relative bg-white/5 backdrop-blur-lg border-2 rounded-3xl p-8 cursor-pointer transition-all duration-300 ${
+                    className={`card-item relative bg-white/5 backdrop-blur-lg border-2 rounded-3xl p-8 cursor-pointer transition-all duration-300 flex flex-col h-full ${
                       selectedPackage === pkg.id
                         ? 'border-accent-400 bg-accent-400/10'
-                        : 'border-white/10 hover:border-white/30'
+                        : pkg.popular
+                        ? 'border-accent-400 bg-accent-400/5 hover:border-accent-300'
+                        : 'border-accent-400/60 bg-accent-400/5 hover:border-accent-400'
                     }`}
                   >
                     {pkg.popular && (
@@ -275,13 +286,13 @@ export default function PackagesSection() {
                       </div>
                     )}
 
-                    <div className="text-center">
+                    <div className="text-center flex-grow flex flex-col">
                       <div className={`w-16 h-16 mx-auto mb-6 rounded-2xl bg-gradient-to-br ${pkg.color} flex items-center justify-center`}>
                         <Package className="w-8 h-8 text-white" />
                       </div>
 
                       <h3 className="text-2xl font-bold text-white mb-2">{pkg.name}</h3>
-                      <p className="text-gray-400 mb-6">{pkg.description}</p>
+                      <p className="text-gray-400 mb-6 flex-grow">{pkg.description}</p>
 
                       <div className="flex items-center justify-center space-x-3 mb-6">
                         <span className="text-3xl font-bold text-white">€{pkg.price}</span>
@@ -291,7 +302,7 @@ export default function PackagesSection() {
                         </div>
                       </div>
 
-                      <div className="space-y-3 mb-8">
+                      <div className="space-y-3 mb-8 flex-grow">
                         {pkg.servers.map(serverId => {
                           const server = servers.find(s => s.id === serverId)
                           return server ? (
@@ -309,7 +320,9 @@ export default function PackagesSection() {
                         className={`w-full py-3 rounded-full font-semibold transition-all duration-300 ${
                           selectedPackage === pkg.id
                             ? 'bg-gradient-to-r from-accent-600 to-success-600 text-white'
-                            : 'bg-white/10 text-white hover:bg-white/20'
+                            : pkg.popular
+                            ? 'bg-accent-500/20 text-white hover:bg-accent-500/30 border-2 border-accent-400/30 hover:border-accent-400'
+                            : 'bg-accent-500/15 text-white hover:bg-accent-500/25 border border-accent-400/20 hover:border-accent-400/40'
                         }`}
                       >
                         {selectedPackage === pkg.id ? 'Selezionato' : 'Seleziona Pacchetto'}
@@ -338,13 +351,21 @@ export default function PackagesSection() {
                     transition={{ duration: 0.6, delay: index * 0.1 }}
                     whileHover={{ y: -5 }}
                     onClick={() => toggleServer(server.id)}
-                    className={`card-item bg-white/5 backdrop-blur-sm border-2 rounded-2xl p-6 cursor-pointer transition-all duration-300 ${
+                    className={`card-item bg-white/5 backdrop-blur-sm border-2 rounded-2xl p-6 cursor-pointer transition-all duration-300 flex flex-col h-full ${
                       selectedServers.includes(server.id)
-                        ? 'border-accent-400 bg-accent-400/10'
+                        ? `border-${server.color.split('-')[1]}-400 bg-${server.color.split('-')[1]}-400/10`
+                        : server.id === 'vscode'
+                        ? 'border-primary-400/60 bg-primary-400/5 hover:border-primary-400'
+                        : server.id === 'visual-studio'
+                        ? 'border-secondary-400/60 bg-secondary-400/5 hover:border-secondary-400'
+                        : server.id === 'word'
+                        ? 'border-accent-400/60 bg-accent-400/5 hover:border-accent-400'
+                        : server.id === 'filesystem'
+                        ? 'border-success-400/60 bg-success-400/5 hover:border-success-400'
                         : 'border-white/10 hover:border-white/30'
                     }`}
                   >
-                    <div className="text-center">
+                    <div className="text-center flex-grow flex flex-col">
                       <div className="relative mb-4">
                         <server.icon className={`w-12 h-12 ${server.color} mx-auto`} />
                         <motion.div
@@ -362,16 +383,32 @@ export default function PackagesSection() {
                       </div>
                       
                       <h4 className="text-lg font-bold text-white mb-2">{server.name}</h4>
-                      <p className="text-sm text-gray-400 mb-4">{server.description}</p>
+                      <p className="text-sm text-gray-400 mb-4 flex-grow">{server.description}</p>
                       
-                      <div className="text-2xl font-bold text-white mb-4">€{server.price}</div>
+                      <div className="text-2xl font-bold text-white mb-6">€{server.price}</div>
                       
                       <motion.button
                         whileHover={{ scale: 1.05 }}
                         whileTap={{ scale: 0.95 }}
                         className={`w-full py-2 rounded-full text-sm font-semibold transition-all duration-300 flex items-center justify-center space-x-2 ${
                           selectedServers.includes(server.id)
-                            ? 'bg-accent-500 text-white'
+                            ? server.id === 'vscode'
+                              ? 'bg-primary-500 text-white'
+                              : server.id === 'visual-studio'
+                              ? 'bg-secondary-500 text-white'
+                              : server.id === 'word'
+                              ? 'bg-accent-500 text-white'
+                              : server.id === 'filesystem'
+                              ? 'bg-success-500 text-white'
+                              : 'bg-accent-500 text-white'
+                            : server.id === 'vscode'
+                            ? 'bg-primary-500/20 text-white hover:bg-primary-500/30 border border-primary-400/30'
+                            : server.id === 'visual-studio'
+                            ? 'bg-secondary-500/20 text-white hover:bg-secondary-500/30 border border-secondary-400/30'
+                            : server.id === 'word'
+                            ? 'bg-accent-500/20 text-white hover:bg-accent-500/30 border border-accent-400/30'
+                            : server.id === 'filesystem'
+                            ? 'bg-success-500/20 text-white hover:bg-success-500/30 border border-success-400/30'
                             : 'bg-white/10 text-white hover:bg-white/20'
                         }`}
                       >

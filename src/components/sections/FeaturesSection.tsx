@@ -135,12 +135,21 @@ export default function FeaturesSection() {
             <Zap className="w-8 h-8 text-secondary-400 mr-3" />
             <span className="text-secondary-400 font-semibold text-lg">Features Avanzate</span>
           </div>
-          <h2 className="text-4xl md:text-6xl font-bold mb-6 text-reveal">
-            Server MCP{' '}
-            <span className="bg-gradient-to-r from-secondary-400 to-accent-400 bg-clip-text text-transparent">
-              Professionali
-            </span>
-          </h2>
+          {/* Main Title con Safe Zone Avanzata */}
+          <div className="relative max-w-4xl mx-auto mb-6">
+            {/* Safe Zone Background - PIÙ FORTE per proteggersi dalle particelle viola */}
+            <div className="absolute inset-0 bg-black/25 backdrop-blur-md rounded-2xl shadow-2xl shadow-black/50 border border-white/10 -m-6"></div>
+            <div className="relative px-6 py-4">
+              <h2 className="text-4xl md:text-6xl font-bold text-reveal mb-6">
+                Server MCP{' '}
+                <span className="bg-gradient-to-r from-secondary-400 to-accent-400 bg-clip-text text-transparent">
+                  Professionali
+                </span>
+              </h2>
+              {/* Linea decorativa */}
+              <div className="w-32 h-1 bg-gradient-to-r from-secondary-500 to-accent-500 mx-auto rounded-full"></div>
+            </div>
+          </div>
           {/* Description con Safe Zone */}
           <div className="relative max-w-3xl mx-auto">
             {/* Safe Zone Background */}

@@ -208,12 +208,21 @@ export default function PricingSection() {
             <Crown className="w-8 h-8 text-warning-400 mr-3" />
             <span className="text-warning-400 font-semibold text-lg">Prezzi Trasparenti</span>
           </div>
-          <h2 className="text-4xl md:text-6xl font-bold mb-6 text-reveal">
-            Piani per ogni{' '}
-            <span className="bg-gradient-to-r from-warning-400 to-primary-400 bg-clip-text text-transparent">
-              Esigenza
-            </span>
-          </h2>
+          {/* Main Title con Safe Zone Avanzata */}
+          <div className="relative max-w-4xl mx-auto mb-6">
+            {/* Safe Zone Background - Protezione dalle particelle arcobaleno */}
+            <div className="absolute inset-0 bg-black/25 backdrop-blur-md rounded-2xl shadow-2xl shadow-black/50 border border-white/10 -m-6"></div>
+            <div className="relative px-6 py-4">
+              <h2 className="text-4xl md:text-6xl font-bold text-reveal mb-6">
+                Piani per ogni{' '}
+                <span className="bg-gradient-to-r from-warning-400 to-primary-400 bg-clip-text text-transparent">
+                  Esigenza
+                </span>
+              </h2>
+              {/* Linea decorativa warning-primary */}
+              <div className="w-32 h-1 bg-gradient-to-r from-warning-500 to-primary-500 mx-auto rounded-full"></div>
+            </div>
+          </div>
           {/* Description con Safe Zone */}
           <div className="relative mb-8">
             {/* Safe Zone Background */}
@@ -268,9 +277,13 @@ export default function PricingSection() {
                 scale: 1.02,
                 rotateY: index % 2 === 0 ? 2 : -2 
               }}
-              className={`pricing-card relative bg-white/5 backdrop-blur-lg border-2 rounded-3xl p-8 transition-all duration-500 ${
+              className={`pricing-card relative bg-white/5 backdrop-blur-lg border-2 rounded-3xl p-8 transition-all duration-500 flex flex-col h-full ${
                 plan.popular 
                   ? 'border-primary-400 bg-primary-400/5 scale-105 lg:scale-110' 
+                  : plan.id === 'beta'
+                  ? 'border-success-400 bg-success-400/5 hover:border-success-300'
+                  : plan.id === 'enterprise'
+                  ? 'border-secondary-400 bg-secondary-400/5 hover:border-secondary-300'
                   : 'border-white/10 hover:border-white/30'
               }`}
             >
@@ -284,7 +297,7 @@ export default function PricingSection() {
                 </div>
               )}
 
-              <div className="text-center">
+              <div className="text-center flex-grow flex flex-col">
                 {/* Icon */}
                 <div className={`w-16 h-16 mx-auto mb-6 rounded-2xl bg-gradient-to-br ${plan.gradient} flex items-center justify-center relative`}>
                   <plan.icon className="w-8 h-8 text-white absolute inset-0 m-auto" />
@@ -292,7 +305,7 @@ export default function PricingSection() {
 
                 {/* Plan Name */}
                 <h3 className="text-2xl font-bold text-white mb-2">{plan.name}</h3>
-                <p className="text-gray-300 mb-6">{plan.description}</p>
+                <p className="text-gray-300 mb-6 flex-grow">{plan.description}</p>
 
                 {/* Price */}
                 <div className="mb-8">
@@ -313,7 +326,7 @@ export default function PricingSection() {
                 </div>
 
                 {/* Features */}
-                <div className="space-y-4 mb-8 text-left">
+                <div className="space-y-4 mb-8 text-left flex-grow">
                   {plan.features.map((feature, featureIndex) => (
                     <motion.div
                       key={featureIndex}
@@ -338,6 +351,10 @@ export default function PricingSection() {
                   className={`w-full py-4 rounded-full font-semibold text-lg transition-all duration-300 flex items-center justify-center space-x-2 ${
                     plan.popular
                       ? `bg-gradient-to-r ${plan.gradient} text-white hover:shadow-lg hover:shadow-primary-500/25`
+                      : plan.id === 'beta'
+                      ? 'bg-success-500/20 text-white hover:bg-success-500/30 border-2 border-success-400/30 hover:border-success-400'
+                      : plan.id === 'enterprise'
+                      ? 'bg-secondary-500/20 text-white hover:bg-secondary-500/30 border-2 border-secondary-400/30 hover:border-secondary-400'
                       : 'bg-white/10 text-white hover:bg-white/20 border border-white/20'
                   } ${(loading && plan.id === 'beta') ? 'opacity-70 cursor-not-allowed' : ''}`}
                 >
