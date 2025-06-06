@@ -30,12 +30,12 @@ export default function TrialModal({ isOpen, onClose }: TrialModalProps) {
       // Blocca scroll del body
       document.body.style.overflow = 'hidden'
     } else {
-      // Ripristina scroll del body
-      document.body.style.overflow = 'auto'
+      // Ripristina alle impostazioni CSS globali invece di forzare 'auto'
+      document.body.style.overflow = ''
     }
 
     return () => {
-      document.body.style.overflow = 'auto'
+      document.body.style.overflow = ''
     }
   }, [isOpen])
 
@@ -271,7 +271,7 @@ export default function TrialModal({ isOpen, onClose }: TrialModalProps) {
           animate={{ scale: 1, opacity: 1 }}
           exit={{ scale: 0.9, opacity: 0 }}
           transition={{ type: "spring", damping: 25, stiffness: 500 }}
-          className="relative bg-white rounded-2xl shadow-2xl max-w-md w-full mx-4 max-h-[90vh] overflow-y-auto"
+          className="relative bg-white rounded-2xl shadow-2xl max-w-md w-full mx-4 max-h-[90vh] flex flex-col"
           onClick={(e) => e.stopPropagation()}
         >
           {/* Close Button */}
@@ -284,7 +284,7 @@ export default function TrialModal({ isOpen, onClose }: TrialModalProps) {
             </button>
           )}
 
-          <div className="p-6">
+          <div className="p-6 overflow-y-auto min-h-0">
             {/* Header */}
             <div className="text-center mb-6">
               <motion.div
