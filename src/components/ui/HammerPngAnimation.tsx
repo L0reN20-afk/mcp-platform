@@ -80,7 +80,7 @@ const HammerVideoAnimation = forwardRef<HammerVideoRef, HammerVideoAnimationProp
       onEnded={handleVideoEnded}
       preload="auto"
     >
-      <source src="/images/hammer-animation/hammer-animation--60fps.webm" type="video/webm" />
+      <source src="/images/hammer-animation/hammer-animation-60fps.webm" type="video/webm" />
       {/* Fallback per browser che non supportano WebM */}
       <div 
         style={{
