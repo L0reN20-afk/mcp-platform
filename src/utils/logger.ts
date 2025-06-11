@@ -129,7 +129,22 @@ class Logger {
     const fullKey = `${this.component}-${key}`
     if (!this.oneTimeFlags.has(fullKey)) {
       this.oneTimeFlags.add(fullKey)
-      this[level.toLowerCase() as keyof Logger](message, data)
+      
+      // Chiamata esplicita invece di dinamica per evitare errori TypeScript
+      switch (level) {
+        case 'DEBUG':
+          this.debug(message, data)
+          break
+        case 'INFO':
+          this.info(message, data)
+          break
+        case 'WARN':
+          this.warn(message, data)
+          break
+        case 'ERROR':
+          this.error(message, data)
+          break
+      }
     }
   }
 
