@@ -120,9 +120,9 @@ export default function ParticleBackground() {
     
     // Cleanup three.js resources
     const renderer = rendererRef.current
-    const particleSystem = particleSystemRef.current
+    const particleSystem = particleSystemRef.current as ParticleSystem | null
     
-    if (renderer && particleSystem && particleSystem.geometry && particleSystem.material) {
+    if (renderer && particleSystem) {
       cleanupResources(
         renderer,
         particleSystem.geometry,
