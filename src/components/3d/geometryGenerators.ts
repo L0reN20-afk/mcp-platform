@@ -1,6 +1,6 @@
 import { SHAPE_DIMENSIONS } from './constants'
 
-// 🌐 GENERATORI DI GEOMETRIE - Tutte le forme del sistema particellare
+// 🌐 GENERATORI DI GEOMETRIE - VERSIONE SEMPLIFICATA (STESSO ASPETTO VISIVO)
 
 // 🌐 DISTRIBUZIONE UNIFORME PER SFERA - Spirale di Fibonacci
 export function generateUniformSpherePositions(positions: Float32Array, count: number) {
@@ -25,20 +25,14 @@ export function generateUniformSpherePositions(positions: Float32Array, count: n
 export function generateUniformTorusPositions(positions: Float32Array, count: number) {
   const { majorRadius, minorRadius } = SHAPE_DIMENSIONS.torus
   
-  // Calcola la griglia quadrata esatta dal numero di particelle
   const gridSize = Math.floor(Math.sqrt(count))
-  const actualCount = gridSize * gridSize
   let index = 0
-  
-  console.log(`🍩 Toro: ${count} particelle richieste, griglia ${gridSize}x${gridSize} = ${actualCount} particelle`)
   
   for (let i = 0; i < gridSize && index < count; i++) {
     for (let j = 0; j < gridSize && index < count; j++) {
-      // Parametri u e v distribuiti uniformemente
-      const u = (i / gridSize) * 2 * Math.PI // 0 to 2π per il raggio maggiore
-      const v = (j / gridSize) * 2 * Math.PI // 0 to 2π per il raggio minore
+      const u = (i / gridSize) * 2 * Math.PI
+      const v = (j / gridSize) * 2 * Math.PI
       
-      // Equazioni parametriche del toro
       const x = (majorRadius + minorRadius * Math.cos(v)) * Math.cos(u)
       const y = (majorRadius + minorRadius * Math.cos(v)) * Math.sin(u)
       const z = minorRadius * Math.sin(v)
@@ -49,22 +43,15 @@ export function generateUniformTorusPositions(positions: Float32Array, count: nu
       index++
     }
   }
-  
-  console.log(`🍩 Toro completato con ${index} particelle`)
 }
 
-// 📦 DISTRIBUZIONE UNIFORME PER CUBO
+// 📦 DISTRIBUZIONE UNIFORME PER CUBO - ORIGINALE
 export function generateUniformCubePositions(positions: Float32Array, count: number) {
   const size = SHAPE_DIMENSIONS.cube.size
-  
-  // Calcola il numero esatto di particelle per faccia
   const particlesPerFace = Math.floor(count / 6)
   const gridSize = Math.ceil(Math.sqrt(particlesPerFace))
   let index = 0
   
-  console.log(`📦 Cubo: ${count} particelle totali, ${particlesPerFace} per faccia, griglia ${gridSize}x${gridSize}`)
-  
-  // 6 facce del cubo con distribuzione perfetta
   const faces = [
     { normal: [0, 0, 1], u: [1, 0, 0], v: [0, 1, 0] },   // Front
     { normal: [0, 0, -1], u: [-1, 0, 0], v: [0, 1, 0] }, // Back
@@ -76,7 +63,7 @@ export function generateUniformCubePositions(positions: Float32Array, count: num
   
   faces.forEach((face, faceIndex) => {
     let particlesOnThisFace = 0
-    const targetParticlesForFace = faceIndex < 5 ? particlesPerFace : count - index // Ultima faccia prende il resto
+    const targetParticlesForFace = faceIndex < 5 ? particlesPerFace : count - index
     
     for (let i = 0; i < gridSize && particlesOnThisFace < targetParticlesForFace && index < count; i++) {
       for (let j = 0; j < gridSize && particlesOnThisFace < targetParticlesForFace && index < count; j++) {
@@ -95,16 +82,15 @@ export function generateUniformCubePositions(positions: Float32Array, count: num
       }
     }
   })
-  
-  console.log(`📦 Cubo completato con ${index} particelle`)
 }
 
-// 🌊 FIGURA DINAMICA MORFANTE - DEFORMAZIONI MOLTO PIÙ SOTTILI!
+// 🌊 BLOB MORFANTE SEMPLIFICATO
 export function generateMorphingBlobPositions(positions: Float32Array, count: number, time: number) {
   const baseRadius = SHAPE_DIMENSIONS.blob.baseRadius
+  const timeScale = time * 0.0006
   
   for (let i = 0; i < count; i++) {
-    // Base sferica uniforme (distribuzione uniforme)
+    // Base sferica uniforme
     const y = 1 - (i / (count - 1)) * 2
     const radiusAtY = Math.sqrt(1 - y * y)
     const theta = 2 * Math.PI * i / 1.618033988749
@@ -113,20 +99,14 @@ export function generateMorphingBlobPositions(positions: Float32Array, count: nu
     let yPos = y * baseRadius
     let z = Math.sin(theta) * radiusAtY * baseRadius
     
-    // 🌊 DEFORMAZIONI DINAMICHE - MOLTO PIÙ SOTTILI!
-    const timeScale = time * 0.0008
+    // Onde di deformazione semplici
+    const wave1 = Math.sin(2 * Math.atan2(yPos, x) + timeScale * 2) * 
+                  Math.cos(1.5 * Math.atan2(z, Math.sqrt(x*x + yPos*yPos)) + timeScale * 1.5)
     
-    const wave1 = Math.sin(3 * Math.atan2(yPos, x) + timeScale * 2) * 
-                  Math.cos(2 * Math.atan2(z, Math.sqrt(x*x + yPos*yPos)) + timeScale * 1.5)
+    const wave2 = Math.sin(3 * Math.atan2(z, x) + timeScale * 2.5) * 
+                  Math.cos(2.5 * Math.atan2(yPos, Math.sqrt(x*x + z*z)) + timeScale * 2)
     
-    const wave2 = Math.sin(5 * Math.atan2(z, x) + timeScale * 3) * 
-                  Math.cos(4 * Math.atan2(yPos, Math.sqrt(x*x + z*z)) + timeScale * 2.5)
-    
-    const wave3 = Math.sin(7 * Math.atan2(x, z) + timeScale * 4) * 
-                  Math.cos(6 * Math.atan2(yPos, x) + timeScale * 3.5)
-    
-    // 🎯 DEFORMAZIONI MOLTO PIÙ SOTTILI
-    const morphScale = 1 + 0.2 * wave1 + 0.1 * wave2 + 0.05 * wave3
+    const morphScale = 1 + 0.15 * wave1 + 0.08 * wave2
     
     positions[i * 3] = x * morphScale
     positions[i * 3 + 1] = yPos * morphScale
@@ -134,99 +114,87 @@ export function generateMorphingBlobPositions(positions: Float32Array, count: nu
   }
 }
 
-// 🧬 DNA DOPPIA ELICA **TUBOLARE** - Ogni elica è un TUBO!
+// 🧬 DNA DOPPIA ELICA SEMPLIFICATA
 export function generateDoubleHelixPositions(positions: Float32Array, count: number, time: number = 0) {
   const { radius, height, turns, helixSeparation, tubeRadius } = SHAPE_DIMENSIONS.dna
+  const timeScale = time * 0.0008
+  const rotationOffset = timeScale * Math.PI * 0.5
   
-  // 🕰️ ROTAZIONE DINAMICA per animazione fluida
-  const timeScale = time * 0.001
-  const rotationOffset = timeScale * Math.PI
+  // Numero di punti per spirale e per file
+  const particlesPerHelix = Math.floor(count / 2)
+  const particlesPerTube = Math.floor(particlesPerHelix / 6)
   
-  console.log(`🧬 DNA TUBOLARE: Generando ${count} particelle in tubi (4 fili per elica = 8 fili totali)`)
+  let particleIndex = 0
   
-  for (let i = 0; i < count; i++) {
-    // 🧬 8 FILI TOTALI: 4 per ogni elica che formano la circonferenza del tubo
-    const filamentIndex = i % 8
-    const isFirstHelix = filamentIndex < 4
-    const tubeFilamentIndex = filamentIndex % 4
+  // Prima spirale (6 file tubolari)
+  for (let tubeIndex = 0; tubeIndex < 6; tubeIndex++) {
+    const tubeAngle = (tubeIndex / 6) * Math.PI * 2
     
-    // Progresso lungo l'altezza dell'elica
-    const helixProgress = Math.floor(i / 8) / Math.floor(count / 8)
-    const t = helixProgress * turns * 2 * Math.PI
-    
-    // Altezza lungo l'asse Y
-    const y = (helixProgress - 0.5) * height
-    
-    // 🎯 POSIZIONE SULLA CIRCONFERENZA DEL TUBO
-    const tubeAngle = (tubeFilamentIndex / 4) * Math.PI * 2
-    
-    if (isFirstHelix) {
-      // 🧬 PRIMA ELICA TUBOLARE (senso orario)
-      const helixCenterX = radius * Math.cos(t + rotationOffset)
-      const helixCenterZ = radius * Math.sin(t + rotationOffset) + helixSeparation/2
+    for (let i = 0; i < particlesPerTube && particleIndex < count; i++) {
+      const progress = i / particlesPerTube
+      const t = progress * turns * 2 * Math.PI
+      const y = (progress - 0.5) * height
       
-      // Calcola i vettori tangente e normale per orientare il tubo
-      const tangentX = -radius * Math.sin(t + rotationOffset)
-      const tangentZ = radius * Math.cos(t + rotationOffset)
-      const tangentY = height / (turns * 2 * Math.PI)
+      // Posizione centrale della spirale
+      const centralX = radius * Math.cos(t + rotationOffset)
+      const centralZ = radius * Math.sin(t + rotationOffset) + helixSeparation/2
       
-      // Normalizza il vettore tangente
-      const tangentLength = Math.sqrt(tangentX*tangentX + tangentY*tangentY + tangentZ*tangentZ)
-      const normTangentX = tangentX / tangentLength
-      const normTangentY = tangentY / tangentLength  
-      const normTangentZ = tangentZ / tangentLength
+      // Offset per creare il tubo
+      const tubeOffsetX = tubeRadius * Math.cos(tubeAngle)
+      const tubeOffsetZ = tubeRadius * Math.sin(tubeAngle)
       
-      // Vettore normale (perpendicolare alla tangente)
-      const normalX = Math.cos(t + rotationOffset + Math.PI/2)
-      const normalZ = Math.sin(t + rotationOffset + Math.PI/2)
+      positions[particleIndex * 3] = centralX + tubeOffsetX
+      positions[particleIndex * 3 + 1] = y
+      positions[particleIndex * 3 + 2] = centralZ + tubeOffsetZ
       
-      // Vettore binormale (prodotto vettoriale tangente × normale)
-      const binormalX = normTangentY * normalZ - normTangentZ * 0
-      const binormalY = normTangentZ * normalX - normTangentX * normalZ  
-      const binormalZ = normTangentX * 0 - normTangentY * normalX
-      
-      // Posizione finale sulla circonferenza del tubo
-      const tubeOffsetX = tubeRadius * (Math.cos(tubeAngle) * normalX + Math.sin(tubeAngle) * binormalX)
-      const tubeOffsetY = tubeRadius * (Math.sin(tubeAngle) * binormalY)
-      const tubeOffsetZ = tubeRadius * (Math.cos(tubeAngle) * normalZ + Math.sin(tubeAngle) * binormalZ)
-      
-      positions[i * 3] = helixCenterX + tubeOffsetX
-      positions[i * 3 + 1] = y + tubeOffsetY
-      positions[i * 3 + 2] = helixCenterZ + tubeOffsetZ
-      
-    } else {
-      // 🧬 SECONDA ELICA TUBOLARE (senso antiorario + offset π)
-      const helixCenterX = radius * Math.cos(-t - rotationOffset + Math.PI)
-      const helixCenterZ = radius * Math.sin(-t - rotationOffset + Math.PI) - helixSeparation/2
-      
-      // Calcola i vettori per la seconda elica (senso opposto)
-      const tangentX = radius * Math.sin(-t - rotationOffset + Math.PI)
-      const tangentZ = -radius * Math.cos(-t - rotationOffset + Math.PI)
-      const tangentY = height / (turns * 2 * Math.PI)
-      
-      // Normalizza il vettore tangente
-      const tangentLength = Math.sqrt(tangentX*tangentX + tangentY*tangentY + tangentZ*tangentZ)
-      const normTangentX = tangentX / tangentLength
-      const normTangentY = tangentY / tangentLength
-      const normTangentZ = tangentZ / tangentLength
-      
-      // Vettore normale
-      const normalX = Math.cos(-t - rotationOffset + Math.PI + Math.PI/2)
-      const normalZ = Math.sin(-t - rotationOffset + Math.PI + Math.PI/2)
-      
-      // Vettore binormale
-      const binormalX = normTangentY * normalZ - normTangentZ * 0
-      const binormalY = normTangentZ * normalX - normTangentX * normalZ
-      const binormalZ = normTangentX * 0 - normTangentY * normalX
-      
-      // Posizione finale sulla circonferenza del tubo
-      const tubeOffsetX = tubeRadius * (Math.cos(tubeAngle) * normalX + Math.sin(tubeAngle) * binormalX)
-      const tubeOffsetY = tubeRadius * (Math.sin(tubeAngle) * binormalY)
-      const tubeOffsetZ = tubeRadius * (Math.cos(tubeAngle) * normalZ + Math.sin(tubeAngle) * binormalZ)
-      
-      positions[i * 3] = helixCenterX + tubeOffsetX
-      positions[i * 3 + 1] = y + tubeOffsetY
-      positions[i * 3 + 2] = helixCenterZ + tubeOffsetZ
+      particleIndex++
     }
+  }
+  
+  // Seconda spirale (senso opposto)
+  for (let tubeIndex = 0; tubeIndex < 6; tubeIndex++) {
+    const tubeAngle = (tubeIndex / 6) * Math.PI * 2
+    
+    for (let i = 0; i < particlesPerTube && particleIndex < count; i++) {
+      const progress = i / particlesPerTube  
+      const t = progress * turns * 2 * Math.PI
+      const y = (progress - 0.5) * height
+      
+      const centralX = radius * Math.cos(-t - rotationOffset + Math.PI)
+      const centralZ = radius * Math.sin(-t - rotationOffset + Math.PI) - helixSeparation/2
+      
+      const tubeOffsetX = tubeRadius * Math.cos(tubeAngle)
+      const tubeOffsetZ = tubeRadius * Math.sin(tubeAngle)
+      
+      positions[particleIndex * 3] = centralX + tubeOffsetX
+      positions[particleIndex * 3 + 1] = y
+      positions[particleIndex * 3 + 2] = centralZ + tubeOffsetZ
+      
+      particleIndex++
+    }
+  }
+  
+  // Riempi particelle rimanenti
+  while (particleIndex < count) {
+    const isFirstHelix = Math.random() > 0.5
+    const progress = Math.random()
+    const t = progress * turns * 2 * Math.PI
+    const y = (progress - 0.5) * height
+    const randomAngle = Math.random() * Math.PI * 2
+    
+    let centralX, centralZ
+    if (isFirstHelix) {
+      centralX = radius * Math.cos(t + rotationOffset)
+      centralZ = radius * Math.sin(t + rotationOffset) + helixSeparation/2
+    } else {
+      centralX = radius * Math.cos(-t - rotationOffset + Math.PI)
+      centralZ = radius * Math.sin(-t - rotationOffset + Math.PI) - helixSeparation/2
+    }
+    
+    positions[particleIndex * 3] = centralX + tubeRadius * Math.cos(randomAngle)
+    positions[particleIndex * 3 + 1] = y
+    positions[particleIndex * 3 + 2] = centralZ + tubeRadius * Math.sin(randomAngle)
+    
+    particleIndex++
   }
 }

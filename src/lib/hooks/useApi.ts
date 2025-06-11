@@ -254,32 +254,3 @@ export const trackEvent = async (eventName: string, properties: Record<string, a
   }
 }
 
-// Hook per real-time updates (per admin dashboard)
-export const useRealTimeUpdates = (endpoint: string, interval = 30000) => {
-  const [data, setData] = useState(null)
-  const [lastUpdate, setLastUpdate] = useState<Date | null>(null)
-
-  const fetchData = useCallback(async () => {
-    try {
-      const response = await fetch(endpoint)
-      const result = await response.json()
-      
-      if (result.success) {
-        setData(result.data)
-        setLastUpdate(new Date())
-      }
-    } catch (err) {
-      console.error('Error fetching real-time data:', err)
-    }
-  }, [endpoint])
-
-  // Polling automatico
-  React.useEffect(() => {
-    fetchData() // Initial fetch
-    
-    const intervalId = setInterval(fetchData, interval)
-    return () => clearInterval(intervalId)
-  }, [fetchData, interval])
-
-  return { data, lastUpdate, refetch: fetchData }
-}

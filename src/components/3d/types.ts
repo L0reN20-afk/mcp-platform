@@ -12,26 +12,8 @@ export interface ParticleSystem {
   startTime: number
   currentParticleCount: number
   isMorphing?: boolean // Flag per evitare morphing multipli
-  // 🧬 DNA ENHANCEMENTS
-  dnaConnections?: DNAConnections
-  dnaGlow?: DNAGlow
-}
-
-// 🔗 **DNA CONNECTIONS SYSTEM** - Ponti idrogeno tra eliche
-export interface DNAConnections {
-  lines: THREE.Line[]
-  lineMaterials: THREE.LineBasicMaterial[]
-  lastUpdateTime: number
-  activeConnections: number
-  maxConnections: number
-}
-
-// 🌟 **DNA GLOW SYSTEM** - Effetto luminoso
-export interface DNAGlow {
-  glowMesh: THREE.Mesh
-  glowMaterial: THREE.MeshBasicMaterial
-  innerGlow: THREE.Points
-  outerGlow: THREE.Points
+  specialAnimationTimer?: number // 🔧 Timer separato per animazioni speciali (blob/DNA)
+  pausedSpecialTime?: number // 🔧 Tempo pausato delle animazioni speciali durante morphing
 }
 
 // 📊 CONFIGURAZIONI FORME

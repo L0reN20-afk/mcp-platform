@@ -73,7 +73,7 @@ export default function TrialModal({ isOpen, onClose }: TrialModalProps) {
     }
   }
 
-  const handleOAuthLogin = async (provider: 'google' | 'microsoft' | 'apple') => {
+  const handleOAuthLogin = async (provider: 'google' | 'microsoft') => {
     setIsLoading(true)
     setLoadingProvider(provider)
     
@@ -89,11 +89,6 @@ export default function TrialModal({ isOpen, onClose }: TrialModalProps) {
           clientId: process.env.NEXT_PUBLIC_MICROSOFT_CLIENT_ID || '',
           authUrl: 'https://login.microsoftonline.com/common/oauth2/v2.0/authorize',
           scope: 'openid email profile'
-        },
-        apple: {
-          clientId: process.env.NEXT_PUBLIC_APPLE_CLIENT_ID || '',
-          authUrl: 'https://appleid.apple.com/auth/authorize',
-          scope: 'openid email name'
         }
       }
 
@@ -270,7 +265,7 @@ export default function TrialModal({ isOpen, onClose }: TrialModalProps) {
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
           onClick={handleClose}
-          className="absolute inset-0 bg-black/80 backdrop-blur-sm"
+          className="absolute inset-0 bg-black/80 backdrop-blur-lg"
         />
 
         {/* Modal */}
@@ -279,14 +274,14 @@ export default function TrialModal({ isOpen, onClose }: TrialModalProps) {
           animate={{ scale: 1, opacity: 1 }}
           exit={{ scale: 0.9, opacity: 0 }}
           transition={{ type: "spring", damping: 25, stiffness: 500 }}
-          className="relative bg-white rounded-2xl shadow-2xl max-w-md w-full mx-4 max-h-[90vh] flex flex-col"
+          className="relative bg-black/60 backdrop-blur-lg border-2 border-white/10 rounded-3xl shadow-2xl max-w-md w-full mx-4 max-h-[90vh] flex flex-col"
           onClick={(e) => e.stopPropagation()}
         >
           {/* Close Button */}
           {!isLoading && (
             <button
               onClick={handleClose}
-              className="absolute top-4 right-4 p-2 text-gray-400 hover:text-gray-600 transition-colors rounded-full hover:bg-gray-100"
+              className="absolute top-4 right-4 p-2 text-gray-300 hover:text-white transition-colors rounded-full hover:bg-white/10"
             >
               <X className="w-5 h-5" />
             </button>
@@ -299,14 +294,14 @@ export default function TrialModal({ isOpen, onClose }: TrialModalProps) {
                 initial={{ scale: 0 }}
                 animate={{ scale: 1 }}
                 transition={{ delay: 0.2, type: "spring" }}
-                className="w-16 h-16 bg-gradient-to-r from-primary-500 to-accent-500 rounded-full flex items-center justify-center mx-auto mb-4"
+                className="w-16 h-16 bg-gradient-to-r from-[#e43838] to-[#205e5e] rounded-full flex items-center justify-center mx-auto mb-4"
               >
                 <Clock className="w-8 h-8 text-white" />
               </motion.div>
-              <h2 className="text-2xl font-bold text-gray-900 mb-2">
+              <h2 className="text-2xl font-bold text-white mb-2">
                 🚀 Trial Gratuito 48 Ore
               </h2>
-              <p className="text-gray-600 text-sm">
+              <p className="text-gray-300 text-sm">
                 Accesso completo alla piattaforma MCP senza limiti
               </p>
             </div>
@@ -316,10 +311,10 @@ export default function TrialModal({ isOpen, onClose }: TrialModalProps) {
               initial={{ y: 20, opacity: 0 }}
               animate={{ y: 0, opacity: 1 }}
               transition={{ delay: 0.3 }}
-              className="bg-gradient-to-r from-green-50 to-emerald-50 border border-green-200 rounded-xl p-4 mb-6 text-center"
+              className="bg-gradient-to-r from-[#e43838]/20 to-[#205e5e]/20 border border-[#4ecdc4]/30 rounded-xl p-4 mb-6 text-center backdrop-blur-lg"
             >
-              <div className="text-3xl font-bold text-green-600 mb-1">48 ORE</div>
-              <div className="text-green-700 font-medium text-sm">
+              <div className="text-3xl font-bold text-white mb-1">48 ORE</div>
+              <div className="text-white font-medium text-sm">
                 Completamente gratuito • Nessun pagamento richiesto
               </div>
             </motion.div>
@@ -331,22 +326,22 @@ export default function TrialModal({ isOpen, onClose }: TrialModalProps) {
                 animate={{ scale: 1, opacity: 1 }}
                 className="text-center"
               >
-                <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                  <Check className="w-8 h-8 text-green-600" />
+                <div className="w-16 h-16 bg-gradient-to-r from-[#4ecdc4]/20 to-[#ff6b6b]/20 border border-[#4ecdc4] rounded-full flex items-center justify-center mx-auto mb-4 backdrop-blur-lg">
+                  <Check className="w-8 h-8 text-[#4ecdc4]" />
                 </div>
-                <h3 className="text-xl font-bold text-green-600 mb-2">
+                <h3 className="text-xl font-bold text-[#4ecdc4] mb-2">
                   🎉 Trial Attivato!
                 </h3>
-                <p className="text-gray-600 mb-4">
-                  Bentornato <strong>{trialResult.email}</strong>!<br />
+                <p className="text-gray-300 mb-4">
+                  Bentornato <strong className="text-white">{trialResult.email}</strong>!<br />
                   Il tuo trial di 48 ore è ora attivo.
                 </p>
-                <div className="bg-blue-50 rounded-lg p-4 mb-4 text-left text-sm">
-                  <h4 className="font-semibold text-blue-800 mb-2">📋 Prossimi passi:</h4>
-                  <ul className="text-blue-700 space-y-1">
+                <div className="bg-white/5 backdrop-blur-lg border border-white/10 rounded-lg p-4 mb-4 text-left text-sm">
+                  <h4 className="font-semibold text-[#ff6b6b] mb-2">📋 Prossimi passi:</h4>
+                  <ul className="text-gray-300 space-y-1">
                     <li>✅ Login completato ({trialResult.provider})</li>
                     <li>⏰ Trial 48h attivato</li>
-                    <li>🔄 <strong>Riavvia il software MCP</strong></li>
+                    <li>🔄 <strong className="text-white">Riavvia il software MCP</strong></li>
                     <li>🚀 Il sistema funzionerà normalmente</li>
                   </ul>
                 </div>
@@ -354,7 +349,7 @@ export default function TrialModal({ isOpen, onClose }: TrialModalProps) {
                   whileHover={{ scale: 1.02 }}
                   whileTap={{ scale: 0.98 }}
                   onClick={handleClose}
-                  className="w-full bg-gradient-to-r from-green-500 to-emerald-500 text-white py-3 px-4 rounded-xl font-semibold"
+                  className="w-full bg-gradient-to-r from-[#e43838] to-[#205e5e] text-white py-3 px-4 rounded-xl font-semibold"
                 >
                   Inizia ad usare MCP
                 </motion.button>
@@ -368,20 +363,20 @@ export default function TrialModal({ isOpen, onClose }: TrialModalProps) {
                 animate={{ scale: 1, opacity: 1 }}
                 className="text-center"
               >
-                <div className="w-16 h-16 bg-red-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                  <X className="w-8 h-8 text-red-600" />
+                <div className="w-16 h-16 bg-red-500/20 border border-red-400 rounded-full flex items-center justify-center mx-auto mb-4 backdrop-blur-lg">
+                  <X className="w-8 h-8 text-red-400" />
                 </div>
-                <h3 className="text-xl font-bold text-red-600 mb-2">
+                <h3 className="text-xl font-bold text-red-400 mb-2">
                   ❌ Errore
                 </h3>
-                <p className="text-gray-600 mb-4">
+                <p className="text-gray-300 mb-4">
                   {trialResult.error}
                 </p>
                 <motion.button
                   whileHover={{ scale: 1.02 }}
                   whileTap={{ scale: 0.98 }}
                   onClick={() => setTrialResult(null)}
-                  className="w-full bg-blue-500 text-white py-3 px-4 rounded-xl font-semibold"
+                  className="w-full bg-gradient-to-r from-[#ff6b6b] to-[#4ecdc4] text-white py-3 px-4 rounded-xl font-semibold"
                 >
                   Riprova
                 </motion.button>
@@ -401,7 +396,7 @@ export default function TrialModal({ isOpen, onClose }: TrialModalProps) {
                     whileTap={{ scale: 0.98 }}
                     onClick={() => handleOAuthLogin('google')}
                     disabled={isLoading}
-                    className="w-full flex items-center justify-center gap-3 border-2 border-red-200 bg-gradient-to-r from-white to-red-50 text-gray-700 py-3 px-4 rounded-xl font-semibold hover:border-red-300 transition-all duration-300 disabled:opacity-50"
+                    className="w-full flex items-center justify-center gap-3 bg-white/5 backdrop-blur-lg border-2 border-red-400/40 text-white py-3 px-4 rounded-xl font-semibold hover:border-red-400 hover:bg-white/10 transition-all duration-300 disabled:opacity-50"
                   >
                     {loadingProvider === 'google' ? (
                       <Loader2 className="w-5 h-5 animate-spin" />
@@ -425,7 +420,7 @@ export default function TrialModal({ isOpen, onClose }: TrialModalProps) {
                     whileTap={{ scale: 0.98 }}
                     onClick={() => handleOAuthLogin('microsoft')}
                     disabled={isLoading}
-                    className="w-full flex items-center justify-center gap-3 border-2 border-blue-200 bg-gradient-to-r from-white to-blue-50 text-gray-700 py-3 px-4 rounded-xl font-semibold hover:border-blue-300 transition-all duration-300 disabled:opacity-50"
+                    className="w-full flex items-center justify-center gap-3 bg-white/5 backdrop-blur-lg border-2 border-blue-400/40 text-white py-3 px-4 rounded-xl font-semibold hover:border-blue-400 hover:bg-white/10 transition-all duration-300 disabled:opacity-50"
                   >
                     {loadingProvider === 'microsoft' ? (
                       <Loader2 className="w-5 h-5 animate-spin" />
@@ -439,27 +434,6 @@ export default function TrialModal({ isOpen, onClose }: TrialModalProps) {
                     )}
                     Continua con Microsoft
                   </motion.button>
-
-                  {/* Apple */}
-                  <motion.button
-                    initial={{ x: -20, opacity: 0 }}
-                    animate={{ x: 0, opacity: 1 }}
-                    transition={{ delay: 0.6 }}
-                    whileHover={{ scale: 1.02 }}
-                    whileTap={{ scale: 0.98 }}
-                    onClick={() => handleOAuthLogin('apple')}
-                    disabled={isLoading}
-                    className="w-full flex items-center justify-center gap-3 border-2 border-gray-200 bg-gradient-to-r from-white to-gray-50 text-gray-700 py-3 px-4 rounded-xl font-semibold hover:border-gray-300 transition-all duration-300 disabled:opacity-50"
-                  >
-                    {loadingProvider === 'apple' ? (
-                      <Loader2 className="w-5 h-5 animate-spin" />
-                    ) : (
-                      <svg className="w-5 h-5" viewBox="0 0 24 24" fill="currentColor">
-                        <path d="M17.05 20.28c-.98.95-2.05.8-3.08.35-1.09-.46-2.09-.48-3.24 0-1.44.62-2.2.44-3.06-.35C2.79 15.25 3.51 7.59 9.05 7.31c1.35.07 2.29.74 3.08.8 1.18-.24 2.31-.93 3.57-.84 1.51.12 2.65.72 3.4 1.8-3.12 1.87-2.38 5.98.48 7.13-.57 1.5-1.31 2.99-2.54 4.09l.01-.01zM12.03 7.25c-.15-2.23 1.66-4.07 3.74-4.25.29 2.58-2.34 4.5-3.74 4.25z"/>
-                      </svg>
-                    )}
-                    Continua con Apple
-                  </motion.button>
                 </div>
 
                 {/* Features Grid */}
@@ -467,26 +441,26 @@ export default function TrialModal({ isOpen, onClose }: TrialModalProps) {
                   initial={{ y: 20, opacity: 0 }}
                   animate={{ y: 0, opacity: 1 }}
                   transition={{ delay: 0.7 }}
-                  className="border-t pt-6"
+                  className="border-t border-white/10 pt-6"
                 >
-                  <h3 className="font-semibold text-gray-800 text-center mb-4">
+                  <h3 className="font-semibold text-white text-center mb-4">
                     ✨ Cosa include il trial:
                   </h3>
                   <div className="grid grid-cols-2 gap-3 text-sm">
-                    <div className="flex items-center gap-2 text-gray-600">
-                      <Check className="w-4 h-4 text-green-500" />
+                    <div className="flex items-center gap-2 text-gray-300">
+                      <Check className="w-4 h-4 text-[#4ecdc4]" />
                       Accesso completo 48h
                     </div>
-                    <div className="flex items-center gap-2 text-gray-600">
-                      <Check className="w-4 h-4 text-green-500" />
+                    <div className="flex items-center gap-2 text-gray-300">
+                      <Check className="w-4 h-4 text-[#4ecdc4]" />
                       Tutti gli strumenti MCP
                     </div>
-                    <div className="flex items-center gap-2 text-gray-600">
-                      <Check className="w-4 h-4 text-green-500" />
+                    <div className="flex items-center gap-2 text-gray-300">
+                      <Check className="w-4 h-4 text-[#4ecdc4]" />
                       Supporto prioritario
                     </div>
-                    <div className="flex items-center gap-2 text-gray-600">
-                      <Check className="w-4 h-4 text-green-500" />
+                    <div className="flex items-center gap-2 text-gray-300">
+                      <Check className="w-4 h-4 text-[#4ecdc4]" />
                       Nessun limite di uso
                     </div>
                   </div>
@@ -497,10 +471,10 @@ export default function TrialModal({ isOpen, onClose }: TrialModalProps) {
                   initial={{ y: 20, opacity: 0 }}
                   animate={{ y: 0, opacity: 1 }}
                   transition={{ delay: 0.8 }}
-                  className="mt-6 p-3 bg-blue-50 border border-blue-200 rounded-lg"
+                  className="mt-6 p-3 bg-white/5 backdrop-blur-lg border border-white/10 rounded-lg"
                 >
-                  <div className="flex items-center gap-2 text-blue-800 text-sm">
-                    <Shield className="w-4 h-4" />
+                  <div className="flex items-center gap-2 text-gray-300 text-sm">
+                    <Shield className="w-4 h-4 text-[#4ecdc4]" />
                     <span>La tua privacy è protetta. Usiamo OAuth 2.0 standard.</span>
                   </div>
                 </motion.div>
@@ -510,7 +484,7 @@ export default function TrialModal({ isOpen, onClose }: TrialModalProps) {
             {/* Device ID (Debug) */}
             {deviceFingerprint && (
               <div className="mt-4 text-center">
-                <p className="text-xs text-gray-400">
+                <p className="text-xs text-gray-500">
                   Device ID: {deviceFingerprint.substring(0, 12)}...
                 </p>
               </div>

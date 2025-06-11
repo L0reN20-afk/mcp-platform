@@ -8,11 +8,8 @@ import {
   Star, 
   Zap, 
   Shield, 
-  Users, 
   Rocket,
   Heart,
-  Award,
-  TrendingUp,
   Loader2
 } from 'lucide-react'
 import { useTrialDownload, trackEvent } from '@/lib/hooks/useApi'
@@ -163,37 +160,8 @@ export default function PricingSection() {
     }
   ]
 
-  const testimonials = [
-    {
-      name: 'Marco Rossi',
-      role: 'Senior Developer',
-      company: 'TechCorp Italia',
-      rating: 5,
-      comment: 'MCP Platform ha rivoluzionato il mio workflow. Automazione perfetta!',
-      avatar: '👨‍💻'
-    },
-    {
-      name: 'Laura Bianchi',
-      role: 'DevOps Engineer',
-      company: 'StartupHub',
-      rating: 5,
-      comment: 'Risparmio 3+ ore al giorno grazie ai server MCP. Incredibile!',
-      avatar: '👩‍💻'
-    },
-    {
-      name: 'Giuseppe Verde',
-      role: 'CTO',
-      company: 'InnovaTech',
-      rating: 5,
-      comment: 'La migliore piattaforma per automazione che abbia mai usato.',
-      avatar: '👨‍💼'
-    }
-  ]
-
   return (
-    <section id="pricing" className="relative py-20 section-container">
-      {/* Background - PIù TRASPARENTE per vedere il blob morfante */}
-      <div className="absolute inset-0 bg-gradient-to-b from-black/30 via-gray-900/15 to-black/30"></div>
+    <section id="pricing" className="relative py-16 section-container">
       
       <div className="container mx-auto relative z-10">
         {/* Section Header */}
@@ -202,18 +170,16 @@ export default function PricingSection() {
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           transition={{ duration: 0.8 }}
-          className="text-center mb-16 fade-in"
+          className="text-center mb-12 fade-in"
         >
           <div className="flex items-center justify-center mb-6">
-            <Crown className="w-8 h-8 text-warning-400 mr-3" />
-            <span className="text-warning-400 font-semibold text-lg">Prezzi Trasparenti</span>
+            <Crown className="w-7 h-7 text-warning-400 mr-3" />
+            <span className="text-warning-400 font-semibold text-base">Prezzi Trasparenti</span>
           </div>
-          {/* Main Title con Safe Zone Avanzata */}
-          <div className="relative max-w-4xl mx-auto mb-6">
-            {/* Safe Zone Background - Protezione dalle particelle arcobaleno */}
-            <div className="absolute inset-0 bg-black/25 backdrop-blur-md rounded-2xl shadow-2xl shadow-black/50 border border-white/10 -m-6"></div>
-            <div className="relative px-6 py-4">
-              <h2 className="text-4xl md:text-6xl font-bold text-reveal mb-6">
+          {/* Main Title */}
+          <div className="max-w-4xl mx-auto mb-6">
+            <div className="px-6 py-4">
+              <h2 className="text-2xl md:text-5xl font-bold text-reveal mb-6">
                 Piani per ogni{' '}
                 <span className="bg-gradient-to-r from-warning-400 to-primary-400 bg-clip-text text-transparent">
                   Esigenza
@@ -223,11 +189,9 @@ export default function PricingSection() {
               <div className="w-32 h-1 bg-gradient-to-r from-warning-500 to-primary-500 mx-auto rounded-full"></div>
             </div>
           </div>
-          {/* Description con Safe Zone */}
-          <div className="relative mb-8">
-            {/* Safe Zone Background */}
-            <div className="absolute inset-0 bg-black/14 backdrop-blur-sm rounded-xl -m-3"></div>
-            <p className="relative text-xl text-gray-300 max-w-3xl mx-auto px-3">
+          {/* Description */}
+          <div className="mb-8">
+            <p className="text-lg text-gray-300 max-w-3xl mx-auto px-3">
               Inizia gratis con il trial 48h, poi scegli il piano perfetto per te
             </p>
           </div>
@@ -255,7 +219,7 @@ export default function PricingSection() {
               <motion.div
                 initial={{ scale: 0, opacity: 0 }}
                 animate={{ scale: 1, opacity: 1 }}
-                className="bg-success-500 text-white px-3 py-1 rounded-full text-sm font-semibold"
+                className="bg-success-500 text-white px-3 py-1 rounded-full text-xs font-semibold"
               >
                 Risparmi 20%
               </motion.div>
@@ -264,7 +228,7 @@ export default function PricingSection() {
         </motion.div>
 
         {/* Pricing Cards */}
-        <div className="grid lg:grid-cols-3 gap-8 max-w-7xl mx-auto mb-16">
+        <div className="grid lg:grid-cols-3 gap-8 max-w-7xl mx-auto mb-12">
           {plans.map((plan, index) => (
             <motion.div
               key={plan.id}
@@ -277,7 +241,7 @@ export default function PricingSection() {
                 scale: 1.02,
                 rotateY: index % 2 === 0 ? 2 : -2 
               }}
-              className={`pricing-card relative bg-white/5 backdrop-blur-lg border-2 rounded-3xl p-8 transition-all duration-500 flex flex-col h-full ${
+              className={`pricing-card relative bg-white/5 backdrop-blur-lg border-2 rounded-3xl p-7 transition-all duration-500 flex flex-col h-full ${
                 plan.popular 
                   ? 'border-primary-400 bg-primary-400/5 scale-105 lg:scale-110' 
                   : plan.id === 'beta'
@@ -290,7 +254,7 @@ export default function PricingSection() {
               {/* Badge */}
               {plan.badge && (
                 <div className="absolute -top-4 left-1/2 transform -translate-x-1/2">
-                  <div className={`bg-gradient-to-r ${plan.gradient} text-white px-6 py-2 rounded-full text-sm font-semibold flex items-center space-x-1`}>
+                  <div className={`bg-gradient-to-r ${plan.gradient} text-white px-6 py-2 rounded-full text-xs font-semibold flex items-center space-x-1`}>
                     <Star className="w-4 h-4" />
                     <span>{plan.badge}</span>
                   </div>
@@ -299,21 +263,21 @@ export default function PricingSection() {
 
               <div className="text-center flex-grow flex flex-col">
                 {/* Icon */}
-                <div className={`w-16 h-16 mx-auto mb-6 rounded-2xl bg-gradient-to-br ${plan.gradient} flex items-center justify-center relative`}>
-                  <plan.icon className="w-8 h-8 text-white absolute inset-0 m-auto" />
+                <div className={`w-14 h-14 mx-auto mb-6 rounded-2xl bg-gradient-to-br ${plan.gradient} flex items-center justify-center relative`}>
+                  <plan.icon className="w-7 h-7 text-white absolute inset-0 m-auto" />
                 </div>
 
                 {/* Plan Name */}
-                <h3 className="text-2xl font-bold text-white mb-2">{plan.name}</h3>
+                <h3 className="text-xl font-bold text-white mb-2">{plan.name}</h3>
                 <p className="text-gray-300 mb-6 flex-grow">{plan.description}</p>
 
                 {/* Price */}
                 <div className="mb-8">
                   <div className="flex items-center justify-center space-x-2 mb-2">
-                    <span className="text-4xl font-bold text-white">{plan.price}</span>
+                    <span className="text-2xl font-bold text-white">{plan.price}</span>
                     {plan.originalPrice && (
                       <>
-                        <span className="text-lg text-gray-300 line-through">{plan.originalPrice}</span>
+                        <span className="text-base text-gray-300 line-through">{plan.originalPrice}</span>
                         <div className="bg-success-500 text-white px-2 py-1 rounded-full text-xs font-semibold">
                           -{Math.round((1 - parseFloat(plan.price.replace('€', '')) / parseFloat(plan.originalPrice.replace('€', ''))) * 100)}%
                         </div>
@@ -321,7 +285,7 @@ export default function PricingSection() {
                     )}
                   </div>
                   {plan.price !== 'Gratuito' && (
-                    <p className="text-sm text-gray-300">al mese, fatturato {isAnnual ? 'annualmente' : 'mensilmente'}</p>
+                    <p className="text-xs text-gray-300">al mese, fatturato {isAnnual ? 'annualmente' : 'mensilmente'}</p>
                   )}
                 </div>
 
@@ -336,7 +300,7 @@ export default function PricingSection() {
                       transition={{ delay: 0.1 * featureIndex }}
                       className="flex items-start space-x-3"
                     >
-                      <Check className={`w-5 h-5 ${plan.color} mt-0.5 flex-shrink-0`} />
+                      <Check className={`w-4 h-4 ${plan.color} mt-0.5 flex-shrink-0`} />
                       <span className="text-gray-300">{feature}</span>
                     </motion.div>
                   ))}
@@ -348,7 +312,7 @@ export default function PricingSection() {
                   whileTap={{ scale: (loading && plan.id === 'beta') ? 1 : 0.95 }}
                   onClick={() => handlePlanAction(plan)}
                   disabled={loading && plan.id === 'beta'}
-                  className={`w-full py-4 rounded-full font-semibold text-lg transition-all duration-300 flex items-center justify-center space-x-2 ${
+                  className={`w-full py-3 rounded-full font-semibold text-base transition-all duration-300 flex items-center justify-center space-x-2 ${
                     plan.popular
                       ? `bg-gradient-to-r ${plan.gradient} text-white hover:shadow-lg hover:shadow-primary-500/25`
                       : plan.id === 'beta'
@@ -359,9 +323,9 @@ export default function PricingSection() {
                   } ${(loading && plan.id === 'beta') ? 'opacity-70 cursor-not-allowed' : ''}`}
                 >
                   {plan.id === 'beta' && loading ? (
-                    <Loader2 className="w-5 h-5 animate-spin" />
+                    <Loader2 className="w-4 h-4 animate-spin" />
                   ) : plan.id === 'beta' && downloadSuccess ? (
-                    <Star className="w-5 h-5 text-yellow-300" />
+                    <Star className="w-4 h-4 text-yellow-300" />
                   ) : null}
                   <span>
                     {plan.id === 'beta' && loading 
@@ -378,7 +342,7 @@ export default function PricingSection() {
                   <motion.div
                     initial={{ opacity: 0, y: 10 }}
                     animate={{ opacity: 1, y: 0 }}
-                    className="mt-4 bg-red-500/20 border border-red-500/30 rounded-lg p-3 text-red-300 text-center text-sm"
+                    className="mt-4 bg-red-500/20 border border-red-500/30 rounded-lg p-3 text-red-300 text-center text-xs"
                   >
                     <p>{error}</p>
                     <button 
@@ -394,98 +358,6 @@ export default function PricingSection() {
           ))}
         </div>
 
-        {/* Testimonials */}
-        <motion.div
-          initial={{ opacity: 0, y: 50 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.8 }}
-          className="text-center mb-16"
-        >
-          <h3 className="text-3xl font-bold text-white mb-12">
-            Cosa dicono i nostri <span className="text-primary-400">clienti</span>
-          </h3>
-          
-          <div className="grid md:grid-cols-3 gap-8 max-w-6xl mx-auto card-container">
-            {testimonials.map((testimonial, index) => (
-              <motion.div
-                key={index}
-                initial={{ opacity: 0, y: 50 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ duration: 0.6, delay: index * 0.2 }}
-                whileHover={{ y: -5 }}
-                className="card-item bg-white/5 backdrop-blur-sm border border-white/10 rounded-2xl p-6 hover:border-white/20 transition-all duration-300"
-              >
-                <div className="text-center">
-                  <div className="text-4xl mb-4">{testimonial.avatar}</div>
-                  <div className="flex justify-center mb-4">
-                    {[...Array(testimonial.rating)].map((_, i) => (
-                      <Star key={i} className="w-5 h-5 text-yellow-400 fill-current" />
-                    ))}
-                  </div>
-                  <p className="text-gray-300 mb-4 italic">&quot;{testimonial.comment}&quot;</p>
-                  <div>
-                    <div className="font-semibold text-white">{testimonial.name}</div>
-                    <div className="text-sm text-gray-300">{testimonial.role}</div>
-                    <div className="text-sm text-primary-400">{testimonial.company}</div>
-                  </div>
-                </div>
-              </motion.div>
-            ))}
-          </div>
-        </motion.div>
-
-        {/* Stats */}
-        <motion.div
-          initial={{ opacity: 0, y: 50 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.8 }}
-          className="grid md:grid-cols-4 gap-8 max-w-4xl mx-auto"
-        >
-          {[
-            { icon: Users, value: '1000+', label: 'Sviluppatori Attivi', color: 'text-primary-400' },
-            { icon: TrendingUp, value: '99.9%', label: 'Uptime Garantito', color: 'text-success-400' },
-            { icon: Award, value: '4.9/5', label: 'Rating Medio', color: 'text-warning-400' },
-            { icon: Shield, value: '24/7', label: 'Support Premium', color: 'text-accent-400' }
-          ].map((stat, index) => (
-            <motion.div
-              key={index}
-              initial={{ opacity: 0, scale: 0.8 }}
-              whileInView={{ opacity: 1, scale: 1 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.6, delay: index * 0.1 }}
-              className="text-center"
-            >
-              <stat.icon className={`w-12 h-12 ${stat.color} mx-auto mb-4`} />
-              <div className={`text-3xl font-bold ${stat.color} mb-2 counter`} 
-                   data-target={stat.value.replace(/\D/g, '')} 
-                   data-suffix={stat.value.replace(/\d/g, '')}>
-                {stat.value}
-              </div>
-              <div className="text-gray-300 text-sm">{stat.label}</div>
-            </motion.div>
-          ))}
-        </motion.div>
-
-        {/* Money Back Guarantee */}
-        <motion.div
-          initial={{ opacity: 0, y: 30 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.8 }}
-          className="text-center mt-16"
-        >
-          <div className="bg-gradient-to-r from-success-600/20 to-primary-600/20 border border-success-400/30 rounded-2xl p-8 max-w-2xl mx-auto">
-            <Shield className="w-12 h-12 text-success-400 mx-auto mb-4" />
-            <h4 className="text-2xl font-bold text-white mb-2">Garanzia 30 Giorni</h4>
-            <p className="text-gray-300">
-              Non sei soddisfatto? Ti rimborsiamo completamente entro 30 giorni, 
-              senza domande e senza complicazioni.
-            </p>
-          </div>
-        </motion.div>
       </div>
     </section>
   )

@@ -257,9 +257,7 @@ fs.watch('./src', (event) => {
   }
 
   return (
-    <section id="demo" className="relative py-20 section-container">
-      {/* Background - PIù TRASPARENTE per vedere l'icosaedro */}
-      <div className="absolute inset-0 bg-gradient-to-b from-black/30 via-gray-900/15 to-black/30"></div>
+    <section id="demo" className="relative py-16 section-container">
       
       <div className="container mx-auto relative z-10">
         {/* Section Header */}
@@ -271,15 +269,13 @@ fs.watch('./src', (event) => {
           className="text-center mb-16 fade-in"
         >
           <div className="flex items-center justify-center mb-6">
-            <Play className="w-8 h-8 text-warning-400 mr-3" />
-            <span className="text-warning-400 font-semibold text-lg">Trial 48h Gratuito</span>
+            <Play className="w-7 h-7 text-warning-400 mr-3" />
+            <span className="text-warning-400 font-semibold text-base">Trial 48h Gratuito</span>
           </div>
-          {/* Main Title con Safe Zone Avanzata */}
-          <div className="relative max-w-4xl mx-auto mb-6">
-            {/* Safe Zone Background - Protezione dalle particelle DNA verde-blu */}
-            <div className="absolute inset-0 bg-black/25 backdrop-blur-md rounded-2xl shadow-2xl shadow-black/50 border border-white/10 -m-6"></div>
-            <div className="relative px-6 py-4">
-              <h2 className="text-4xl md:text-6xl font-bold text-reveal mb-6">
+          {/* Main Title */}
+          <div className="max-w-4xl mx-auto mb-6">
+            <div className="px-6 py-4">
+              <h2 className="text-3xl md:text-5xl font-bold text-reveal mb-6">
                 Prova Subito{' '}
                 <span className="bg-gradient-to-r from-warning-400 to-success-400 bg-clip-text text-transparent">
                   Gratuitamente
@@ -289,11 +285,9 @@ fs.watch('./src', (event) => {
               <div className="w-32 h-1 bg-gradient-to-r from-warning-500 to-success-500 mx-auto rounded-full"></div>
             </div>
           </div>
-          {/* Description con Safe Zone */}
-          <div className="relative mb-8">
-            {/* Safe Zone Background */}
-            <div className="absolute inset-0 bg-black/14 backdrop-blur-sm rounded-xl -m-3"></div>
-            <p className="relative text-xl text-gray-400 max-w-3xl mx-auto px-3">
+          {/* Description */}
+          <div className="mb-8">
+            <p className="text-xl text-gray-400 max-w-3xl mx-auto px-3">
               Scarica il trial completo 48 ore e testa tutti i server MCP in azione. 
               Nessuna carta di credito richiesta.
             </p>
@@ -305,10 +299,10 @@ fs.watch('./src', (event) => {
             whileInView={{ opacity: 1, scale: 1 }}
             viewport={{ once: true }}
             transition={{ duration: 0.6, delay: 0.3 }}
-            className="bg-gradient-to-r from-warning-600/20 to-success-600/20 border border-warning-400/30 rounded-2xl p-6 max-w-2xl mx-auto mb-12"
+            className="bg-gradient-to-r from-warning-600/20 to-success-600/20 border border-warning-400/30 rounded-2xl p-5 max-w-2xl mx-auto mb-12"
           >
             <div className="flex items-center justify-center space-x-4 mb-4">
-              <Clock className="w-8 h-8 text-warning-400" />
+              <Clock className="w-7 h-7 text-warning-400" />
               <div className="text-left">
                 <div className="text-2xl font-bold text-white">48 Ore Complete</div>
                 <div className="text-warning-400 font-medium">Accesso illimitato a tutto</div>
@@ -319,14 +313,14 @@ fs.watch('./src', (event) => {
               whileTap={{ scale: loading ? 1 : 0.95 }}
               onClick={handleDownloadClick}
               disabled={loading}
-              className="bg-gradient-to-r from-warning-600 to-success-600 text-white px-8 py-4 rounded-full font-semibold text-lg flex items-center space-x-3 mx-auto hover:shadow-xl hover:shadow-warning-500/25 transition-all duration-300 disabled:opacity-70"
+              className="bg-gradient-to-r from-warning-600 to-success-600 text-white px-7 py-3 rounded-full font-semibold text-base flex items-center space-x-3 mx-auto hover:shadow-xl hover:shadow-warning-500/25 transition-all duration-300 disabled:opacity-70"
             >
               {loading ? (
-                <Loader2 className="w-5 h-5 animate-spin" />
+                <Loader2 className="w-4 h-4 animate-spin" />
               ) : downloadSuccess ? (
-                <Star className="w-5 h-5 text-yellow-300" />
+                <Star className="w-4 h-4 text-yellow-300" />
               ) : (
-                <Download className="w-5 h-5" />
+                <Download className="w-4 h-4" />
               )}
               <span>
                 {loading ? 'Preparazione...' : downloadSuccess ? 'Download Avviato!' : 'Scarica Trial Gratuito'}
@@ -366,13 +360,13 @@ fs.watch('./src', (event) => {
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
               onClick={() => setActiveDemo(index)}
-              className={`flex items-center space-x-3 px-6 py-3 rounded-full border-2 transition-all duration-300 ${
+              className={`flex items-center space-x-3 px-5 py-3 rounded-full border-2 backdrop-blur-lg transition-all duration-300 ${
                 activeDemo === index
                   ? `border-${example.color.split('-')[1]}-400 bg-${example.color.split('-')[1]}-400/10 ${example.color}`
                   : 'border-white/20 bg-white/10 text-white/80 hover:border-white/40 hover:text-white'
               }`}
             >
-              <example.icon className="w-5 h-5" />
+              <example.icon className="w-4 h-4" />
               <span className="font-medium">{example.name}</span>
             </motion.button>
           ))}
@@ -388,11 +382,11 @@ fs.watch('./src', (event) => {
             transition={{ duration: 0.5 }}
             className="max-w-7xl mx-auto"
           >
-            <div className="grid lg:grid-cols-2 gap-8">
+            <div className="grid lg:grid-cols-2 gap-7">
               {/* Code Editor */}
-              <div className="bg-black/80 backdrop-blur-sm border border-white/10 rounded-2xl overflow-hidden">
+              <div className="bg-black/80 backdrop-blur-lg border border-white/10 rounded-2xl overflow-hidden">
                 {/* Editor Header */}
-                <div className="flex items-center justify-between bg-gray-900/50 px-6 py-4 border-b border-white/10">
+                <div className="flex items-center justify-between bg-gray-900/50 px-5 py-3 border-b border-white/10">
                   <div className="flex items-center space-x-4">
                     <div className="flex space-x-2">
                       <div className="w-3 h-3 bg-red-500 rounded-full"></div>
@@ -409,12 +403,12 @@ fs.watch('./src', (event) => {
                     onClick={() => copyToClipboard(codeExamples[activeDemo].code)}
                     className="text-gray-400 hover:text-white transition-colors"
                   >
-                    <Copy className="w-4 h-4" />
+                    <Copy className="w-3 h-3" />
                   </motion.button>
                 </div>
 
                 {/* Code Content */}
-                <div className="p-6">
+                <div className="p-5">
                   <div className="mb-4">
                     <h3 className={`text-xl font-bold ${codeExamples[activeDemo].color} mb-2`}>
                       {codeExamples[activeDemo].title}
@@ -432,11 +426,11 @@ fs.watch('./src', (event) => {
               </div>
 
               {/* Terminal Output */}
-              <div className="bg-black/80 backdrop-blur-sm border border-white/10 rounded-2xl overflow-hidden">
+              <div className="bg-black/80 backdrop-blur-lg border border-white/10 rounded-2xl overflow-hidden">
                 {/* Terminal Header */}
-                <div className="flex items-center justify-between bg-gray-900/50 px-6 py-4 border-b border-white/10">
+                <div className="flex items-center justify-between bg-gray-900/50 px-5 py-3 border-b border-white/10">
                   <div className="flex items-center space-x-4">
-                    <Terminal className="w-5 h-5 text-green-400" />
+                    <Terminal className="w-4 h-4 text-green-400" />
                     <span className="text-gray-400 text-sm font-mono">
                       MCP Platform Terminal
                     </span>
@@ -448,7 +442,7 @@ fs.watch('./src', (event) => {
                 </div>
 
                 {/* Terminal Content */}
-                <div className="p-6 font-mono text-sm min-h-[400px]">
+                <div className="p-5 font-mono text-sm min-h-[400px]">
                   <div className="text-blue-400 mb-4">
                     $ mcp-platform run {codeExamples[activeDemo].id}-demo
                   </div>
@@ -490,7 +484,7 @@ fs.watch('./src', (event) => {
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           transition={{ duration: 0.8, delay: 0.4 }}
-          className="grid md:grid-cols-3 gap-8 mt-16 card-container"
+          className="grid md:grid-cols-3 gap-7 mt-16 card-container"
         >
           {[
             {
@@ -519,61 +513,13 @@ fs.watch('./src', (event) => {
               viewport={{ once: true }}
               transition={{ duration: 0.6, delay: index * 0.1 }}
               whileHover={{ y: -5 }}
-              className="card-item bg-white/5 backdrop-blur-sm border border-white/10 rounded-2xl p-6 text-center hover:border-white/20 transition-all duration-300"
+              className="card-item bg-white/5 backdrop-blur-lg border border-white/10 rounded-2xl p-5 text-center hover:border-white/20 transition-all duration-300"
             >
-              <feature.icon className={`w-12 h-12 ${feature.color} mx-auto mb-4`} />
+              <feature.icon className={`w-11 h-11 ${feature.color} mx-auto mb-4`} />
               <h4 className="text-xl font-bold text-white mb-2">{feature.title}</h4>
               <p className="text-gray-400">{feature.description}</p>
             </motion.div>
           ))}
-        </motion.div>
-
-        {/* Final CTA */}
-        <motion.div
-          initial={{ opacity: 0, y: 30 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.8 }}
-          className="text-center mt-16"
-        >
-          <div className="bg-gradient-to-r from-black via-gray-900/50 to-black border border-white/10 rounded-3xl p-8 max-w-4xl mx-auto">
-            <h3 className="text-3xl font-bold text-white mb-4">
-              Pronto a trasformare il tuo workflow?
-            </h3>
-            <p className="text-gray-400 mb-8 text-lg">
-              Scarica il trial 48h gratuito e scopri quanto può essere potente l&apos;automazione MCP
-            </p>
-            
-            <div className="flex flex-col sm:flex-row gap-4 justify-center">
-              <motion.button
-                whileHover={{ scale: loading ? 1 : 1.05, y: loading ? 0 : -2 }}
-                whileTap={{ scale: loading ? 1 : 0.95 }}
-                onClick={handleDownloadClick}
-                disabled={loading}
-                className="bg-gradient-to-r from-warning-600 to-success-600 text-white px-8 py-4 rounded-full font-semibold text-lg flex items-center space-x-3 justify-center hover:shadow-xl hover:shadow-warning-500/25 transition-all duration-300 disabled:opacity-70"
-              >
-                {loading ? (
-                  <Loader2 className="w-5 h-5 animate-spin" />
-                ) : downloadSuccess ? (
-                  <Star className="w-5 h-5 text-yellow-300" />
-                ) : (
-                  <Download className="w-5 h-5" />
-                )}
-                <span>
-                  {loading ? 'Preparazione...' : downloadSuccess ? 'Download Avviato!' : 'Scarica Trial Gratuito'}
-                </span>
-              </motion.button>
-              
-              <motion.button
-                whileHover={{ scale: 1.05, y: -2 }}
-                whileTap={{ scale: 0.95 }}
-                className="border-2 border-white/20 text-white px-8 py-4 rounded-full font-semibold text-lg hover:border-white/40 transition-all duration-300 flex items-center space-x-3 justify-center"
-              >
-                <span>Vedi Prezzi</span>
-                <ArrowRight className="w-5 h-5" />
-              </motion.button>
-            </div>
-          </div>
         </motion.div>
       </div>
     </section>

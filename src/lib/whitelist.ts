@@ -46,11 +46,3 @@ export function isEmailAllowed(email: string): { allowed: boolean; reason: strin
 
   return { allowed: true, reason: 'Email valida' }
 }
-
-export function isTrialLimitReached(): Promise<boolean> {
-  // Controllo se abbiamo raggiunto il limite massimo di trial
-  // Es: massimo 100 trial attivi contemporaneamente
-  const MAX_ACTIVE_TRIALS = 100
-  // Implementare controllo database
-  return Promise.resolve(false) // Placeholder
-}

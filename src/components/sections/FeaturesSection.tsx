@@ -24,6 +24,8 @@ interface MCPServer {
   colorClass: string
   gradientClass: string
   buttonActiveClass: string
+  borderClass: string // Nuovo: bordo sempre attivo
+  cardBorderClass: string // Nuovo: bordo per la card
   stats: { label: string; value: string }[]
 }
 
@@ -45,7 +47,9 @@ export default function FeaturesSection() {
       ],
       colorClass: 'text-primary-400',
       gradientClass: 'from-primary-600 to-primary-800',
-      buttonActiveClass: 'border-primary-400 bg-primary-400/10 text-primary-400',
+      buttonActiveClass: 'border-primary-400 bg-primary-400/10 text-primary-400 backdrop-blur-lg',
+      borderClass: 'border-primary-400 bg-primary-400/5 text-white backdrop-blur-lg', // Sempre attivo
+      cardBorderClass: 'border-primary-400/60', // Bordo card
       stats: [
         { label: 'Response Time', value: '<500ms' },
         { label: 'Uptime', value: '99.9%' },
@@ -66,7 +70,9 @@ export default function FeaturesSection() {
       ],
       colorClass: 'text-secondary-400',
       gradientClass: 'from-secondary-600 to-secondary-800',
-      buttonActiveClass: 'border-secondary-400 bg-secondary-400/10 text-secondary-400',
+      buttonActiveClass: 'border-secondary-400 bg-secondary-400/10 text-secondary-400 backdrop-blur-lg',
+      borderClass: 'border-secondary-400 bg-secondary-400/5 text-white backdrop-blur-lg', // Sempre attivo
+      cardBorderClass: 'border-secondary-400/60', // Bordo card
       stats: [
         { label: 'Build Speed', value: '3x faster' },
         { label: 'Reliability', value: '99.8%' },
@@ -87,7 +93,9 @@ export default function FeaturesSection() {
       ],
       colorClass: 'text-accent-400',
       gradientClass: 'from-accent-600 to-accent-800',
-      buttonActiveClass: 'border-accent-400 bg-accent-400/10 text-accent-400',
+      buttonActiveClass: 'border-accent-400 bg-accent-400/10 text-accent-400 backdrop-blur-lg',
+      borderClass: 'border-accent-400 bg-accent-400/5 text-white backdrop-blur-lg', // Sempre attivo
+      cardBorderClass: 'border-accent-400/60', // Bordo card
       stats: [
         { label: 'Doc Processing', value: '1000+/hr' },
         { label: 'Accuracy', value: '99.9%' },
@@ -108,7 +116,9 @@ export default function FeaturesSection() {
       ],
       colorClass: 'text-success-400',
       gradientClass: 'from-success-600 to-success-800',
-      buttonActiveClass: 'border-success-400 bg-success-400/10 text-success-400',
+      buttonActiveClass: 'border-success-400 bg-success-400/10 text-success-400 backdrop-blur-lg',
+      borderClass: 'border-success-400 bg-success-400/5 text-white backdrop-blur-lg', // Sempre attivo
+      cardBorderClass: 'border-success-400/60', // Bordo card
       stats: [
         { label: 'File Ops/sec', value: '10K+' },
         { label: 'Storage Saved', value: '40%' },
@@ -120,8 +130,7 @@ export default function FeaturesSection() {
   const currentServer = mcpServers[activeServer]
 
   return (
-    <section id="features" className="relative py-20 section-container">
-      <div className="absolute inset-0 bg-gradient-to-b from-black/30 via-gray-900/15 to-black/30"></div>
+    <section id="features" className="relative py-16 section-container">
       
       <div className="container mx-auto relative z-10">
         <motion.div
@@ -129,18 +138,16 @@ export default function FeaturesSection() {
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           transition={{ duration: 0.8 }}
-          className="text-center mb-16 fade-in"
+          className="text-center mb-12 fade-in"
         >
           <div className="flex items-center justify-center mb-6">
-            <Zap className="w-8 h-8 text-secondary-400 mr-3" />
-            <span className="text-secondary-400 font-semibold text-lg">Features Avanzate</span>
+            <Zap className="w-7 h-7 text-secondary-400 mr-3" />
+            <span className="text-secondary-400 font-semibold text-base">Features Avanzate</span>
           </div>
-          {/* Main Title con Safe Zone Avanzata */}
-          <div className="relative max-w-4xl mx-auto mb-6">
-            {/* Safe Zone Background - PIÙ FORTE per proteggersi dalle particelle viola */}
-            <div className="absolute inset-0 bg-black/25 backdrop-blur-md rounded-2xl shadow-2xl shadow-black/50 border border-white/10 -m-6"></div>
-            <div className="relative px-6 py-4">
-              <h2 className="text-4xl md:text-6xl font-bold text-reveal mb-6">
+          {/* Main Title */}
+          <div className="max-w-4xl mx-auto mb-6">
+            <div className="px-6 py-4">
+              <h2 className="text-3xl md:text-5xl font-bold text-reveal mb-6">
                 Server MCP{' '}
                 <span className="bg-gradient-to-r from-secondary-400 to-accent-400 bg-clip-text text-transparent">
                   Professionali
@@ -150,11 +157,9 @@ export default function FeaturesSection() {
               <div className="w-32 h-1 bg-gradient-to-r from-secondary-500 to-accent-500 mx-auto rounded-full"></div>
             </div>
           </div>
-          {/* Description con Safe Zone */}
-          <div className="relative max-w-3xl mx-auto">
-            {/* Safe Zone Background */}
-            <div className="absolute inset-0 bg-black/15 backdrop-blur-sm rounded-xl -m-3"></div>
-            <p className="relative text-xl text-gray-300 px-3">
+          {/* Description */}
+          <div className="max-w-3xl mx-auto">
+            <p className="text-lg text-gray-300 px-3">
               Ogni server MCP offre automazione completa e controllo avanzato per massimizzare la tua produttività
             </p>
           </div>
@@ -165,7 +170,7 @@ export default function FeaturesSection() {
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           transition={{ duration: 0.8, delay: 0.2 }}
-          className="flex flex-wrap justify-center gap-4 mb-12"
+          className="flex flex-wrap justify-center gap-4 mb-10"
         >
           {mcpServers.map((server, index) => (
             <motion.button
@@ -173,13 +178,13 @@ export default function FeaturesSection() {
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
               onClick={() => setActiveServer(index)}
-              className={`flex items-center space-x-3 px-6 py-3 rounded-full border-2 transition-all duration-300 ${
+              className={`flex items-center space-x-3 px-5 py-3 rounded-full border-2 backdrop-blur-lg transition-all duration-300 ${
                 activeServer === index
-                  ? server.buttonActiveClass
-                  : 'border-white/20 bg-white/10 text-white/80 hover:border-white/40 hover:text-white'
+                  ? server.buttonActiveClass  // Selezionato: background più intenso
+                  : server.borderClass        // Non selezionato: sempre bordo colorato ma bg meno intenso
               }`}
             >
-              <server.icon className="w-5 h-5" />
+              <server.icon className="w-4 h-4" />
               <span className="font-medium">{server.name}</span>
             </motion.button>
           ))}
@@ -194,25 +199,26 @@ export default function FeaturesSection() {
             transition={{ duration: 0.5 }}
             className="max-w-6xl mx-auto"
           >
-            <div className="bg-white/5 backdrop-blur-lg border border-white/10 rounded-3xl p-8 md:p-12">
-              <div className="grid md:grid-cols-2 gap-12 items-center">
+            {/* Card con bordo colorato dinamico */}
+            <div className={`bg-white/5 backdrop-blur-lg border-2 ${currentServer.cardBorderClass} rounded-3xl p-5 md:p-9`}>
+              <div className="grid md:grid-cols-2 gap-10 items-center">
                 <div>
                   <div className="flex items-center space-x-4 mb-6">
                     <div className={`p-4 rounded-2xl bg-gradient-to-br ${currentServer.gradientClass} feature-icon`}>
-                      <currentServer.icon className="w-8 h-8 text-white" />
+                      <currentServer.icon className="w-7 h-7 text-white" />
                     </div>
                     <div>
-                      <h3 className={`text-3xl font-bold ${currentServer.colorClass}`}>
+                      <h3 className={`text-2xl font-bold ${currentServer.colorClass}`}>
                         {currentServer.name}
                       </h3>
                       <div className="flex items-center space-x-2 mt-1">
-                        <Cpu className="w-4 h-4 text-gray-400" />
-                        <span className="text-sm text-gray-400">Server MCP Professionale</span>
+                        <Cpu className="w-3 h-3 text-gray-400" />
+                        <span className="text-xs text-gray-400">Server MCP Professionale</span>
                       </div>
                     </div>
                   </div>
                   
-                  <p className="text-lg text-gray-300 mb-8">
+                  <p className="text-base text-gray-300 mb-8">
                     {currentServer.description}
                   </p>
 
@@ -225,7 +231,7 @@ export default function FeaturesSection() {
                         transition={{ delay: index * 0.1 }}
                         className="flex items-start space-x-3"
                       >
-                        <CheckCircle className={`w-5 h-5 ${currentServer.colorClass} mt-0.5 flex-shrink-0`} />
+                        <CheckCircle className={`w-4 h-4 ${currentServer.colorClass} mt-0.5 flex-shrink-0`} />
                         <span className="text-gray-300">{feature}</span>
                       </motion.div>
                     ))}
@@ -234,10 +240,10 @@ export default function FeaturesSection() {
                   <div className="grid grid-cols-3 gap-4 mb-8">
                     {currentServer.stats.map((stat, index) => (
                       <div key={index} className="text-center">
-                        <div className={`text-2xl font-bold ${currentServer.colorClass}`}>
+                        <div className={`text-xl font-bold ${currentServer.colorClass}`}>
                           {stat.value}
                         </div>
-                        <div className="text-sm text-gray-400">{stat.label}</div>
+                        <div className="text-xs text-gray-400">{stat.label}</div>
                       </div>
                     ))}
                   </div>
@@ -245,10 +251,10 @@ export default function FeaturesSection() {
                   <motion.button
                     whileHover={{ scale: 1.02, x: 5 }}
                     whileTap={{ scale: 0.98 }}
-                    className={`flex items-center space-x-2 bg-gradient-to-r ${currentServer.gradientClass} text-white px-6 py-3 rounded-full font-semibold hover:shadow-lg transition-all duration-300`}
+                    className={`flex items-center space-x-2 bg-gradient-to-r ${currentServer.gradientClass} text-white px-5 py-3 rounded-full font-semibold hover:shadow-lg transition-all duration-300`}
                   >
                     <span>Prova {currentServer.name}</span>
-                    <ArrowRight className="w-4 h-4" />
+                    <ArrowRight className="w-3 h-3" />
                   </motion.button>
                 </div>
 
@@ -258,12 +264,12 @@ export default function FeaturesSection() {
                       <div className="w-3 h-3 bg-red-500 rounded-full"></div>
                       <div className="w-3 h-3 bg-yellow-500 rounded-full"></div>
                       <div className="w-3 h-3 bg-green-500 rounded-full"></div>
-                      <span className="text-sm text-gray-400 ml-4">
+                      <span className="text-xs text-gray-400 ml-4">
                         {currentServer.name} Terminal
                       </span>
                     </div>
                     
-                    <div className="font-mono text-sm text-green-400 space-y-2">
+                    <div className="font-mono text-xs text-green-400 space-y-2">
                       <div className="typewriter-text">$ mcp connect {currentServer.id}</div>
                       <div className="text-blue-400">✓ Connected to {currentServer.name}</div>
                       <div className="text-yellow-400">⚡ Server ready for automation</div>
@@ -281,7 +287,7 @@ export default function FeaturesSection() {
                     className="absolute -top-4 -right-4"
                   >
                     <div className={`p-3 rounded-xl bg-gradient-to-br ${currentServer.gradientClass} shadow-lg`}>
-                      <Database className="w-6 h-6 text-white" />
+                      <Database className="w-5 h-5 text-white" />
                     </div>
                   </motion.div>
 
@@ -294,7 +300,7 @@ export default function FeaturesSection() {
                     className="absolute -bottom-4 -left-4"
                   >
                     <div className={`p-3 rounded-xl bg-gradient-to-br ${currentServer.gradientClass} shadow-lg`}>
-                      <Globe className="w-6 h-6 text-white" />
+                      <Globe className="w-5 h-5 text-white" />
                     </div>
                   </motion.div>
                 </div>
@@ -308,7 +314,7 @@ export default function FeaturesSection() {
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           transition={{ duration: 0.8, delay: 0.4 }}
-          className="grid md:grid-cols-3 gap-8 mt-16 card-container"
+          className="grid md:grid-cols-3 gap-6 mt-12 card-container"
         >
           {[
             { 
@@ -333,10 +339,10 @@ export default function FeaturesSection() {
             <motion.div
               key={index}
               whileHover={{ y: -5 }}
-              className="card-item bg-white/5 backdrop-blur-sm border border-white/10 rounded-2xl p-6 text-center hover:border-white/20 transition-all duration-300"
+              className="card-item bg-white/5 backdrop-blur-lg border border-white/10 rounded-2xl p-5 text-center hover:border-white/20 transition-all duration-300"
             >
-              <highlight.icon className={`w-12 h-12 ${highlight.color} mx-auto mb-4`} />
-              <h4 className="text-xl font-bold text-white mb-2">{highlight.title}</h4>
+              <highlight.icon className={`w-11 h-11 ${highlight.color} mx-auto mb-4`} />
+              <h4 className="text-lg font-bold text-white mb-2">{highlight.title}</h4>
               <p className="text-gray-400">{highlight.description}</p>
             </motion.div>
           ))}

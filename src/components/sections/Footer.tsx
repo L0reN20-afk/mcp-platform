@@ -2,12 +2,9 @@
 
 import { motion } from 'framer-motion'
 import { useState } from 'react'
+import Image from 'next/image'
 import { 
-  Zap, 
   Mail, 
-  Github, 
-  Twitter, 
-  Linkedin,
   Code2,
   FileCode,
   FileText,
@@ -56,10 +53,10 @@ export default function Footer() {
     {
       title: 'Server MCP',
       links: [
-        { name: 'VS Code Server', href: '#vscode', hasIcon: true, Icon: Code2 },
-        { name: 'Visual Studio 2022', href: '#visual-studio', hasIcon: true, Icon: FileCode },
-        { name: 'Word Server', href: '#word', hasIcon: true, Icon: FileText },
-        { name: 'Filesystem Server', href: '#filesystem', hasIcon: true, Icon: FolderOpen }
+        { name: 'VS Code Server', href: '#vscode', hasIcon: true, Icon: Code2, iconColor: 'text-primary-400' },
+        { name: 'Visual Studio 2022', href: '#visual-studio', hasIcon: true, Icon: FileCode, iconColor: 'text-secondary-400' },
+        { name: 'Word Server', href: '#word', hasIcon: true, Icon: FileText, iconColor: 'text-accent-400' },
+        { name: 'Filesystem Server', href: '#filesystem', hasIcon: true, Icon: FolderOpen, iconColor: 'text-success-400' }
       ]
     },
     {
@@ -76,27 +73,18 @@ export default function Footer() {
       links: [
         { name: 'Documentazione', href: '#docs', external: true, hasIcon: false },
         { name: 'API Reference', href: '#api', external: true, hasIcon: false },
-        { name: 'Tutorial Video', href: '#tutorials', external: true, hasIcon: false },
-        { name: 'Blog Tecnico', href: '#blog', external: true, hasIcon: false }
+        { name: 'Tutorial Video', href: '#tutorials', external: true, hasIcon: false }
       ]
     },
     {
       title: 'Supporto',
       links: [
-        { name: 'Centro Assistenza', href: '#help', hasIcon: false },
-        { name: 'Community Discord', href: '#discord', external: true, hasIcon: false },
-        { name: 'Contatta Supporto', href: '#contact', hasIcon: false },
-        { name: 'Status Sistema', href: '#status', external: true, hasIcon: false }
+        { name: 'Centro Assistenza', href: '#help', hasIcon: false }
       ]
     }
   ]
 
-  const socialLinks = [
-    { Icon: Twitter, href: '#twitter', label: 'Twitter' },
-    { Icon: Github, href: '#github', label: 'GitHub' },
-    { Icon: Linkedin, href: '#linkedin', label: 'LinkedIn' },
-    { Icon: null, href: '#discord', label: 'Discord', text: 'D' }
-  ]
+  const socialLinks: any[] = []
 
   const legalLinks = [
     { name: 'Privacy Policy', href: '#privacy' },
@@ -134,7 +122,7 @@ export default function Footer() {
                     if (error || success) reset()
                   }}
                   disabled={loading}
-                  className="w-full px-6 py-4 bg-white/5 border border-white/10 rounded-full text-white placeholder-gray-400 focus:outline-none focus:border-primary-400 focus:bg-white/10 transition-all duration-300 disabled:opacity-50"
+                  className="w-full px-5 py-3 bg-white/5 border border-white/10 rounded-full text-white placeholder-gray-400 focus:outline-none focus:border-primary-400 focus:bg-white/10 transition-all duration-300 disabled:opacity-50"
                   required
                 />
               </div>
@@ -143,14 +131,14 @@ export default function Footer() {
                 whileTap={{ scale: loading ? 1 : 0.95 }}
                 type="submit"
                 disabled={loading || !email}
-                className="bg-gradient-to-r from-primary-600 to-accent-600 text-white px-8 py-4 rounded-full font-semibold hover:shadow-lg hover:shadow-primary-500/25 transition-all duration-300 flex items-center space-x-2 justify-center disabled:opacity-50"
+                className="bg-gradient-to-r from-primary-600 to-accent-600 text-white px-7 py-3 rounded-full font-semibold hover:shadow-lg hover:shadow-primary-500/25 transition-all duration-300 flex items-center space-x-2 justify-center disabled:opacity-50"
               >
                 {loading ? (
-                  <Loader2 className="w-5 h-5 animate-spin" />
+                  <Loader2 className="w-4 h-4 animate-spin" />
                 ) : success ? (
-                  <CheckCircle className="w-5 h-5" />
+                  <CheckCircle className="w-4 h-4" />
                 ) : (
-                  <Mail className="w-5 h-5" />
+                  <Mail className="w-4 h-4" />
                 )}
                 <span>
                   {loading ? 'Iscrizione...' : success ? 'Iscritto!' : 'Iscriviti'}
@@ -187,7 +175,7 @@ export default function Footer() {
         </motion.div>
 
         <div className="py-16">
-          <div className="grid lg:grid-cols-6 gap-12">
+          <div className="grid lg:grid-cols-6 gap-11">
             <div className="lg:col-span-2">
               <motion.div
                 initial={{ opacity: 0, y: 20 }}
@@ -198,11 +186,17 @@ export default function Footer() {
               >
                 <div className="flex items-center space-x-3 mb-6">
                   <div className="relative">
-                    <Zap className="w-10 h-10 text-primary-500" />
-                    <div className="absolute inset-0 bg-primary-500/20 blur-lg animate-pulse"></div>
+                    <Image
+                      src="/images/logo.png"
+                      width={36}
+                      height={36}
+                      alt="Buildmyth Logo"
+                      className="cursor-pointer"
+                      priority
+                    />
                   </div>
-                  <span className="text-2xl font-bold bg-gradient-to-r from-primary-400 to-accent-400 bg-clip-text text-transparent">
-                    MCP Platform
+                  <span className="text-2xl font-bold bg-gradient-to-r from-[#ff6b6b] to-[#4ecdc4] bg-clip-text text-transparent">
+                    Buildmyth
                   </span>
                 </div>
                 
@@ -222,11 +216,11 @@ export default function Footer() {
                       viewport={{ once: true }}
                       transition={{ duration: 0.4, delay: index * 0.1 }}
                       whileHover={{ scale: 1.2, y: -2 }}
-                      className="w-12 h-12 bg-white/5 border border-white/10 rounded-full flex items-center justify-center text-gray-400 hover:text-white hover:border-primary-400 hover:bg-primary-400/10 transition-all duration-300"
+                      className="w-11 h-11 bg-white/5 border border-white/10 rounded-full flex items-center justify-center text-gray-400 hover:text-white hover:border-primary-400 hover:bg-primary-400/10 transition-all duration-300"
                       aria-label={social.label}
                     >
                       {social.Icon ? (
-                        <social.Icon className="w-5 h-5" />
+                        <social.Icon className="w-4 h-4" />
                       ) : (
                         <span className="font-bold text-purple-400">{social.text}</span>
                       )}
@@ -262,13 +256,13 @@ export default function Footer() {
                         className="text-gray-400 hover:text-white transition-colors duration-300 flex items-center space-x-2 group"
                       >
                         {link.hasIcon && 'Icon' in link && link.Icon && (
-                          <link.Icon className="w-4 h-4 text-primary-400" />
+                          <link.Icon className={`w-3 h-3 ${'iconColor' in link ? link.iconColor : 'text-gray-400'}`} />
                         )}
                         <span className="group-hover:translate-x-1 transition-transform duration-300">
                           {link.name}
                         </span>
                         {'external' in link && link.external && (
-                          <ExternalLink className="w-3 h-3 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+                          <ExternalLink className="w-2 h-2 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
                         )}
                       </a>
                     </motion.li>
@@ -289,11 +283,11 @@ export default function Footer() {
               className="text-gray-400 text-sm"
             >
               <p className="flex items-center space-x-1">
-                <span>© 2024 MCP Platform. Tutti i diritti riservati.</span>
+                <span>© 2025 Buildmyth. Tutti i diritti riservati.</span>
                 <span className="text-red-400">•</span>
                 <span className="flex items-center space-x-1">
                   <span>Made with</span>
-                  <Heart className="w-4 h-4 text-red-400 fill-current animate-pulse" />
+                  <Heart className="w-3 h-3 text-red-400 fill-current animate-pulse" />
                   <span>in Italy</span>
                 </span>
               </p>
@@ -325,10 +319,10 @@ export default function Footer() {
               whileHover={{ scale: 1.1, y: -2 }}
               whileTap={{ scale: 0.9 }}
               onClick={scrollToTop}
-              className="w-12 h-12 bg-primary-600 hover:bg-primary-500 rounded-full flex items-center justify-center text-white transition-all duration-300 hover:shadow-lg hover:shadow-primary-500/25"
+              className="w-11 h-11 bg-gradient-to-r from-[#e43838] to-[#205e5e] hover:from-[#ff6b6b] hover:to-[#4ecdc4] rounded-full flex items-center justify-center text-white transition-all duration-300 hover:shadow-lg hover:shadow-[#e43838]/25"
               aria-label="Torna in cima"
             >
-              <ArrowUp className="w-5 h-5" />
+              <ArrowUp className="w-4 h-4" />
             </motion.button>
           </div>
         </div>
@@ -342,20 +336,12 @@ export default function Footer() {
         >
           <div className="flex flex-wrap justify-center items-center gap-8 text-gray-500 text-sm">
             <div className="flex items-center space-x-2">
-              <Shield className="w-4 h-4 text-success-400" />
+              <Shield className="w-3 h-3 text-success-400" />
               <span>SSL Secured</span>
             </div>
             <div className="flex items-center space-x-2">
-              <Shield className="w-4 h-4 text-success-400" />
+              <Shield className="w-3 h-3 text-success-400" />
               <span>GDPR Compliant</span>
-            </div>
-            <div className="flex items-center space-x-2">
-              <Shield className="w-4 h-4 text-success-400" />
-              <span>SOC 2 Type II</span>
-            </div>
-            <div className="flex items-center space-x-2">
-              <Shield className="w-4 h-4 text-success-400" />
-              <span>ISO 27001</span>
             </div>
           </div>
         </motion.div>
