@@ -120,11 +120,12 @@ export default function ParticleBackground() {
     
     // Cleanup three.js resources
     if (rendererRef.current && particleSystemRef.current) {
+      const particleSystem = particleSystemRef.current
       cleanupResources(
         rendererRef.current,
-        particleSystemRef.current.geometry,
-        particleSystemRef.current.material,
-        particleSystemRef.current.material.map as THREE.CanvasTexture
+        particleSystem.geometry,
+        particleSystem.material,
+        particleSystem.material.map as THREE.CanvasTexture
       )
     }
     
