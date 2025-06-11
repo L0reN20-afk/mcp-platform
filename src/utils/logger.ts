@@ -41,8 +41,7 @@ class Logger {
   private formatMessage(level: LogLevel, message: string, data?: any): string {
     const emoji = LEVEL_EMOJIS[level]
     const timestamp = new Date().toLocaleTimeString('it-IT', { 
-      hour12: false, 
-      millisecond: false 
+      hour12: false
     })
     
     let formatted = `${emoji} [${this.component}] ${message}`
