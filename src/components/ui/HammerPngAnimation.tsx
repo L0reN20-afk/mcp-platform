@@ -86,8 +86,8 @@ const HammerVideoAnimation = forwardRef<HammerVideoRef, HammerVideoAnimationProp
       {/* Fallback per browser che non supportano WebM */}
       <div 
         style={{
-          ...(width !== undefined && { width: width }),
-          ...(height !== undefined && { height: height }),
+          width: width,
+          height: height,
           display: 'flex',
           alignItems: 'center',
           justifyContent: 'center',
