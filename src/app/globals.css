@@ -271,11 +271,11 @@ button[class*="bg-gradient"] span {
   }
   
   /* 🎮 Disabilita hover effects su mobile per performance */
-  .hover\\:scale-105 {
+  .mobile-hover-disabled {
     transform: none !important;
   }
   
-  .hover\\:shadow-xl {
+  .mobile-shadow-disabled {
     box-shadow: none !important;
   }
   
@@ -1592,7 +1592,7 @@ button[class*="bg-gradient"] span {
 }
 
 @media (max-width: 1024px) {
-  #pricing .grid.lg\\:grid-cols-3 {
+  #pricing .grid.lg-grid-cols-3 {
     grid-template-columns: 1fr;
     max-width: 600px;
     margin: 0 auto;
@@ -1600,7 +1600,7 @@ button[class*="bg-gradient"] span {
 }
 
 @media (min-width: 1025px) {
-  #pricing .grid.lg\\:grid-cols-3 {
+  #pricing .grid.lg-grid-cols-3 {
     grid-template-columns: repeat(3, 1fr);
   }
 }
@@ -1650,23 +1650,23 @@ button[class*="bg-gradient"] span {
 }
 
 @media (max-width: 1024px) {
-  #demo .grid.lg\\:grid-cols-2 {
+  #demo .grid.lg-grid-cols-2 {
     grid-template-columns: 1fr;
   }
 }
 
 @media (min-width: 1025px) {
-  #demo .grid.lg\\:grid-cols-2 {
+  #demo .grid.lg-grid-cols-2 {
     grid-template-columns: repeat(2, 1fr);
   }
 }
 
 /* Code editor e terminal responsive */
-#demo .bg-black\\/80 {
+#demo .bg-black-80 {
   border-radius: clamp(1rem, 2vw, 1.5rem);
 }
 
-#demo .bg-black\\/80 .p-5 {
+#demo .bg-black-80 .p-5 {
   padding: clamp(1rem, 3vw, 1.5rem);
 }
 
@@ -1686,13 +1686,13 @@ button[class*="bg-gradient"] span {
 }
 
 @media (max-width: 768px) {
-  #demo .grid.md\\:grid-cols-3 {
+  #demo .grid.md-grid-cols-3 {
     grid-template-columns: 1fr;
   }
 }
 
 @media (min-width: 769px) {
-  #demo .grid.md\\:grid-cols-3 {
+  #demo .grid.md-grid-cols-3 {
     grid-template-columns: repeat(3, 1fr);
   }
 }
@@ -1713,14 +1713,14 @@ button[class*="bg-gradient"] span {
 }
 
 /* Trial CTA box responsive */
-#demo .bg-gradient-to-r.from-warning-600\\/20 {
+#demo .bg-gradient-to-r.from-warning-600-20 {
   padding: clamp(1.5rem, 4vw, 2rem);
   border-radius: clamp(1rem, 2vw, 1.5rem);
   margin-bottom: clamp(3rem, 6vh, 4rem);
   max-width: clamp(500px, 80vw, 800px);
 }
 
-#demo .bg-gradient-to-r.from-warning-600\\/20 button {
+#demo .bg-gradient-to-r.from-warning-600-20 button {
   padding: clamp(0.75rem, 2vh, 1rem) clamp(1.5rem, 4vw, 2rem);
   font-size: clamp(0.875rem, 2vw, 1rem);
 }
