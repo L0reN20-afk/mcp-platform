@@ -130,39 +130,37 @@ export default function FeaturesSection() {
   const currentServer = mcpServers[activeServer]
 
   return (
-    <section id="features" className="relative py-16 section-container">
+    <section id="features" className="features-section">
       
-      <div className="container mx-auto relative z-10">
+      <div className="features-container mx-auto relative z-10">
         <motion.div
           initial={{ opacity: 0, y: 50 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           transition={{ duration: 0.8 }}
-          className="text-center mb-12 fade-in"
+          className="features-header fade-in"
         >
-          <div className="flex items-center justify-center mb-6">
-            <Zap className="w-7 h-7 text-secondary-400 mr-3" />
-            <span className="text-secondary-400 font-semibold text-base">Features Avanzate</span>
+          <div className="features-badge">
+            <Zap className="features-badge-icon text-secondary-400" />
+            <span className="features-badge-text text-secondary-400 font-semibold">Features Avanzate</span>
           </div>
           {/* Main Title */}
           <div className="max-w-4xl mx-auto mb-6">
             <div className="px-6 py-4">
-              <h2 className="text-3xl md:text-5xl font-bold text-reveal mb-6">
+              <h2 className="features-title text-reveal">
                 Server MCP{' '}
                 <span className="bg-gradient-to-r from-secondary-400 to-accent-400 bg-clip-text text-transparent">
                   Professionali
                 </span>
               </h2>
               {/* Linea decorativa */}
-              <div className="w-32 h-1 bg-gradient-to-r from-secondary-500 to-accent-500 mx-auto rounded-full"></div>
+              <div className="features-divider" style={{ background: 'linear-gradient(to right, #d946ef, #06b6d4)' }}></div>
             </div>
           </div>
-          {/* Description */}
-          <div className="max-w-3xl mx-auto">
-            <p className="text-lg text-gray-300 px-3">
-              Ogni server MCP offre automazione completa e controllo avanzato per massimizzare la tua produttività
-            </p>
-          </div>
+          {/* Description - Direttamente sotto senza wrapper aggiuntivo */}
+          <p className="features-description text-gray-300" style={{ filter: 'brightness(1.1)' }}>
+            Ogni server MCP offre automazione completa e controllo avanzato per massimizzare la tua produttività
+          </p>
         </motion.div>
 
         <motion.div
@@ -170,7 +168,7 @@ export default function FeaturesSection() {
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           transition={{ duration: 0.8, delay: 0.2 }}
-          className="flex flex-wrap justify-center gap-4 mb-10"
+          className="features-buttons"
         >
           {mcpServers.map((server, index) => (
             <motion.button
@@ -178,13 +176,13 @@ export default function FeaturesSection() {
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
               onClick={() => setActiveServer(index)}
-              className={`flex items-center space-x-3 px-5 py-3 rounded-full border-2 backdrop-blur-lg transition-all duration-300 ${
+              className={`features-server-btn border-2 backdrop-blur-lg transition-all duration-300 ${
                 activeServer === index
                   ? server.buttonActiveClass  // Selezionato: background più intenso
                   : server.borderClass        // Non selezionato: sempre bordo colorato ma bg meno intenso
               }`}
             >
-              <server.icon className="w-4 h-4" />
+              <server.icon className="features-server-btn-icon" />
               <span className="font-medium">{server.name}</span>
             </motion.button>
           ))}
@@ -200,50 +198,50 @@ export default function FeaturesSection() {
             className="max-w-6xl mx-auto"
           >
             {/* Card con bordo colorato dinamico */}
-            <div className={`bg-white/5 backdrop-blur-lg border-2 ${currentServer.cardBorderClass} rounded-3xl p-5 md:p-9`}>
-              <div className="grid md:grid-cols-2 gap-10 items-center">
+            <div className={`features-main-card bg-white/5 backdrop-blur-lg border-2 ${currentServer.cardBorderClass}`}>
+              <div className="features-card-grid">
                 <div>
-                  <div className="flex items-center space-x-4 mb-6">
-                    <div className={`p-4 rounded-2xl bg-gradient-to-br ${currentServer.gradientClass} feature-icon`}>
-                      <currentServer.icon className="w-7 h-7 text-white" />
+                  <div className="features-card-header">
+                    <div className={`features-card-icon bg-gradient-to-br ${currentServer.gradientClass}`}>
+                      <currentServer.icon />
                     </div>
                     <div>
-                      <h3 className={`text-2xl font-bold ${currentServer.colorClass}`}>
+                      <h3 className={`features-card-title ${currentServer.colorClass}`}>
                         {currentServer.name}
                       </h3>
-                      <div className="flex items-center space-x-2 mt-1">
+                      <div className="features-card-subtitle flex items-center space-x-2 mt-1">
                         <Cpu className="w-3 h-3 text-gray-400" />
-                        <span className="text-xs text-gray-400">Server MCP Professionale</span>
+                        <span className="text-gray-400">Server MCP Professionale</span>
                       </div>
                     </div>
                   </div>
                   
-                  <p className="text-base text-gray-300 mb-8">
+                  <p className="features-card-description text-gray-300">
                     {currentServer.description}
                   </p>
 
-                  <div className="space-y-4 mb-8">
+                  <div className="features-list">
                     {currentServer.features.map((feature, index) => (
                       <motion.div
                         key={index}
                         initial={{ opacity: 0, x: -20 }}
                         animate={{ opacity: 1, x: 0 }}
                         transition={{ delay: index * 0.1 }}
-                        className="flex items-start space-x-3"
+                        className="features-list-item"
                       >
-                        <CheckCircle className={`w-4 h-4 ${currentServer.colorClass} mt-0.5 flex-shrink-0`} />
-                        <span className="text-gray-300">{feature}</span>
+                        <CheckCircle className={`features-list-icon ${currentServer.colorClass} flex-shrink-0`} />
+                        <span className="features-list-text text-gray-300">{feature}</span>
                       </motion.div>
                     ))}
                   </div>
 
-                  <div className="grid grid-cols-3 gap-4 mb-8">
+                  <div className="features-stats">
                     {currentServer.stats.map((stat, index) => (
                       <div key={index} className="text-center">
-                        <div className={`text-xl font-bold ${currentServer.colorClass}`}>
+                        <div className={`features-stat-value ${currentServer.colorClass}`}>
                           {stat.value}
                         </div>
-                        <div className="text-xs text-gray-400">{stat.label}</div>
+                        <div className="features-stat-label text-gray-400">{stat.label}</div>
                       </div>
                     ))}
                   </div>
@@ -251,7 +249,7 @@ export default function FeaturesSection() {
                   <motion.button
                     whileHover={{ scale: 1.02, x: 5 }}
                     whileTap={{ scale: 0.98 }}
-                    className={`flex items-center space-x-2 bg-gradient-to-r ${currentServer.gradientClass} text-white px-5 py-3 rounded-full font-semibold hover:shadow-lg transition-all duration-300`}
+                    className={`features-cta-btn bg-gradient-to-r ${currentServer.gradientClass} text-white hover:shadow-lg transition-all duration-300`}
                   >
                     <span>Prova {currentServer.name}</span>
                     <ArrowRight className="w-3 h-3" />
@@ -259,22 +257,22 @@ export default function FeaturesSection() {
                 </div>
 
                 <div className="relative">
-                  <div className="bg-black/50 backdrop-blur-sm border border-white/10 rounded-2xl p-6 overflow-hidden">
-                    <div className="flex items-center space-x-2 mb-4">
-                      <div className="w-3 h-3 bg-red-500 rounded-full"></div>
-                      <div className="w-3 h-3 bg-yellow-500 rounded-full"></div>
-                      <div className="w-3 h-3 bg-green-500 rounded-full"></div>
-                      <span className="text-xs text-gray-400 ml-4">
+                  <div className="features-terminal bg-black/50 backdrop-blur-sm border border-white/10">
+                    <div className="features-terminal-header">
+                      <div className="features-terminal-dot bg-red-500"></div>
+                      <div className="features-terminal-dot bg-yellow-500"></div>
+                      <div className="features-terminal-dot bg-green-500"></div>
+                      <span className="features-terminal-title text-gray-400">
                         {currentServer.name} Terminal
                       </span>
                     </div>
                     
-                    <div className="font-mono text-xs text-green-400 space-y-2">
-                      <div className="typewriter-text">$ mcp connect {currentServer.id}</div>
-                      <div className="text-blue-400">✓ Connected to {currentServer.name}</div>
-                      <div className="text-yellow-400">⚡ Server ready for automation</div>
-                      <div className="text-white/60">🔧 Available commands: {currentServer.stats[2]?.value || '50+'}</div>
-                      <div className="text-gray-500">...</div>
+                    <div className="features-terminal-content text-green-400">
+                      <div className="features-terminal-line typewriter-text">$ mcp connect {currentServer.id}</div>
+                      <div className="features-terminal-line text-blue-400">✓ Connected to {currentServer.name}</div>
+                      <div className="features-terminal-line text-yellow-400">⚡ Server ready for automation</div>
+                      <div className="features-terminal-line text-white/60">🔧 Available commands: {currentServer.stats[2]?.value || '50+'}</div>
+                      <div className="features-terminal-line text-gray-500">...</div>
                     </div>
                   </div>
 
@@ -314,7 +312,7 @@ export default function FeaturesSection() {
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           transition={{ duration: 0.8, delay: 0.4 }}
-          className="grid md:grid-cols-3 gap-6 mt-12 card-container"
+          className="features-highlights card-container"
         >
           {[
             { 
@@ -339,11 +337,11 @@ export default function FeaturesSection() {
             <motion.div
               key={index}
               whileHover={{ y: -5 }}
-              className="card-item bg-white/5 backdrop-blur-lg border border-white/10 rounded-2xl p-5 text-center hover:border-white/20 transition-all duration-300"
+              className="features-highlight-card bg-white/5 backdrop-blur-lg border border-white/10 hover:border-white/20 transition-all duration-300"
             >
-              <highlight.icon className={`w-11 h-11 ${highlight.color} mx-auto mb-4`} />
-              <h4 className="text-lg font-bold text-white mb-2">{highlight.title}</h4>
-              <p className="text-gray-400">{highlight.description}</p>
+              <highlight.icon className={`features-highlight-icon ${highlight.color} mx-auto`} />
+              <h4 className="features-highlight-title text-white">{highlight.title}</h4>
+              <p className="features-highlight-desc text-gray-400">{highlight.description}</p>
             </motion.div>
           ))}
         </motion.div>

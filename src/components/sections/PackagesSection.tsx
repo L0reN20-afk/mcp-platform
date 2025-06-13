@@ -185,40 +185,38 @@ export default function PackagesSection() {
   }
 
   return (
-    <section id="packages" className="relative py-16 section-container">
+    <section id="packages" className="packages-section">
       
-      <div className="container mx-auto relative z-10">
+      <div className="packages-container mx-auto relative z-10">
         {/* Section Header */}
         <motion.div
           initial={{ opacity: 0, y: 50 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           transition={{ duration: 0.8 }}
-          className="text-center mb-10 fade-in"
+          className="packages-header fade-in"
         >
-          <div className="flex items-center justify-center mb-6">
-            <Package className="w-5 h-5 sm:w-7 sm:h-7 text-orange-400 mr-3" />
-            <span className="text-orange-400 font-semibold text-xs sm:text-base">Pacchetti e Server</span>
+          <div className="packages-badge">
+            <Package className="packages-badge-icon text-orange-400" />
+            <span className="packages-badge-text text-orange-400 font-semibold">Pacchetti e Server</span>
           </div>
           {/* Main Title */}
           <div className="max-w-4xl mx-auto mb-6">
             <div className="px-6 py-4">
-              <h2 className="text-xl md:text-5xl font-bold text-reveal mb-6">
-                Scegli il tuo{' '}
+              <h2 className="packages-title text-reveal">
+                Scegli il{' '}
                 <span className="bg-gradient-to-r from-orange-400 to-red-500 bg-clip-text text-transparent">
                   Piano Perfetto
                 </span>
               </h2>
               {/* Linea decorativa arancione-rosso */}
-              <div className="w-32 h-1 bg-gradient-to-r from-orange-500 to-red-500 mx-auto rounded-full"></div>
+              <div className="packages-divider bg-gradient-to-r from-orange-500 to-red-500"></div>
             </div>
           </div>
-          {/* Description */}
-          <div>
-            <p className="text-base sm:text-base text-gray-400 max-w-3xl mx-auto px-3">
-              Pacchetti completi con risparmio garantito o server individuali per massima flessibilità
-            </p>
-          </div>
+          {/* Description - Direttamente sotto senza wrapper aggiuntivo */}
+          <p className="packages-description text-gray-400" style={{ filter: 'brightness(1.1)' }}>
+            Pacchetti completi con risparmio garantito o server individuali per massima flessibilità
+          </p>
         </motion.div>
 
         {/* Tab Navigation */}
@@ -227,12 +225,12 @@ export default function PackagesSection() {
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           transition={{ duration: 0.8, delay: 0.2 }}
-          className="flex justify-center mb-10"
+          className="packages-tabs"
         >
-          <div className="bg-white/5 backdrop-blur-lg border-2 border-orange-400 rounded-full p-2 flex gap-1 sm:gap-0">
+          <div className="packages-tabs-container bg-white/5 backdrop-blur-lg border-2 border-orange-400">
             <button
               onClick={() => setActiveTab('packages')}
-              className={`px-3 sm:px-7 py-3 rounded-full font-semibold text-xs sm:text-xs transition-all duration-300 ${
+              className={`packages-tab-button transition-all duration-300 ${
                 activeTab === 'packages'
                   ? 'bg-gradient-to-r from-orange-600 to-red-600 text-white'
                   : 'text-white/60 hover:text-white'
@@ -242,7 +240,7 @@ export default function PackagesSection() {
             </button>
             <button
               onClick={() => setActiveTab('individual')}
-              className={`px-3 sm:px-7 py-3 rounded-full font-semibold text-xs sm:text-xs transition-all duration-300 ${
+              className={`packages-tab-button transition-all duration-300 ${
                 activeTab === 'individual'
                   ? 'bg-gradient-to-r from-orange-600 to-red-600 text-white'
                   : 'text-white/60 hover:text-white'
@@ -263,7 +261,7 @@ export default function PackagesSection() {
               transition={{ duration: 0.5 }}
               className="card-container"
             >
-              <div className="grid md:grid-cols-2 gap-8 max-w-5xl mx-auto">
+              <div className="packages-grid">
                 {packages.map((pkg, index) => (
                   <motion.div
                     key={pkg.id}
@@ -273,7 +271,7 @@ export default function PackagesSection() {
                     transition={{ duration: 0.6, delay: index * 0.2 }}
                     whileHover={{ y: -10, scale: 1.02 }}
                     onClick={() => selectPackage(pkg.id)}
-                    className={`card-item relative bg-white/5 backdrop-blur-lg border-2 rounded-3xl p-5 cursor-pointer transition-all duration-300 flex flex-col h-full ${
+                    className={`package-card relative bg-white/5 backdrop-blur-lg border-2 cursor-pointer transition-all duration-300 ${
                       selectedPackage === pkg.id
                         ? 'border-orange-400 bg-white/10'
                         : pkg.popular
@@ -291,27 +289,27 @@ export default function PackagesSection() {
                     )}
 
                     <div className="text-center flex-grow flex flex-col">
-                      <div className={`w-14 h-14 mx-auto mb-6 rounded-2xl bg-gradient-to-br ${pkg.color} flex items-center justify-center`}>
-                        <Package className="w-7 h-7 text-white" />
+                      <div className={`package-icon bg-gradient-to-br ${pkg.color}`}>
+                        <Package className="text-white" />
                       </div>
 
-                      <h3 className="text-lg font-bold text-white mb-2">{pkg.name}</h3>
-                      <p className="text-gray-400 mb-6 flex-grow">{pkg.description}</p>
+                      <h3 className="package-name text-white">{pkg.name}</h3>
+                      <p className="package-description text-gray-400" style={{ filter: 'brightness(1.1)' }}>{pkg.description}</p>
 
-                      <div className="flex items-center justify-center space-x-3 mb-6">
-                        <span className="text-xl font-bold text-white">€{pkg.price}</span>
-                        <span className="text-base text-gray-400 line-through">€{pkg.originalPrice}</span>
-                        <div className="bg-red-500 text-white px-3 py-1 rounded-full text-xs font-semibold">
+                      <div className="package-pricing">
+                        <span className="package-price text-white">€{pkg.price}</span>
+                        <span className="package-original-price text-gray-400">€{pkg.originalPrice}</span>
+                        <div className="package-savings bg-red-500 text-white">
                           Risparmi €{(pkg.originalPrice - pkg.price).toFixed(2)}
                         </div>
                       </div>
 
-                      <div className="space-y-3 mb-8 flex-grow">
+                      <div className="package-features">
                         {pkg.servers.map(serverId => {
                           const server = servers.find(s => s.id === serverId)
                           return server ? (
-                            <div key={serverId} className="flex items-center space-x-3 text-left">
-                              <server.icon className={`w-4 h-4 ${server.color}`} />
+                            <div key={serverId} className="package-feature">
+                              <server.icon className={`${server.color}`} />
                               <span className="text-gray-300">{server.name}</span>
                             </div>
                           ) : null
@@ -321,9 +319,9 @@ export default function PackagesSection() {
                       <motion.button
                         whileHover={{ scale: 1.05 }}
                         whileTap={{ scale: 0.95 }}
-                        className={`w-full py-3 rounded-full font-semibold transition-all duration-300 ${
+                        className={`package-button ${
                           selectedPackage === pkg.id
-                            ? 'bg-gradient-to-r from-orange-600 to-red-600 text-white'
+                            ? 'bg-gradient-to-r from-orange-600 to-red-600 text-white border-transparent'
                             : pkg.popular
                             ? 'bg-white/10 text-white hover:bg-white/20 border-2 border-orange-400/60 hover:border-orange-400'
                             : 'bg-white/15 text-white hover:bg-white/25 border-2 border-orange-400/50 hover:border-orange-400/80'
@@ -345,7 +343,7 @@ export default function PackagesSection() {
               transition={{ duration: 0.5 }}
               className="max-w-6xl mx-auto"
             >
-              <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8 card-container">
+              <div className="servers-grid card-container">
                 {servers.map((server, index) => (
                   <motion.div
                     key={server.id}
@@ -355,7 +353,7 @@ export default function PackagesSection() {
                     transition={{ duration: 0.6, delay: index * 0.1 }}
                     whileHover={{ y: -5 }}
                     onClick={() => toggleServer(server.id)}
-                    className={`card-item bg-white/5 backdrop-blur-lg border-2 rounded-2xl p-5 cursor-pointer transition-all duration-300 flex flex-col h-full ${
+                    className={`server-card bg-white/5 backdrop-blur-lg border-2 transition-all duration-300 cursor-pointer ${
                       selectedServers.includes(server.id)
                         ? `border-${server.color.split('-')[1]}-400 bg-${server.color.split('-')[1]}-400/10`
                         : server.id === 'vscode'
@@ -370,8 +368,8 @@ export default function PackagesSection() {
                     }`}
                   >
                     <div className="text-center flex-grow flex flex-col">
-                      <div className="relative mb-4">
-                        <server.icon className={`w-11 h-11 ${server.color} mx-auto`} />
+                      <div className="server-icon-container">
+                        <server.icon className={`server-icon ${server.color}`} />
                         <motion.div
                           initial={false}
                           animate={{ 
@@ -386,15 +384,15 @@ export default function PackagesSection() {
                         </motion.div>
                       </div>
                       
-                      <h4 className="text-base font-bold text-white mb-2">{server.name}</h4>
-                      <p className="text-xs text-gray-400 mb-4 flex-grow">{server.description}</p>
+                      <h4 className="server-name text-white">{server.name}</h4>
+                      <p className="server-description text-gray-400">{server.description}</p>
                       
-                      <div className="text-xl font-bold text-white mb-6">€{server.price}</div>
+                      <div className="server-price text-white">€{server.price}</div>
                       
                       <motion.button
                         whileHover={{ scale: 1.05 }}
                         whileTap={{ scale: 0.95 }}
-                        className={`w-full py-2 rounded-full text-xs font-semibold transition-all duration-300 flex items-center justify-center space-x-2 ${
+                        className={`server-button ${
                           selectedServers.includes(server.id)
                             ? server.id === 'vscode'
                               ? 'bg-primary-500 text-white'
@@ -418,12 +416,12 @@ export default function PackagesSection() {
                       >
                         {selectedServers.includes(server.id) ? (
                           <>
-                            <Minus className="w-3 h-3" />
+                            <Minus />
                             <span>Rimuovi</span>
                           </>
                         ) : (
                           <>
-                            <Plus className="w-3 h-3" />
+                            <Plus />
                             <span>Aggiungi</span>
                           </>
                         )}
@@ -438,21 +436,21 @@ export default function PackagesSection() {
                 <motion.div
                   initial={{ opacity: 0, y: 30 }}
                   animate={{ opacity: 1, y: 0 }}
-                  className="bg-white/5 backdrop-blur-lg border border-white/10 rounded-2xl p-5"
+                  className="selection-summary bg-white/5 backdrop-blur-lg border border-white/10"
                 >
-                  <div className="flex items-center justify-between">
+                  <div className="selection-summary-content">
                     <div>
-                      <h4 className="text-lg font-bold text-white mb-2">Riepilogo Selezione</h4>
-                      <p className="text-gray-400">
+                      <h4 className="selection-summary-title text-white">Riepilogo Selezione</h4>
+                      <p className="selection-summary-subtitle text-gray-400">
                         {selectedServers.length} server{selectedServers.length > 1 ? ' selezionati' : ' selezionato'}
                       </p>
                     </div>
-                    <div className="text-right">
-                      <div className="text-2xl font-bold text-white flex items-center space-x-2">
-                        <Calculator className="w-5 h-5 text-orange-400" />
+                    <div className="selection-total">
+                      <div className="selection-total-price text-white">
+                        <Calculator className="text-orange-400" />
                         <span>€{calculateTotal().toFixed(2)}</span>
                       </div>
-                      <p className="text-xs text-gray-400">al mese</p>
+                      <p className="selection-total-period text-gray-400">al mese</p>
                     </div>
                   </div>
                 </motion.div>
@@ -467,26 +465,26 @@ export default function PackagesSection() {
             initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5 }}
-            className="text-center my-16 py-8"
+            className="packages-cta"
           >
             <motion.button
               whileHover={{ scale: loading ? 1 : 1.05, y: loading ? 0 : -2 }}
               whileTap={{ scale: loading ? 1 : 0.95 }}
               onClick={handleDownloadClick}
               disabled={loading}
-              className="magnetic-button bg-gradient-to-r from-orange-600 to-red-600 text-white px-7 py-3 rounded-full font-semibold text-base flex items-center space-x-3 mx-auto hover:shadow-xl hover:shadow-orange-500/25 transition-all duration-300 disabled:opacity-70"
+              className="packages-download-button magnetic-button bg-gradient-to-r from-orange-600 to-red-600 text-white hover:shadow-xl hover:shadow-orange-500/25 transition-all duration-300 disabled:opacity-70"
             >
               {loading ? (
-                <Loader2 className="w-4 h-4 animate-spin" />
+                <Loader2 className="animate-spin" />
               ) : downloadSuccess ? (
-                <Star className="w-4 h-4 text-yellow-300" />
+                <Star className="text-yellow-300" />
               ) : (
-                <Download className="w-4 h-4" />
+                <Download />
               )}
               <span>
                 {loading ? 'Preparazione...' : downloadSuccess ? 'Download Avviato!' : 'Scarica Trial 48h Gratuito'}
               </span>
-              <div className="bg-white/20 px-3 py-1 rounded-full text-xs">
+              <div className="beta-badge bg-white/20">
                 BETA
               </div>
             </motion.button>
@@ -508,7 +506,7 @@ export default function PackagesSection() {
               </motion.div>
             )}
             
-            <p className="text-gray-400 mt-4">
+            <p className="packages-download-description text-gray-400">
               Prova tutti i server selezionati per 48 ore completamente gratis
             </p>
           </motion.div>
@@ -520,9 +518,9 @@ export default function PackagesSection() {
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           transition={{ duration: 1, delay: 0.3 }}
-          className="mt-32 pt-20"
+          className="packages-stats"
         >
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-6 max-w-4xl mx-auto">
+          <div className="packages-stats-grid">
             {stats.map((stat, index) => (
               <motion.div
                 key={stat.label}
@@ -530,9 +528,7 @@ export default function PackagesSection() {
                 whileInView={{ opacity: 1, scale: 1 }}
                 viewport={{ once: true }}
                 transition={{ duration: 0.5, delay: 0.5 + index * 0.1 }}
-                className="floating-element text-center group cursor-pointer"
-              >
-                <div className={`backdrop-blur-lg border-2 rounded-2xl p-4 transition-all duration-300 group-hover:scale-110 ${
+                className={`packages-stat-card backdrop-blur-lg border-2 floating-element group cursor-pointer transition-all duration-300 group-hover:scale-110 ${
                   stat.color === 'text-primary-400' 
                     ? 'bg-white/5 border-primary-400/60 hover:border-primary-400 bg-primary-400/5' 
                     : stat.color === 'text-orange-400'
@@ -542,13 +538,13 @@ export default function PackagesSection() {
                     : stat.color === 'text-success-400'
                     ? 'bg-white/5 border-success-400/60 hover:border-success-400 bg-success-400/5'
                     : 'bg-white/5 border-white/10 hover:border-white/20'
-                }`}>
-                  <stat.icon className={`w-7 h-7 ${stat.color} mx-auto mb-3 group-hover:scale-110 transition-transform duration-300`} />
-                  <div className={`text-2xl font-bold ${stat.color} mb-1 counter`} data-target={stat.value.replace(/\D/g, '')} data-suffix={stat.value.replace(/\d/g, '')}>
-                    {stat.value}
-                  </div>
-                  <div className="text-gray-400 text-xs font-medium">{stat.label}</div>
+                }`}
+              >
+                <stat.icon className={`packages-stat-icon ${stat.color} group-hover:scale-110 transition-transform duration-300`} />
+                <div className={`packages-stat-value ${stat.color} counter`} data-target={stat.value.replace(/\D/g, '')} data-suffix={stat.value.replace(/\d/g, '')}>
+                  {stat.value}
                 </div>
+                <div className="packages-stat-label text-gray-400">{stat.label}</div>
               </motion.div>
             ))}
           </div>

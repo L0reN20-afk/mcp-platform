@@ -161,55 +161,53 @@ export default function PricingSection() {
   ]
 
   return (
-    <section id="pricing" className="relative py-16 section-container">
+    <section id="pricing" className="pricing-section">
       
-      <div className="container mx-auto relative z-10">
+      <div className="pricing-container mx-auto relative z-10">
         {/* Section Header */}
         <motion.div
           initial={{ opacity: 0, y: 50 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           transition={{ duration: 0.8 }}
-          className="text-center mb-12 fade-in"
+          className="pricing-header fade-in"
         >
-          <div className="flex items-center justify-center mb-6">
-            <Crown className="w-7 h-7 text-warning-400 mr-3" />
-            <span className="text-warning-400 font-semibold text-base">Prezzi Trasparenti</span>
+          <div className="pricing-badge">
+            <Crown className="pricing-badge-icon text-warning-400" />
+            <span className="pricing-badge-text text-warning-400 font-semibold">Prezzi Trasparenti</span>
           </div>
           {/* Main Title */}
           <div className="max-w-4xl mx-auto mb-6">
             <div className="px-6 py-4">
-              <h2 className="text-2xl md:text-5xl font-bold text-reveal mb-6">
+              <h2 className="pricing-title text-reveal">
                 Piani per ogni{' '}
-                <span className="bg-gradient-to-r from-warning-400 to-primary-400 bg-clip-text text-transparent">
+                <span className="bg-gradient-to-r from-red-400 via-yellow-400 via-green-400 via-blue-400 via-indigo-400 to-purple-400 bg-clip-text text-transparent">
                   Esigenza
                 </span>
               </h2>
               {/* Linea decorativa warning-primary */}
-              <div className="w-32 h-1 bg-gradient-to-r from-warning-500 to-primary-500 mx-auto rounded-full"></div>
+              <div className="pricing-divider bg-gradient-to-r from-red-500 via-yellow-500 via-green-500 via-blue-500 via-indigo-500 to-purple-500"></div>
             </div>
           </div>
-          {/* Description */}
-          <div className="mb-8">
-            <p className="text-lg text-gray-300 max-w-3xl mx-auto px-3">
-              Inizia gratis con il trial 48h, poi scegli il piano perfetto per te
-            </p>
-          </div>
+          {/* Description - Direttamente sotto senza wrapper aggiuntivo */}
+          <p className="pricing-description text-gray-300" style={{ filter: 'brightness(1.1)' }}>
+            Inizia gratis con il trial 48h, poi scegli il piano perfetto per te
+          </p>
 
           {/* Annual/Monthly Toggle */}
-          <div className="flex items-center justify-center space-x-4">
+          <div className="pricing-toggle-container">
             <span className={`font-medium ${!isAnnual ? 'text-white' : 'text-gray-300'}`}>
               Mensile
             </span>
             <motion.button
               whileTap={{ scale: 0.95 }}
               onClick={() => setIsAnnual(!isAnnual)}
-              className="relative w-16 h-8 bg-white/10 rounded-full border border-white/20 transition-all duration-300"
+              className="pricing-toggle-switch bg-white/10 border border-white/20 transition-all duration-300"
             >
               <motion.div
                 animate={{ x: isAnnual ? 32 : 4 }}
                 transition={{ type: "spring", stiffness: 300, damping: 20 }}
-                className="absolute top-1 w-6 h-6 bg-gradient-to-r from-primary-500 to-accent-500 rounded-full"
+                className="pricing-toggle-handle bg-[#e43838]"
               />
             </motion.button>
             <span className={`font-medium ${isAnnual ? 'text-white' : 'text-gray-300'}`}>
@@ -219,7 +217,7 @@ export default function PricingSection() {
               <motion.div
                 initial={{ scale: 0, opacity: 0 }}
                 animate={{ scale: 1, opacity: 1 }}
-                className="bg-success-500 text-white px-3 py-1 rounded-full text-xs font-semibold"
+                className="bg-gradient-to-r from-[#e43838] to-[#3a9d96] text-white px-3 py-1 rounded-full text-xs font-semibold"
               >
                 Risparmi 20%
               </motion.div>
@@ -228,7 +226,7 @@ export default function PricingSection() {
         </motion.div>
 
         {/* Pricing Cards */}
-        <div className="grid lg:grid-cols-3 gap-8 max-w-7xl mx-auto mb-12">
+        <div className="pricing-grid">
           {plans.map((plan, index) => (
             <motion.div
               key={plan.id}
@@ -241,7 +239,7 @@ export default function PricingSection() {
                 scale: 1.02,
                 rotateY: index % 2 === 0 ? 2 : -2 
               }}
-              className={`pricing-card relative bg-white/5 backdrop-blur-lg border-2 rounded-3xl p-7 transition-all duration-500 flex flex-col h-full ${
+              className={`pricing-card bg-white/5 backdrop-blur-lg border-2 transition-all duration-500 flex flex-col h-full ${
                 plan.popular 
                   ? 'border-primary-400 bg-primary-400/5 scale-105 lg:scale-110' 
                   : plan.id === 'beta'
@@ -253,44 +251,44 @@ export default function PricingSection() {
             >
               {/* Badge */}
               {plan.badge && (
-                <div className="absolute -top-4 left-1/2 transform -translate-x-1/2">
-                  <div className={`bg-gradient-to-r ${plan.gradient} text-white px-6 py-2 rounded-full text-xs font-semibold flex items-center space-x-1`}>
-                    <Star className="w-4 h-4" />
-                    <span>{plan.badge}</span>
-                  </div>
+                <div className="pricing-card-badge bg-gradient-to-r text-white flex items-center space-x-1" style={{
+                  backgroundImage: `linear-gradient(to right, ${plan.gradient.replace('from-', '').replace(' to-', ', ').replace('-600', '').replace('-800', '')})`
+                }}>
+                  <Star className="w-4 h-4" />
+                  <span>{plan.badge}</span>
                 </div>
               )}
 
               <div className="text-center flex-grow flex flex-col">
                 {/* Icon */}
-                <div className={`w-14 h-14 mx-auto mb-6 rounded-2xl bg-gradient-to-br ${plan.gradient} flex items-center justify-center relative`}>
+                <div className={`pricing-card-icon bg-gradient-to-br ${plan.gradient} relative`}>
                   <plan.icon className="w-7 h-7 text-white absolute inset-0 m-auto" />
                 </div>
 
                 {/* Plan Name */}
-                <h3 className="text-xl font-bold text-white mb-2">{plan.name}</h3>
-                <p className="text-gray-300 mb-6 flex-grow">{plan.description}</p>
+                <h3 className="pricing-card-name text-white">{plan.name}</h3>
+                <p className="pricing-card-description text-gray-300 flex-grow">{plan.description}</p>
 
                 {/* Price */}
-                <div className="mb-8">
+                <div className="pricing-card-price-container">
                   <div className="flex items-center justify-center space-x-2 mb-2">
-                    <span className="text-2xl font-bold text-white">{plan.price}</span>
+                    <span className="pricing-card-price text-white">{plan.price}</span>
                     {plan.originalPrice && (
                       <>
                         <span className="text-base text-gray-300 line-through">{plan.originalPrice}</span>
-                        <div className="bg-success-500 text-white px-2 py-1 rounded-full text-xs font-semibold">
+                        <div className="bg-gradient-to-r from-[#e43838] to-[#3a9d96] text-white px-2 py-1 rounded-full text-xs font-semibold">
                           -{Math.round((1 - parseFloat(plan.price.replace('€', '')) / parseFloat(plan.originalPrice.replace('€', ''))) * 100)}%
                         </div>
                       </>
                     )}
                   </div>
                   {plan.price !== 'Gratuito' && (
-                    <p className="text-xs text-gray-300">al mese, fatturato {isAnnual ? 'annualmente' : 'mensilmente'}</p>
+                    <p className="pricing-card-period text-gray-300">al mese, fatturato {isAnnual ? 'annualmente' : 'mensilmente'}</p>
                   )}
                 </div>
 
                 {/* Features */}
-                <div className="space-y-4 mb-8 text-left flex-grow">
+                <div className="pricing-card-features text-left flex-grow">
                   {plan.features.map((feature, featureIndex) => (
                     <motion.div
                       key={featureIndex}
@@ -298,10 +296,10 @@ export default function PricingSection() {
                       whileInView={{ opacity: 1, x: 0 }}
                       viewport={{ once: true }}
                       transition={{ delay: 0.1 * featureIndex }}
-                      className="flex items-start space-x-3"
+                      className="pricing-card-feature"
                     >
-                      <Check className={`w-4 h-4 ${plan.color} mt-0.5 flex-shrink-0`} />
-                      <span className="text-gray-300">{feature}</span>
+                      <Check className={`pricing-card-feature-icon ${plan.color} flex-shrink-0`} />
+                      <span className="pricing-card-feature-text text-gray-300">{feature}</span>
                     </motion.div>
                   ))}
                 </div>
@@ -312,7 +310,7 @@ export default function PricingSection() {
                   whileTap={{ scale: (loading && plan.id === 'beta') ? 1 : 0.95 }}
                   onClick={() => handlePlanAction(plan)}
                   disabled={loading && plan.id === 'beta'}
-                  className={`w-full py-3 rounded-full font-semibold text-base transition-all duration-300 flex items-center justify-center space-x-2 ${
+                  className={`pricing-card-button ${
                     plan.popular
                       ? `bg-gradient-to-r ${plan.gradient} text-white hover:shadow-lg hover:shadow-primary-500/25`
                       : plan.id === 'beta'

@@ -54,16 +54,16 @@ export default function CTASection({ onTrialClick }: CTASectionProps) {
   ]
 
   return (
-    <section className="relative py-16 section-container">
+    <section className="cta-section">
       
-      <div className="container mx-auto relative z-10">
+      <div className="cta-container mx-auto relative z-10">
         {/* Main CTA */}
         <motion.div
           initial={{ opacity: 0, y: 50 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           transition={{ duration: 0.8 }}
-          className="text-center max-w-5xl mx-auto"
+          className="text-center"
         >
           {/* Urgency Badge */}
           <motion.div
@@ -71,21 +71,21 @@ export default function CTASection({ onTrialClick }: CTASectionProps) {
             whileInView={{ opacity: 1, scale: 1 }}
             viewport={{ once: true }}
             transition={{ duration: 0.6 }}
-            className="inline-flex items-center space-x-2 bg-gradient-to-r from-warning-600/20 to-success-600/20 border border-warning-400/30 rounded-full px-5 py-3 mb-8"
+            className="cta-urgency-badge bg-gradient-to-r from-warning-600/20 to-success-600/20 border border-warning-400/30"
           >
-            <Sparkles className="w-4 h-4 text-warning-400 animate-pulse" />
+            <Sparkles className="cta-urgency-icon text-warning-400 animate-pulse" />
             <span className="text-warning-400 font-semibold">🔥 Trial 48h in Scadenza - Ultimi Posti Disponibili</span>
           </motion.div>
 
           {/* Main Headline */}
-          <div className="max-w-5xl mx-auto mb-6">
-            <div className="px-6 py-4">
+          <div className="cta-headline-container">
+            <div className="cta-headline-wrapper">
               <motion.h2
                 initial={{ opacity: 0, y: 30 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
                 transition={{ duration: 0.8, delay: 0.1 }}
-                className="text-5xl md:text-7xl font-bold mb-6 leading-tight"
+                className="cta-title leading-tight"
               >
                 Non Perdere{' '}
                 <span className="bg-gradient-to-r from-warning-400 via-primary-400 to-accent-400 bg-clip-text text-transparent">
@@ -93,7 +93,7 @@ export default function CTASection({ onTrialClick }: CTASectionProps) {
                 </span>
               </motion.h2>
               {/* Linea decorativa warning-accent */}
-              <div className="w-32 h-1 bg-gradient-to-r from-warning-500 to-accent-500 mx-auto rounded-full"></div>
+              <div className="cta-divider bg-gradient-to-r from-warning-500 to-accent-500"></div>
             </div>
           </div>
 
@@ -103,7 +103,8 @@ export default function CTASection({ onTrialClick }: CTASectionProps) {
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ duration: 0.8, delay: 0.2 }}
-            className="text-2xl text-gray-300 mb-12 max-w-3xl mx-auto"
+            className="cta-subtitle text-gray-300"
+            style={{ filter: 'brightness(1.1)' }}
           >
             Unisciti a <span className="text-primary-400 font-semibold">1000+ sviluppatori</span> che hanno già 
             rivoluzionato il loro workflow con i server MCP professionali
@@ -115,18 +116,18 @@ export default function CTASection({ onTrialClick }: CTASectionProps) {
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ duration: 0.8, delay: 0.3 }}
-            className="flex flex-col sm:flex-row gap-5 justify-center items-center mb-8"
+            className="cta-buttons-container"
           >
             <motion.button
               whileHover={{ scale: 1.05, y: -3 }}
               whileTap={{ scale: 0.95 }}
               onClick={handleTrialClick}
-              className="group bg-gradient-to-r from-warning-600 to-success-600 text-white px-9 py-4 rounded-full font-bold text-xl flex items-center space-x-4 hover:shadow-2xl hover:shadow-warning-500/25 transition-all duration-300 relative overflow-hidden"
+              className="cta-button-primary group bg-gradient-to-r from-warning-600 to-success-600 text-white hover:shadow-2xl hover:shadow-warning-500/25 relative overflow-hidden"
             >
               <div className="absolute inset-0 bg-gradient-to-r from-warning-400 to-success-400 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
-              <Download className="w-5 h-5 group-hover:animate-bounce relative z-10" />
+              <Download className="cta-button-primary-icon group-hover:animate-bounce relative z-10" />
               <span className="relative z-10">Prova Trial 48h GRATIS</span>
-              <div className="bg-white/20 px-3 py-1 rounded-full text-sm font-medium relative z-10">
+              <div className="cta-button-primary-badge bg-white/20 relative z-10">
                 BETA
               </div>
             </motion.button>
@@ -135,10 +136,10 @@ export default function CTASection({ onTrialClick }: CTASectionProps) {
               whileHover={{ scale: 1.05, y: -3 }}
               whileTap={{ scale: 0.95 }}
               onClick={handleDemoClick}
-              className="group border-2 border-white/30 text-white px-9 py-4 rounded-full font-semibold text-xl hover:border-accent-400 hover:text-accent-400 transition-all duration-300 flex items-center space-x-3"
+              className="cta-button-secondary group border-white/30 text-white hover:border-accent-400 hover:text-accent-400"
             >
               <span>Vedi Demo Live</span>
-              <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform duration-300" />
+              <ArrowRight className="cta-button-secondary-icon group-hover:translate-x-1" />
             </motion.button>
           </motion.div>
 
@@ -148,22 +149,22 @@ export default function CTASection({ onTrialClick }: CTASectionProps) {
             whileInView={{ opacity: 1, scale: 1 }}
             viewport={{ once: true }}
             transition={{ duration: 0.6, delay: 0.4 }}
-            className="bg-black/60 backdrop-blur-lg border border-warning-400/30 rounded-2xl p-7 max-w-2xl mx-auto mb-16"
+            className="cta-timer-container bg-black/60 backdrop-blur-lg border border-warning-400/30"
           >
-            <div className="flex items-center justify-center space-x-3 mb-4">
-              <Clock className="w-7 h-7 text-warning-400 animate-pulse" />
-              <div className="text-center">
-                <div className="text-3xl font-bold text-white">48 Ore Gratuite</div>
-                <div className="text-warning-400 font-medium">Accesso completo a tutto</div>
+            <div className="cta-timer-content">
+              <Clock className="cta-timer-icon text-warning-400 animate-pulse" />
+              <div className="cta-timer-text">
+                <div className="cta-timer-title text-white">48 Ore Gratuite</div>
+                <div className="cta-timer-subtitle text-warning-400">Accesso completo a tutto</div>
               </div>
             </div>
-            <div className="flex items-center justify-center space-x-6 text-sm text-gray-400">
-              <div className="flex items-center space-x-2">
-                <Zap className="w-3 h-3 text-primary-400" />
+            <div className="cta-timer-features text-gray-400">
+              <div className="cta-timer-feature">
+                <Zap className="cta-timer-feature-icon text-primary-400" />
                 <span>Setup istantaneo</span>
               </div>
-              <div className="flex items-center space-x-2">
-                <Shield className="w-3 h-3 text-success-400" />
+              <div className="cta-timer-feature">
+                <Shield className="cta-timer-feature-icon text-success-400" />
                 <span>Nessuna carta richiesta</span>
               </div>
             </div>
@@ -175,7 +176,7 @@ export default function CTASection({ onTrialClick }: CTASectionProps) {
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ duration: 0.8, delay: 0.6 }}
-            className="flex flex-wrap justify-center items-center gap-7 text-gray-400 text-sm"
+            className="cta-trust-signals text-gray-400"
           >
             {trustSignals.map((signal, index) => (
               <motion.div
@@ -184,9 +185,9 @@ export default function CTASection({ onTrialClick }: CTASectionProps) {
                 whileInView={{ opacity: 1, x: 0 }}
                 viewport={{ once: true }}
                 transition={{ duration: 0.5, delay: 0.1 * index }}
-                className="flex items-center space-x-2"
+                className="cta-trust-signal"
               >
-                <Shield className="w-3 h-3 text-success-400" />
+                <Shield className="cta-trust-signal-icon text-success-400" />
                 <span>{signal}</span>
               </motion.div>
             ))}

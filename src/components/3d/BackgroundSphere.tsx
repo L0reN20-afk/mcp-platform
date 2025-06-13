@@ -110,10 +110,10 @@ export default function BackgroundSphere() {
           )
         }
       case 'demo':
-        // DNA colors
+        // Warning to Primary colors - matching new Demo section theme
         return {
-          color1: new THREE.Vector3(1.0, 0.3, 0.5),   // DNA Pink/Red
-          color2: new THREE.Vector3(0.2, 0.5, 1.0)    // DNA Blue
+          color1: new THREE.Vector3(0.984, 0.710, 0.235), // #fbb565 (warning-400) giallo-arancione
+          color2: new THREE.Vector3(0.463, 0.710, 0.984)  // #76b5f7 (primary-400) blu brillante
         }
       default:
         return {

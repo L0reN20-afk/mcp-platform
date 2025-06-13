@@ -257,41 +257,39 @@ fs.watch('./src', (event) => {
   }
 
   return (
-    <section id="demo" className="relative py-16 section-container">
+    <section id="demo" className="demo-section">
       
-      <div className="container mx-auto relative z-10">
+      <div className="demo-container mx-auto relative z-10">
         {/* Section Header */}
         <motion.div
           initial={{ opacity: 0, y: 50 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           transition={{ duration: 0.8 }}
-          className="text-center mb-16 fade-in"
+          className="demo-header fade-in"
         >
-          <div className="flex items-center justify-center mb-6">
-            <Play className="w-7 h-7 text-warning-400 mr-3" />
-            <span className="text-warning-400 font-semibold text-base">Trial 48h Gratuito</span>
+          <div className="demo-badge">
+            <Play className="demo-badge-icon text-primary-400" />
+            <span className="demo-badge-text text-primary-400 font-semibold">Trial 48h Gratuito</span>
           </div>
           {/* Main Title */}
           <div className="max-w-4xl mx-auto mb-6">
             <div className="px-6 py-4">
-              <h2 className="text-3xl md:text-5xl font-bold text-reveal mb-6">
+              <h2 className="demo-title text-reveal">
                 Prova Subito{' '}
-                <span className="bg-gradient-to-r from-warning-400 to-success-400 bg-clip-text text-transparent">
+                <span className="bg-gradient-to-r from-warning-400 to-primary-400 bg-clip-text text-transparent">
                   Gratuitamente
                 </span>
               </h2>
               {/* Linea decorativa warning-success */}
-              <div className="w-32 h-1 bg-gradient-to-r from-warning-500 to-success-500 mx-auto rounded-full"></div>
+              <div className="demo-divider bg-gradient-to-r from-warning-500 to-primary-500"></div>
             </div>
           </div>
-          {/* Description */}
-          <div className="mb-8">
-            <p className="text-xl text-gray-400 max-w-3xl mx-auto px-3">
-              Scarica il trial completo 48 ore e testa tutti i server MCP in azione. 
-              Nessuna carta di credito richiesta.
-            </p>
-          </div>
+          {/* Description - Direttamente sotto senza wrapper aggiuntivo */}
+          <p className="demo-description text-gray-400" style={{ filter: 'brightness(1.1)' }}>
+            Scarica il trial completo 48 ore e testa tutti i server MCP in azione. 
+            Nessuna carta di credito richiesta.
+          </p>
           
           {/* Trial CTA */}
           <motion.div
@@ -299,13 +297,13 @@ fs.watch('./src', (event) => {
             whileInView={{ opacity: 1, scale: 1 }}
             viewport={{ once: true }}
             transition={{ duration: 0.6, delay: 0.3 }}
-            className="bg-gradient-to-r from-warning-600/20 to-success-600/20 border border-warning-400/30 rounded-2xl p-5 max-w-2xl mx-auto mb-12"
+            className="demo-trial-cta bg-gradient-to-r from-warning-600/20 to-primary-600/20 border border-primary-400/30"
           >
-            <div className="flex items-center justify-center space-x-4 mb-4">
-              <Clock className="w-7 h-7 text-warning-400" />
-              <div className="text-left">
-                <div className="text-2xl font-bold text-white">48 Ore Complete</div>
-                <div className="text-warning-400 font-medium">Accesso illimitato a tutto</div>
+            <div className="demo-trial-content">
+              <Clock className="demo-trial-icon text-primary-400" />
+              <div className="demo-trial-text">
+                <div className="demo-trial-title text-white">48 Ore Complete</div>
+                <div className="demo-trial-subtitle text-primary-400">Accesso illimitato a tutto</div>
               </div>
             </div>
             <motion.button
@@ -313,7 +311,7 @@ fs.watch('./src', (event) => {
               whileTap={{ scale: loading ? 1 : 0.95 }}
               onClick={handleDownloadClick}
               disabled={loading}
-              className="bg-gradient-to-r from-warning-600 to-success-600 text-white px-7 py-3 rounded-full font-semibold text-base flex items-center space-x-3 mx-auto hover:shadow-xl hover:shadow-warning-500/25 transition-all duration-300 disabled:opacity-70"
+              className="demo-trial-button bg-gradient-to-r from-warning-600 to-primary-600 text-white hover:shadow-xl hover:shadow-primary-500/25 disabled:opacity-70"
             >
               {loading ? (
                 <Loader2 className="w-4 h-4 animate-spin" />
@@ -352,7 +350,7 @@ fs.watch('./src', (event) => {
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           transition={{ duration: 0.8, delay: 0.2 }}
-          className="flex flex-wrap justify-center gap-4 mb-12"
+          className="demo-tabs"
         >
           {codeExamples.map((example, index) => (
             <motion.button
@@ -360,13 +358,13 @@ fs.watch('./src', (event) => {
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
               onClick={() => setActiveDemo(index)}
-              className={`flex items-center space-x-3 px-5 py-3 rounded-full border-2 backdrop-blur-lg transition-all duration-300 ${
+              className={`demo-tab-button border-2 backdrop-blur-lg transition-all duration-300 ${
                 activeDemo === index
                   ? `border-${example.color.split('-')[1]}-400 bg-${example.color.split('-')[1]}-400/10 ${example.color}`
                   : 'border-white/20 bg-white/10 text-white/80 hover:border-white/40 hover:text-white'
               }`}
             >
-              <example.icon className="w-4 h-4" />
+              <example.icon className="demo-tab-icon" />
               <span className="font-medium">{example.name}</span>
             </motion.button>
           ))}
@@ -382,33 +380,31 @@ fs.watch('./src', (event) => {
             transition={{ duration: 0.5 }}
             className="max-w-7xl mx-auto"
           >
-            <div className="grid lg:grid-cols-2 gap-7">
+            <div className="demo-grid">
               {/* Code Editor */}
-              <div className="bg-black/80 backdrop-blur-lg border border-white/10 rounded-2xl overflow-hidden">
+              <div className="demo-code-container bg-black/80 backdrop-blur-lg border border-white/10">
                 {/* Editor Header */}
-                <div className="flex items-center justify-between bg-gray-900/50 px-5 py-3 border-b border-white/10">
-                  <div className="flex items-center space-x-4">
-                    <div className="flex space-x-2">
-                      <div className="w-3 h-3 bg-red-500 rounded-full"></div>
-                      <div className="w-3 h-3 bg-yellow-500 rounded-full"></div>
-                      <div className="w-3 h-3 bg-green-500 rounded-full"></div>
-                    </div>
-                    <span className="text-gray-400 text-sm font-mono">
-                      {codeExamples[activeDemo].name.toLowerCase().replace(' ', '-')}-demo.ts
-                    </span>
+                <div className="demo-code-header bg-gray-900/50 border-b border-white/10">
+                  <div className="demo-code-dots">
+                    <div className="demo-code-dot bg-red-500"></div>
+                    <div className="demo-code-dot bg-yellow-500"></div>
+                    <div className="demo-code-dot bg-green-500"></div>
                   </div>
+                  <span className="demo-code-title text-gray-400 font-mono">
+                    {codeExamples[activeDemo].name.toLowerCase().replace(' ', '-')}-demo.ts
+                  </span>
                   <motion.button
                     whileHover={{ scale: 1.1 }}
                     whileTap={{ scale: 0.9 }}
                     onClick={() => copyToClipboard(codeExamples[activeDemo].code)}
-                    className="text-gray-400 hover:text-white transition-colors"
+                    className="text-gray-400 hover:text-white transition-colors ml-auto"
                   >
                     <Copy className="w-3 h-3" />
                   </motion.button>
                 </div>
 
                 {/* Code Content */}
-                <div className="p-5">
+                <div className="demo-code-content">
                   <div className="mb-4">
                     <h3 className={`text-xl font-bold ${codeExamples[activeDemo].color} mb-2`}>
                       {codeExamples[activeDemo].title}
@@ -426,23 +422,23 @@ fs.watch('./src', (event) => {
               </div>
 
               {/* Terminal Output */}
-              <div className="bg-black/80 backdrop-blur-lg border border-white/10 rounded-2xl overflow-hidden">
+              <div className="demo-terminal-container bg-black/80 backdrop-blur-lg border border-white/10">
                 {/* Terminal Header */}
-                <div className="flex items-center justify-between bg-gray-900/50 px-5 py-3 border-b border-white/10">
+                <div className="demo-terminal-header bg-gray-900/50 border-b border-white/10">
                   <div className="flex items-center space-x-4">
                     <Terminal className="w-4 h-4 text-green-400" />
-                    <span className="text-gray-400 text-sm font-mono">
+                    <span className="demo-terminal-title text-gray-400 font-mono">
                       MCP Platform Terminal
                     </span>
                   </div>
-                  <div className="flex items-center space-x-2">
+                  <div className="flex items-center space-x-2 ml-auto">
                     <div className="w-2 h-2 bg-green-400 rounded-full animate-pulse"></div>
                     <span className="text-green-400 text-xs">CONNECTED</span>
                   </div>
                 </div>
 
                 {/* Terminal Content */}
-                <div className="p-5 font-mono text-sm min-h-[400px]">
+                <div className="demo-terminal-content">
                   <div className="text-blue-400 mb-4">
                     $ mcp-platform run {codeExamples[activeDemo].id}-demo
                   </div>
@@ -484,7 +480,7 @@ fs.watch('./src', (event) => {
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           transition={{ duration: 0.8, delay: 0.4 }}
-          className="grid md:grid-cols-3 gap-7 mt-16 card-container"
+          className="demo-features-grid card-container"
         >
           {[
             {
@@ -503,7 +499,7 @@ fs.watch('./src', (event) => {
               icon: Clock,
               title: 'Supporto Incluso',
               description: 'Assistenza tecnica via email durante tutto il periodo di trial.',
-              color: 'text-warning-400'
+              color: 'text-primary-400'
             }
           ].map((feature, index) => (
             <motion.div
@@ -513,11 +509,11 @@ fs.watch('./src', (event) => {
               viewport={{ once: true }}
               transition={{ duration: 0.6, delay: index * 0.1 }}
               whileHover={{ y: -5 }}
-              className="card-item bg-white/5 backdrop-blur-lg border border-white/10 rounded-2xl p-5 text-center hover:border-white/20 transition-all duration-300"
+              className="demo-feature-card bg-white/5 backdrop-blur-lg border border-white/10 hover:border-white/20 transition-all duration-300"
             >
-              <feature.icon className={`w-11 h-11 ${feature.color} mx-auto mb-4`} />
-              <h4 className="text-xl font-bold text-white mb-2">{feature.title}</h4>
-              <p className="text-gray-400">{feature.description}</p>
+              <feature.icon className={`demo-feature-icon ${feature.color} mx-auto`} />
+              <h4 className="demo-feature-title text-white">{feature.title}</h4>
+              <p className="demo-feature-description text-gray-400">{feature.description}</p>
             </motion.div>
           ))}
         </motion.div>

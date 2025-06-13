@@ -27,8 +27,8 @@ const HammerVideoAnimation = forwardRef<HammerVideoRef, HammerVideoAnimationProp
   onEnded,
   className = "",
   style = {},
-  width = 170,
-  height = 170,
+  width,
+  height,
   loop = false,
   showLoadingProgress = false
 }, ref) => {
@@ -67,12 +67,14 @@ const HammerVideoAnimation = forwardRef<HammerVideoRef, HammerVideoAnimationProp
       className={className}
       style={{
         objectFit: 'contain',
-        width: width,
-        height: height,
+        // Solo applica width/height se passati come props
+        ...(width !== undefined && { width: width }),
+        ...(height !== undefined && { height: height }),
         ...style
       }}
-      width={width}
-      height={height}
+      // Solo applica attributi width/height se definiti
+      {...(width !== undefined && { width: width })}
+      {...(height !== undefined && { height: height })}
       autoPlay={autoPlay}
       muted={muted}
       loop={loop}
@@ -84,8 +86,8 @@ const HammerVideoAnimation = forwardRef<HammerVideoRef, HammerVideoAnimationProp
       {/* Fallback per browser che non supportano WebM */}
       <div 
         style={{
-          width: width,
-          height: height,
+          ...(width !== undefined && { width: width }),
+          ...(height !== undefined && { height: height }),
           display: 'flex',
           alignItems: 'center',
           justifyContent: 'center',
